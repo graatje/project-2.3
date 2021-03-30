@@ -21,6 +21,7 @@ public abstract class GameManager {
         }
 
         // Request a move from the first player
+        board.requestPlayerMove();
     }
 
     public Board getBoard() {

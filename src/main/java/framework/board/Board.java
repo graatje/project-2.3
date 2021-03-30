@@ -6,7 +6,6 @@ import framework.player.MoveRequestable;
 import framework.player.Player;
 
 import java.util.*;
-import java.util.function.Consumer;
 
 public abstract class Board {
     private final GameManager gameManager;
@@ -14,6 +13,8 @@ public abstract class Board {
     protected final BoardPiece[] pieces;
 
     private int currentPlayerId;
+    private boolean isGameOver = false;
+    private Player winner;
 
     private final Set<BoardObserver> observers = new HashSet<>();
 
@@ -30,14 +31,14 @@ public abstract class Board {
         }
     }
 
-
     public abstract List<BoardPiece> getValidMoves();
 
     protected abstract void executeMove(Player player, BoardPiece piece);
 
-    public abstract boolean isOver();
+    protected abstract boolean calculateIsGameOver();
 
-    public abstract Player getWinner();
+    protected abstract Player calculateWinner();
+
 
     public int getWidth() {
         return width;
@@ -65,17 +66,39 @@ public abstract class Board {
             currentPlayerId = 0;
         }
 
-        Player currentPlayer = gameManager.getPlayer(currentPlayerId);
-        if(currentPlayer instanceof MoveRequestable) {
-            ((MoveRequestable) currentPlayer).requestMove();
+        // See if the game is over after this move
+        if(calculateIsGameOver()) {
+            // The game is over! Calculate a winner and set the flag!
+
+            isGameOver = true;
+            winner = calculateWinner();
         }
 
         // Make sure all observers know of this state-change!
         notifyObservers();
+
+        if(!isGameOver) {
+            // The game is not yet over. Request the next move from the new current player.
+            requestPlayerMove();
+        }
     }
 
     public void makeMove(Player player, int x, int y) {
         makeMove(player, getBoardPiece(x, y));
+    }
+
+    public void requestPlayerMove() {
+        Player currentPlayer = gameManager.getPlayer(currentPlayerId);
+        if(currentPlayer instanceof MoveRequestable) {
+            ((MoveRequestable) currentPlayer).requestMove();
+        }
+    }
+
+    public void forceWin(Player winner) {
+        this.isGameOver = true;
+        this.winner = winner;
+
+        notifyObservers();
     }
 
     public BoardPiece getBoardPiece(int x, int y) {
@@ -101,6 +124,18 @@ public abstract class Board {
 
     public Player getCurrentPlayer() {
         return gameManager.getPlayer(currentPlayerId);
+    }
+
+    public boolean isGameOver() {
+        return isGameOver;
+    }
+
+    public Player getWinner() {
+        if(!isGameOver) {
+            throw new IllegalStateException("The game isn't over yet!");
+        }
+
+        return winner;
     }
 
     public void registerObserver(BoardObserver observer) {
