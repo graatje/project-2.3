@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.net.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -10,12 +9,14 @@
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0">
-        <Button text="Boter-kaas-en-eieren" onAction="#pressBKEMenuButton"/>
+        <Button text="Boter-kaas-en-eieren" onAction="#pressTTTMenuButton"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="1">
         <Button text="Othello" onAction ="#pressOthelloMenuButton"/>
     </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <Button text="Spel afsluiten" onAction ="#pressExitButton"/>
+    </HBox>
 
-    <Text fx:id="actiontarget" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-
+    <Text fx:id="actiontarget"  GridPane.columnIndex="0" GridPane.rowIndex="4"/>
 </GridPane>

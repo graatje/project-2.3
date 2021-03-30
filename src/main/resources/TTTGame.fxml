@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="TTTGame"
-            prefHeight="400.0" prefWidth="600.0">
+<GridPane fx:controller="TTTGameController" xmlns:fx="http://javafx.com/fxml" BorderPane.alignment="center" hgap="10" vgap="10">
+        <Button fx:id="a1" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <Button fx:id="a2" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+        <Button fx:id="a3" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+        <Button fx:id="b1" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <Button fx:id="b2" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Button fx:id="b3" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+        <Button fx:id="c1" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <Button fx:id="c2" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Button fx:id="c3" onAction="#pressButton" prefHeight="100.0" prefWidth="100.0" GridPane.columnIndex="2" GridPane.rowIndex="2" />
 
-</AnchorPane>
+        <Text fx:id="actionGame" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+
+</GridPane>
+
