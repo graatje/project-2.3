@@ -23,6 +23,8 @@ public class Client extends Thread {
         this.clientSocket = clientSocket;
         this.com = com;
 
+        com.setClient(this);
+
         try {
             this.inputStream = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
             this.outputStream = new PrintWriter(this.clientSocket.getOutputStream());

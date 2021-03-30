@@ -3,6 +3,12 @@ package Connection;
 
 public class CommunicationHandler {
 
+    private Client client;
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
+
 
     /**
      * Handles the messages that were given by the server
@@ -28,7 +34,11 @@ public class CommunicationHandler {
                     String theirMove = getRestOfString(input, 2);
                     break;
                 case "CHALLENGE":
-                    handleChallengeServerMessage(split[3]);
+                    //There is new information regarding a challenge!
+                    handleChallengeServerMessage(getRestOfString(input, 3));
+                    break;
+                default:
+                    handleGameEndServerMessage(split[3]);
                     break;
             }
         } else {
@@ -41,9 +51,11 @@ public class CommunicationHandler {
      *
      * @param result The last part of a SVR CHALLENGE server command
      */
-    private void handleChallengeServerMessage(String result) {
-        switch (result) {
-            case "WIN":
+    private void handleGameEndServerMessage(String result) {
+        String sub = result.substring(0, 3);
+
+        switch (sub) {
+            case "WIN ":
                 //We won the game! Notify the board.
                 break;
             case "LOSS":
@@ -52,6 +64,22 @@ public class CommunicationHandler {
             case "DRAW":
                 //The game ended in a draw, notify the board.
                 break;
+        }
+    }
+
+    /**
+     * Handles CHALLENGE messages sent by the server
+     *
+     * @param message The message sent by the server
+     */
+    private void handleChallengeServerMessage(String message) {
+
+        String params = getInbetween(message, "{", "}");
+
+        if (message.startsWith("CANCELLED")) {
+            //Match is cancelled
+        } else {
+            //TODO: Do something with those parameters
         }
     }
 
@@ -70,4 +98,29 @@ public class CommunicationHandler {
 
         return result;
     }
+
+    /**
+     * Returns a substring of "full"
+     *
+     * @param full The full string of which to get the substring from
+     * @param start The first appearance of this char is where the substring will start
+     * @param end The last appearance of this char is where the substring will end
+     * @return
+     */
+    private String getInbetween(String full, String start, String end) {
+        int beginIndex = full.indexOf(start);
+        int endIndex = full.lastIndexOf(end);
+
+        String result = "";
+
+        if (beginIndex < 0 || endIndex < 0){
+            return full;
+        }
+
+        result = full.substring(beginIndex + 1, endIndex);
+
+        return result;
+    }
+
+
 }
