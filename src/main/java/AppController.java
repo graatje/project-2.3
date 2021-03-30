@@ -5,11 +5,11 @@ import javafx.scene.text.Text;
 public class AppController {
     @FXML private Text actiontarget;
 
-    @FXML protected void pressBKEButton(ActionEvent event) {
+    @FXML protected void pressBKEMenuButton(ActionEvent event) {
         actiontarget.setText("BKE pressed");
     }
 
-    @FXML protected void pressOthelloButton(ActionEvent event) {
+    @FXML protected void pressOthelloMenuButton(ActionEvent event) {
         actiontarget.setText("Othello pressed");
     }
 }

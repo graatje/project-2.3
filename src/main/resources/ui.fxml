@@ -10,10 +10,10 @@
 <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
 <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0">
-        <Button text="Boter-kaas-en-eieren" onAction="#pressBKEButton"/>
+        <Button text="Boter-kaas-en-eieren" onAction="#pressBKEMenuButton"/>
 </HBox>
 <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="1">
-        <Button text="Othello" onAction ="#pressOthelloButton"/>
+        <Button text="Othello" onAction ="#pressOthelloMenuButton"/>
 </HBox>
 
 <Text fx:id="actiontarget" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
