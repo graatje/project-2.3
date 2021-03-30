@@ -33,6 +33,8 @@ public class Client extends Thread {
 
 
     /**
+     * Send a command to the server
+     *
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
@@ -41,6 +43,9 @@ public class Client extends Thread {
     }
 
 
+    /**
+     * Reads server messages and sends them off to be handled
+     */
     @Override
     public void run() {
         running = true;

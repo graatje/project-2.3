@@ -4,6 +4,11 @@ package Connection;
 public class CommunicationHandler {
 
 
+    /**
+     * Handles the messages that were given by the server
+     *
+     * @param input The message given by the server
+     */
     public void handleServerInput(String input) {
         //TODO: Server gave a command, take action accordingly.
 
@@ -23,7 +28,7 @@ public class CommunicationHandler {
                     String theirMove = getRestOfString(input, 2);
                     break;
                 case "CHALLENGE":
-                    dissectChallengeCommand(split[3]);
+                    handleChallengeServerMessage(split[3]);
                     break;
             }
         } else {
@@ -32,9 +37,11 @@ public class CommunicationHandler {
     }
 
     /**
+     * Handles the server message for finished games
+     *
      * @param result The last part of a SVR CHALLENGE server command
      */
-    private void dissectChallengeCommand(String result) {
+    private void handleChallengeServerMessage(String result) {
         switch (result) {
             case "WIN":
                 //We won the game! Notify the board.

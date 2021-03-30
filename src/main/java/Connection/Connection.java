@@ -12,8 +12,9 @@ public class Connection {
 
 
     /**
+     * Sets up the connection and creates a client
      * @param serverIP Ip-Address of the server
-     * @param port Port on which the server is listening
+     * @param port     Port on which the server is listening
      */
     public Connection(String serverIP, int port) {
         this.port = port;
@@ -36,5 +37,7 @@ public class Connection {
         }
     }
 
-    public Client getClient() {return client;}
+    public Client getClient() {
+        return client;
+    }
 }
