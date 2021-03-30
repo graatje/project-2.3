@@ -1,48 +1,75 @@
 package Connection;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 public class Client extends Thread {
-    Socket clientSocket;
-    InputStream inputStream;
-    int availableData;
+    private Socket clientSocket;
+    private BufferedReader inputStream;
+    private int availableData;
+    private CommunicationHandler com;
+    private PrintWriter outputStream;
 
-    CommunicationHandler com;
+    private Boolean running = true;
+    private ArrayList<String> commandBuffer = new ArrayList<>();
 
 
+    /**
+     * @param clientSocket The clientsocket
+     * @param com          Communication handler which handles the communicationprotocol.
+     */
     public Client(Socket clientSocket, CommunicationHandler com) {
         this.clientSocket = clientSocket;
         this.com = com;
-    }
-
-    @Override
-    public void run() {
-        byte[] data = new byte[8192];
 
         try {
-            inputStream = new BufferedInputStream(this.clientSocket.getInputStream(), 65536);
-            String content = "";
-
-            while ((availableData = inputStream.read(data)) != -1) {
-                content = new String(data, 0, availableData);
-                com.readServerInput(content);
-            }
-            inputStream.close();
-
-            dispose();
-
+            this.inputStream = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
+            this.outputStream = new PrintWriter(this.clientSocket.getOutputStream());
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
+
+    /**
+     * @param command The command to send to the server
+     */
+    public void sendCommandToServer(String command) {
+        outputStream.print(command);
+        outputStream.flush();
+    }
+
+
+    @Override
+    public void run() {
+        running = true;
+
+        while (running) {
+            try {
+                String input = inputStream.readLine();
+
+                //There was input, handle it
+                if (!input.equals("")) {
+                    com.handleServerInput(input);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    /**
+     * Cleans up the client before closing down the thread.
+     */
     public void dispose() {
         try {
+            running = false;
+            inputStream.close();
+            outputStream.close();
+
             join();
-        } catch (InterruptedException ie) {
+        } catch (InterruptedException | IOException ie) {
             ie.printStackTrace();
         }
     }
