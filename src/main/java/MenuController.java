@@ -2,7 +2,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 
-public class AppController {
+public class MenuController {
     @FXML private Text actiontarget;
 
     @FXML protected void pressBKEMenuButton(ActionEvent event) {
