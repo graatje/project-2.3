@@ -4,10 +4,9 @@ import Connection.Connection;
 import Connection.GameManagerListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
-import framework.player.AIPlayer;
+import framework.factory.PlayerFactory;
 import framework.player.Player;
 import framework.player.ServerPlayer;
-import ttt.player.TTTRandomAIPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,9 +20,11 @@ public abstract class GameManager implements GameManagerListener {
 
     private final Connection connection;
     private final Board board;
+    private final PlayerFactory selfPlayerFactory;
+
     private final List<Player> players = new ArrayList<>();
 
-    protected HashMap<Integer,Match> activeMatches;
+    private HashMap<Integer,Match> activeMatches;
 
 
     /**
@@ -31,9 +32,11 @@ public abstract class GameManager implements GameManagerListener {
 	 * @param connection
 	 * @param boardFactory
 	 */
-    public GameManager(Connection connection, BoardFactory boardFactory) {
+    public GameManager(Connection connection, BoardFactory boardFactory, PlayerFactory selfPlayerFactory) {
         this.connection = connection;
         this.board = boardFactory.createBoard(this);
+        this.selfPlayerFactory = selfPlayerFactory;
+
         connection.getClient().getCommunicationHandler().setGameManagerListener(this);
     }
 
@@ -165,7 +168,9 @@ public abstract class GameManager implements GameManagerListener {
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
-        ServerPlayer opponent = new ServerPlayer(getBoard(), opponentName);
+        Player opponent = new ServerPlayer(getBoard(), opponentName);
+        Player self = selfPlayerFactory.createPlayer(board, "thisMachine");
+
     }
 
     @Override
