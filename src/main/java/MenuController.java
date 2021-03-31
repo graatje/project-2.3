@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -29,6 +30,6 @@ public class MenuController {
     }
 
     @FXML public void pressExitButton(ActionEvent event) {
-        actiontarget.setText("Exit pressed");
+        Platform.exit();
     }
 }
