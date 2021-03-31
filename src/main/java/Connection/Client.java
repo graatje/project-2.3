@@ -80,4 +80,8 @@ public class Client extends Thread {
             ie.printStackTrace();
         }
     }
+
+    public CommunicationHandler getCommunicationHandler() {
+        return com;
+    }
 }

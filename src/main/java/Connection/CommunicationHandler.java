@@ -5,6 +5,8 @@ public class CommunicationHandler {
 
     private Client client;
 
+    private CommunicationListener currentCommunicationListener;
+
     public void setClient(Client client) {
         this.client = client;
     }
@@ -25,9 +27,11 @@ public class CommunicationHandler {
             switch (split[2]) {
                 case "MATCH":
                     //A match was assigned to our client.
+                    currentCommunicationListener.startMatch();
                     break;
                 case "YOURTURN":
                     //It is our turn in the match, request a move.
+                    currentCommunicationListener.yourTurn();
                     break;
                 case "MOVE":
                     //The opponent has made a move
@@ -122,5 +126,7 @@ public class CommunicationHandler {
         return result;
     }
 
-
+    public void setCurrentCommunicationListener(CommunicationListener currentCommunicationListener) {
+        this.currentCommunicationListener = currentCommunicationListener;
+    }
 }
