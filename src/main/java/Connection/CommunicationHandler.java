@@ -26,7 +26,7 @@ public class CommunicationHandler {
      *
      * @param comListener The current BoardListener
      */
-    public void setBoardListener(GameManagerListener comListener) {
+    public void setGameManagerListener(GameManagerListener comListener) {
         this.gameManagerListener = comListener;
     }
 
@@ -48,7 +48,7 @@ public class CommunicationHandler {
                 case "MATCH":
                     //A match was assigned to our client.
                     Map<String,String> match = dissectMatchMessage(input);
-                    gameManagerListener.startMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
+                    gameManagerListener.startServerMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
                     break;
                 case "YOURTURN":
                     //It is our turn in the match, request a move.

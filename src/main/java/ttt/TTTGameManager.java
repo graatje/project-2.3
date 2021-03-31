@@ -2,6 +2,7 @@ package ttt;
 
 import Connection.Connection;
 import framework.GameManager;
+import framework.Match;
 import ttt.factory.TTTBoardFactory;
 
 public class TTTGameManager extends GameManager {
@@ -20,22 +21,8 @@ public class TTTGameManager extends GameManager {
     }
 
     @Override
-    public void startMatch(String opponent, String playerToBegin) {
-
-    }
-
-    @Override
-    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
-
-    }
-
-    @Override
-    public void matchCancelled(String challengeNR) {
-
-    }
-
-    @Override
     public void ourTurn() {
 
     }
 }
+

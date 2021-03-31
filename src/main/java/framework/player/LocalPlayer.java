@@ -10,7 +10,7 @@ public class LocalPlayer extends Player {
 	 * constructor, calls constructor of superclass.
 	 * @param board Board
 	 */
-    public LocalPlayer(Board board) {
-        super(board);
+    public LocalPlayer(Board board, String name) {
+        super(board, name);
     }
 }

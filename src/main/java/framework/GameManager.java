@@ -4,10 +4,14 @@ import Connection.Connection;
 import Connection.GameManagerListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
+import framework.player.AIPlayer;
 import framework.player.Player;
+import framework.player.ServerPlayer;
+import ttt.player.TTTRandomAIPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -18,7 +22,11 @@ public abstract class GameManager implements GameManagerListener {
     private final Connection connection;
     private final Board board;
     private final List<Player> players = new ArrayList<>();
-   	/**
+
+    protected HashMap<Integer,Match> activeMatches;
+
+
+    /**
 	 * constructor, initializes connection, board and players.
 	 * @param connection
 	 * @param boardFactory
@@ -26,6 +34,7 @@ public abstract class GameManager implements GameManagerListener {
     public GameManager(Connection connection, BoardFactory boardFactory) {
         this.connection = connection;
         this.board = boardFactory.createBoard(this);
+        connection.getClient().getCommunicationHandler().setGameManagerListener(this);
     }
 
     /**
@@ -145,5 +154,22 @@ public abstract class GameManager implements GameManagerListener {
         result.removeIf(other -> other == notThis);
 
         return result;
+    }
+
+    @Override
+    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
+        Match match = new Match(opponent, gametype, challengeNR);
+
+        activeMatches.put(match.getChallengeNR(), match);
+    }
+
+    @Override
+    public void startServerMatch(String opponentName, String playerToBegin) {
+        ServerPlayer opponent = new ServerPlayer(getBoard(), opponentName);
+    }
+
+    @Override
+    public void matchCancelled(String challengeNR) {
+        activeMatches.remove(Integer.parseInt(challengeNR));
     }
 }

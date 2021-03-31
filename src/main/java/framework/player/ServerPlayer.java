@@ -11,11 +11,10 @@ public class ServerPlayer extends Player implements ServerPlayerListener {
 	 * constructor, calls constructor of superclass.
 	 * @param board
 	 */
-    public ServerPlayer(Board board) {
-        super(board);
+    public ServerPlayer(Board board, String name) {
+        super(board, name);
 
-		board.getGameManager().getConnection().getClient()
-				.getCommunicationHandler().setServerPlayerListener(this);
+		board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerListener(this);
     }
 
 	@Override
