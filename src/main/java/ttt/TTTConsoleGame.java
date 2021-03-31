@@ -4,7 +4,7 @@ import Connection.Connection;
 import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
-import framework.board.piece.BoardPiece;
+import framework.board.BoardPiece;
 import framework.player.Player;
 import ttt.player.TTTRandomAIPlayer;
 

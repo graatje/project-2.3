@@ -1,7 +1,7 @@
 package ttt.player;
 
 import framework.board.Board;
-import framework.board.piece.BoardPiece;
+import framework.board.BoardPiece;
 import framework.player.AIPlayer;
 
 import java.util.List;
