@@ -6,7 +6,7 @@ import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.Player;
-import ttt.player.TTTConsoleLocalPlayer;
+import framework.player.ConsoleLocalPlayer;
 import ttt.player.TTTRandomAIPlayer;
 
 public class TTTConsoleGame implements BoardObserver {
@@ -25,7 +25,7 @@ public class TTTConsoleGame implements BoardObserver {
         board.registerObserver(this);
 
         gameManager.addPlayer(new TTTRandomAIPlayer(board));
-        gameManager.addPlayer(new TTTConsoleLocalPlayer(board));
+        gameManager.addPlayer(new ConsoleLocalPlayer(board));
 
         gameManager.start();
     }
