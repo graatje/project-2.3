@@ -102,7 +102,7 @@ public abstract class Board {
 
         // Update currentPlayerId because it's now the next player's turn.
         currentPlayerId++;
-        if(currentPlayerId >= gameManager.getPlayers().length) {
+        if(currentPlayerId >= gameManager.getPlayers().size()) {
             currentPlayerId = 0;
         }
 

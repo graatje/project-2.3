@@ -4,6 +4,11 @@ import Connection.Connection;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.player.Player;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * This class manages a game. Including connection, board and players.
  */
@@ -11,24 +16,39 @@ public abstract class GameManager {
 
     private final Connection connection;
     private final Board board;
-    private final Player[] players;
+    private final List<Player> players = new ArrayList<>();
    	/**
 	 * constructor, initializes connection, board and players.
 	 * @param Connection connection
 	 * @param BoardFactory boardFactory
 	 */
     public GameManager(Connection connection, BoardFactory boardFactory) {
- 
         this.connection = connection;
         this.board = boardFactory.createBoard(this);
-        this.players = new Player[2];
     }
+
+    /**
+     * An implementation-specific getter for the minimum number of players.
+     *
+     * @return The minimum number of players
+     */
+    public abstract int getMinPlayers();
+
+    /**
+     * An implementation-specific getter for the maximum number of players.
+     *
+     * @return The maximum number of players
+     */
+    public abstract int getMaxPlayers();
     
     /**
 	 * this method requests a playermove from the board if all players have been initialized.
 	 */
     public void start() {
-    	
+    	if(players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
+    	    throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
+        }
+
         for(Player player : players) {
             if(player == null) {
                 throw new IllegalStateException("Not all players have been initialized yet!");
@@ -59,11 +79,10 @@ public abstract class GameManager {
     
 	/**
 	 * Getter for the array players
-	 * @return Player[]
+	 * @return List<Player>
 	 */
-    public Player[] getPlayers() {
-
-        return players;
+    public List<Player> getPlayers() {
+        return Collections.unmodifiableList(players);
     }
 
     public Player getPlayer(int id) {
@@ -72,24 +91,32 @@ public abstract class GameManager {
     	 * @param int id, the index of the player in the arraylist players.
     	 * @return Player player.
     	 */
-        if(id < 0 || id >= players.length) {
+        if(id < 0 || id >= players.size()) {
             throw new IllegalArgumentException("Invalid player ID!");
         }
 
-        return players[id];
+        return players.get(id);
     }
 
 	/**
-	 * Setter for player of the array players.
-	 * @param int id, the id of the player
-	 * @param Player player, the player you want on the index of the given id.
+	 * Adds a player to the game.
+	 * @param Player player, the player you want to add.
+     * @return the ID of the added player.
 	 */
-    public void setPlayer(int id, Player player) {
+    public int addPlayer(Player player) {
+        players.add(player);
 
-        if(id < 0 || id >= players.length) {
-            throw new IllegalArgumentException("Invalid player ID!");
-        }
+        int id = players.size() - 1; // When adding an item on the end of the list, the index is n-1.
+        player.setID(id);
 
-        players[id] = player;
+        return id;
+    }
+
+    /**
+     * Removes a player from the game.
+     * @param player
+     */
+    public void removePlayer(Player player) {
+        players.remove(player);
     }
 }

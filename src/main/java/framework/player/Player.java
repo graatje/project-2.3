@@ -7,6 +7,7 @@ import framework.board.Board;
  */
 public abstract class Player {
     protected final Board board;
+    private int id;
     
     /**
      * constructor
@@ -22,5 +23,19 @@ public abstract class Player {
      */
     public Board getBoard() {
         return board;
+    }
+
+    /**
+     * @return The player ID
+     */
+    public int getID() {
+        return id;
+    }
+
+    /**
+     * @param id The new player ID
+     */
+    public void setID(int id) {
+        this.id = id;
     }
 }
