@@ -66,6 +66,8 @@ public class Client extends Thread {
         }
     }
 
+
+
     /**
      * Cleans up the client before closing down the thread.
      */
@@ -79,5 +81,9 @@ public class Client extends Thread {
         } catch (InterruptedException | IOException ie) {
             ie.printStackTrace();
         }
+    }
+
+    public CommunicationHandler getCommunicationHandler() {
+        return com;
     }
 }
