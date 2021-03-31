@@ -124,4 +124,25 @@ public abstract class GameManager {
             players.get(id).setID(id);
         }
     }
+
+    public Player getOtherPlayer(Player notThis) {
+        if(players.size() > 2) {
+            throw new IllegalStateException("There are more than 2 players, please use GameManager#getOtherPlayers instead!");
+        }
+
+        for(Player other : players) {
+            if(other != notThis) {
+                return other;
+            }
+        }
+
+        return null;
+    }
+
+    public List<Player> getOtherPlayers(Player notThis) {
+        List<Player> result = new ArrayList<>(this.players);
+        result.removeIf(other -> other == notThis);
+
+        return result;
+    }
 }
