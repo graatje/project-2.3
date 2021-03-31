@@ -6,5 +6,6 @@ public interface BoardListener
     void getMatchRequest(String opponent, String gametype, String challengeNR);
     void matchCancelled(String challengeNR);
     void ourTurn();
+    void endMatch(String result);
 
 }

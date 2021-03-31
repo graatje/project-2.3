@@ -150,18 +150,7 @@ public class CommunicationHandler {
      */
     private void handleGameEndServerMessage(String result) {
         String sub = result.substring(0, 3);
-
-        switch (sub) {
-            case "WIN ":
-                //We won the game! Notify the board.
-                break;
-            case "LOSS":
-                //We lost the game, notify the board.
-                break;
-            case "DRAW":
-                //The game ended in a draw, notify the board.
-                break;
-        }
+        boardListener.endMatch(sub);
     }
 
 

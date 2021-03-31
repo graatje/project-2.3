@@ -126,4 +126,22 @@ public class TTTBoard extends Board {
     public void ourTurn() {
 
     }
+
+    @Override
+    public void endMatch(String result)
+    {
+        result = result.strip();
+
+        switch(result){
+            case "WIN":
+//                forceWin(getGameManager().getThisPlayer());
+                break;
+            case "LOSS":
+//                forceWin(getGameManager().getOtherPlayer());
+                break;
+            case "DRAW":
+                forceWin(null);
+                break;
+        }
+    }
 }
