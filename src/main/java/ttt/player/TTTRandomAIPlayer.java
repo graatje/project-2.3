@@ -13,6 +13,10 @@ public class TTTRandomAIPlayer extends AIPlayer {
 
     @Override
     public void requestMove() {
+        try{
+            Thread.sleep(500);
+        }catch(InterruptedException ignored) {}
+
         List<BoardPiece> validMoves = board.getValidMoves();
         BoardPiece move = validMoves.get((int) (Math.random() * validMoves.size()));
 

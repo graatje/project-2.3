@@ -122,6 +122,10 @@ public abstract class Board {
         return result;
     }
 
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
     public Player getCurrentPlayer() {
         return gameManager.getPlayer(currentPlayerId);
     }
