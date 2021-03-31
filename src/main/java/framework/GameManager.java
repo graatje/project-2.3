@@ -1,6 +1,7 @@
 package framework;
 
 import Connection.Connection;
+import Connection.GameManagerListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.player.Player;
@@ -12,15 +13,15 @@ import java.util.List;
 /**
  * This class manages a game. Including connection, board and players.
  */
-public abstract class GameManager {
+public abstract class GameManager implements GameManagerListener {
 
     private final Connection connection;
     private final Board board;
     private final List<Player> players = new ArrayList<>();
    	/**
 	 * constructor, initializes connection, board and players.
-	 * @param Connection connection
-	 * @param BoardFactory boardFactory
+	 * @param connection
+	 * @param boardFactory
 	 */
     public GameManager(Connection connection, BoardFactory boardFactory) {
         this.connection = connection;
@@ -100,7 +101,7 @@ public abstract class GameManager {
 
 	/**
 	 * Adds a player to the game.
-	 * @param Player player, the player you want to add.
+	 * @param player, the player you want to add.
      * @return the ID of the added player.
 	 */
     public int addPlayer(Player player) {
