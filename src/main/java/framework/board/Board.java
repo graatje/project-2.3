@@ -1,13 +1,12 @@
 package framework.board;
 
-import Connection.BoardListener;
 import framework.GameManager;
 import framework.player.MoveRequestable;
 import framework.player.Player;
 
 import java.util.*;
 
-public abstract class Board  implements BoardListener {
+public abstract class Board {
     private final GameManager gameManager;
     protected final int width, height;
     protected final BoardPiece[] pieces;

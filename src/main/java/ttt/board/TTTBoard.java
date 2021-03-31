@@ -106,42 +106,4 @@ public class TTTBoard extends Board {
         // We made it through the whole for-loop while not returning null, so 'player' owns the whole line.
         return player;
     }
-
-    @Override
-    public void startMatch(String opponent, String playerToBegin) {
-
-    }
-
-    @Override
-    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
-
-    }
-
-    @Override
-    public void matchCancelled(String challengeNR) {
-
-    }
-
-    @Override
-    public void ourTurn() {
-
-    }
-
-    @Override
-    public void endMatch(String result)
-    {
-        result = result.strip();
-
-        switch(result){
-            case "WIN":
-//                forceWin(getGameManager().getThisPlayer());
-                break;
-            case "LOSS":
-//                forceWin(getGameManager().getOtherPlayer());
-                break;
-            case "DRAW":
-                forceWin(null);
-                break;
-        }
-    }
 }

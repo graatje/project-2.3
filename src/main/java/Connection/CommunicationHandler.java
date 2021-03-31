@@ -8,7 +8,7 @@ public class CommunicationHandler {
 
     private Client client;
 
-    private BoardListener boardListener;
+    private GameManagerListener gameManagerListener;
     private ServerPlayerListener serverPlayerListener;
 
 
@@ -26,8 +26,8 @@ public class CommunicationHandler {
      *
      * @param comListener The current BoardListener
      */
-    public void setBoardListener(BoardListener comListener) {
-        this.boardListener = comListener;
+    public void setBoardListener(GameManagerListener comListener) {
+        this.gameManagerListener = comListener;
     }
 
     public void setServerPlayerListener(ServerPlayerListener listener){
@@ -48,11 +48,11 @@ public class CommunicationHandler {
                 case "MATCH":
                     //A match was assigned to our client.
                     Map<String,String> match = dissectMatchMessage(input);
-                    boardListener.startMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
+                    gameManagerListener.startMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
                     break;
                 case "YOURTURN":
                     //It is our turn in the match, request a move.
-                    boardListener.ourTurn();
+                    gameManagerListener.ourTurn();
                     break;
                 case "MOVE":
                     //The opponent has made a move
@@ -61,11 +61,11 @@ public class CommunicationHandler {
                     break;
                 case "CHALLENGE":
                     if (input.contains("CANCELLED")){
-                        boardListener.matchCancelled(handleChallengeCancelled(input));
+                        gameManagerListener.matchCancelled(handleChallengeCancelled(input));
                     }
                     //There is new information regarding a challenge!
                     Map<String,String> challenge = dissectChallengeMessage(input);
-                    boardListener.getMatchRequest(challenge.get("OPPONENT"), challenge.get("GAMETYPE"), challenge.get("CHALLENGENUMBER"));
+                    gameManagerListener.getMatchRequest(challenge.get("OPPONENT"), challenge.get("GAMETYPE"), challenge.get("CHALLENGENUMBER"));
                     break;
                 default:
                     handleGameEndServerMessage(split[3]);
@@ -150,7 +150,7 @@ public class CommunicationHandler {
      */
     private void handleGameEndServerMessage(String result) {
         String sub = result.substring(0, 3);
-        boardListener.endMatch(sub);
+        serverPlayerListener.endMatch(sub);
     }
 
 
