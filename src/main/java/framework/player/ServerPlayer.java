@@ -14,7 +14,9 @@ public class ServerPlayer extends Player implements ServerPlayerListener {
     public ServerPlayer(Board board, String name) {
         super(board, name);
 
-		board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerListener(this);
+        if(board.getGameManager().hasConnection()) {
+			board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerListener(this);
+		}
     }
 
 	@Override

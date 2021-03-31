@@ -37,7 +37,9 @@ public abstract class GameManager implements GameManagerListener {
         this.board = boardFactory.createBoard(this);
         this.selfPlayerFactory = selfPlayerFactory;
 
-        connection.getClient().getCommunicationHandler().setGameManagerListener(this);
+        if(connection != null) {
+            connection.getClient().getCommunicationHandler().setGameManagerListener(this);
+        }
     }
 
     /**
@@ -77,8 +79,14 @@ public abstract class GameManager implements GameManagerListener {
 	 * @return Connection
 	 */
     public Connection getConnection() {
-    
         return connection;
+    }
+
+    /**
+     * @return Whether the GameManager possesses a connection object or not
+     */
+    public boolean hasConnection() {
+        return connection != null;
     }
     
 	/**
