@@ -1,8 +1,7 @@
 package Connection;
 
-import java.net.ServerSocket;
+import java.io.IOException;
 import java.net.Socket;
-import java.io.*;
 
 public class Connection {
     private Socket clientSocket;
@@ -13,6 +12,7 @@ public class Connection {
 
     /**
      * Sets up the connection and creates a client
+     *
      * @param serverIP Ip-Address of the server
      * @param port     Port on which the server is listening
      */

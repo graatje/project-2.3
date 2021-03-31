@@ -20,8 +20,8 @@ public class BoardPiece {
     /**
      * Constructs a BoardPiece with an owner.
      *
-     * @param x The X-coordinate of this piece.
-     * @param y The X-coordinate of this piece.
+     * @param x     The X-coordinate of this piece.
+     * @param y     The X-coordinate of this piece.
      * @param owner The current owner of this piece.
      */
     public BoardPiece(int x, int y, Player owner) {

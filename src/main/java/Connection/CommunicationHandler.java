@@ -30,7 +30,7 @@ public class CommunicationHandler {
         this.gameManagerListener = comListener;
     }
 
-    public void setServerPlayerListener(ServerPlayerListener listener){
+    public void setServerPlayerListener(ServerPlayerListener listener) {
         this.serverPlayerListener = listener;
     }
 
@@ -47,7 +47,7 @@ public class CommunicationHandler {
             switch (split[2]) {
                 case "MATCH":
                     //A match was assigned to our client.
-                    Map<String,String> match = dissectMatchMessage(input);
+                    Map<String, String> match = dissectMatchMessage(input);
                     gameManagerListener.startServerMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
                     break;
                 case "YOURTURN":
@@ -60,11 +60,11 @@ public class CommunicationHandler {
                     serverPlayerListener.opponentTurn(dissectMoveMessage(theirMove));
                     break;
                 case "CHALLENGE":
-                    if (input.contains("CANCELLED")){
+                    if (input.contains("CANCELLED")) {
                         gameManagerListener.matchCancelled(handleChallengeCancelled(input));
                     }
                     //There is new information regarding a challenge!
-                    Map<String,String> challenge = dissectChallengeMessage(input);
+                    Map<String, String> challenge = dissectChallengeMessage(input);
                     gameManagerListener.getMatchRequest(challenge.get("OPPONENT"), challenge.get("GAMETYPE"), challenge.get("CHALLENGENUMBER"));
                     break;
                 default:
@@ -83,7 +83,7 @@ public class CommunicationHandler {
      * @param message The message given by the server
      * @return The move the opponent made
      */
-    private String dissectMoveMessage(String message){
+    private String dissectMoveMessage(String message) {
         String result = "";
 
         message = getInbetween(message, "MOVE:", "}");
@@ -99,8 +99,8 @@ public class CommunicationHandler {
      * @param serverMessage The message sent by the server
      * @return A map containing "OPPONENT", "GAMETYPE" and "CHALLENGENUMBER" with corresponding values
      */
-    private Map<String,String> dissectChallengeMessage(String serverMessage){
-        Map<String,String> result = new HashMap<String, String>();
+    private Map<String, String> dissectChallengeMessage(String serverMessage) {
+        Map<String, String> result = new HashMap<String, String>();
 
         int offset = 0;
 
@@ -124,7 +124,7 @@ public class CommunicationHandler {
      * @param serverMessage The message sent by the server
      * @return The challenge number
      */
-    private String handleChallengeCancelled(String serverMessage){
+    private String handleChallengeCancelled(String serverMessage) {
         return getInbetween(serverMessage, "CHALLENGENUMBER: ", "}");
     }
 
@@ -134,8 +134,8 @@ public class CommunicationHandler {
      * @param serverMessage The message sent by the server
      * @return A Map containing "OPPONENT" and "PLAYERTOMOVE" keys with corresponding values
      */
-    private Map<String, String> dissectMatchMessage(String serverMessage){
-        Map<String,String> result = new HashMap<String,String>();
+    private Map<String, String> dissectMatchMessage(String serverMessage) {
+        Map<String, String> result = new HashMap<String, String>();
 
         result.put("OPPONENT", getInbetween(serverMessage, "OPPONENT: ", "}"));
         result.put("PLAYERTOMOVE", getInbetween(serverMessage, "PLAYERTOMOVE: ", ","));
@@ -198,14 +198,14 @@ public class CommunicationHandler {
      *
      * @param playerName Our player name
      */
-    public void sendLoginMessage(String playerName){
+    public void sendLoginMessage(String playerName) {
         client.sendCommandToServer("login " + playerName + "\n");
     }
 
     /**
      * Send a logout message to the server
      */
-    public void sendLogoutMessage(){
+    public void sendLogoutMessage() {
         client.sendCommandToServer("logout \n");
     }
 
@@ -214,7 +214,7 @@ public class CommunicationHandler {
      *
      * @param gameType The type of game to subscribe for
      */
-    public void sendSubscribeMessage(String gameType){
+    public void sendSubscribeMessage(String gameType) {
         gameType = gameType.toUpperCase(Locale.ROOT);
 
         client.sendCommandToServer("subscribe " + gameType + "\n");
@@ -225,7 +225,7 @@ public class CommunicationHandler {
      *
      * @param move Our chose move
      */
-    public void sendMoveMessage(String move){
+    public void sendMoveMessage(String move) {
         client.sendCommandToServer("move " + move + "\n");
     }
 
@@ -234,17 +234,16 @@ public class CommunicationHandler {
      *
      * @param challengeNumber The challenge number to accept
      */
-    public void sendAcceptChallengeMessage(String challengeNumber){
+    public void sendAcceptChallengeMessage(String challengeNumber) {
         client.sendCommandToServer("challenge accept " + challengeNumber + "\n");
     }
 
     /**
      * Let the server know we forfeited the match
      */
-    public void sendForfeitMessage(){
+    public void sendForfeitMessage() {
         client.sendCommandToServer("forfeit \n");
     }
-
 
 
 }

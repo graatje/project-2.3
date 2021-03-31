@@ -30,7 +30,7 @@ public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
         int y = -1;
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        while(x == -1 || y == -1) {
+        while (x == -1 || y == -1) {
             String line;
             try {
                 line = reader.readLine();
@@ -50,12 +50,12 @@ public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
                 continue;
             }
 
-            if(_x < 0 || _x >= board.getWidth() || _y < 0 || _y >= board.getHeight()) {
+            if (_x < 0 || _x >= board.getWidth() || _y < 0 || _y >= board.getHeight()) {
                 System.out.println("Coordinates out of bounds! Please make sure the coordinates are within 1,1 and " + board.getWidth() + "," + board.getHeight());
                 continue;
             }
 
-            if(!validMoves.contains(board.getBoardPiece(_x, _y))) {
+            if (!validMoves.contains(board.getBoardPiece(_x, _y))) {
                 System.out.println("That is an invalid move! An example of a valid move is " + exampleMoveStr);
                 continue;
             }

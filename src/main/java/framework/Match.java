@@ -1,11 +1,5 @@
 package framework;
 
-import framework.board.Board;
-import framework.player.LocalPlayer;
-import framework.player.Player;
-import framework.player.ServerPlayer;
-import ttt.board.TTTBoard;
-
 public class Match {
     private String opponentName;
 
@@ -16,13 +10,12 @@ public class Match {
         return challengeNR;
     }
 
-    public Match(String opponentName, String gameType, String challengeNR)
-    {
+    public Match(String opponentName, String gameType, String challengeNR) {
         this.opponentName = opponentName;
 
-        try{
+        try {
             this.challengeNR = Integer.parseInt(challengeNR);
-        }catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             e.printStackTrace();
         }
     }

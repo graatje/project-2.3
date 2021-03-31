@@ -5,8 +5,8 @@ import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.player.Player;
 import framework.player.ConsoleLocalPlayer;
+import framework.player.Player;
 import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
@@ -21,9 +21,9 @@ public class TTTConsoleGame implements BoardObserver {
     public TTTConsoleGame() {
 
         Connection connection;
-        try{
+        try {
             connection = new Connection("localhost", 7789);
-        }catch(IOException e) {
+        } catch (IOException e) {
             System.out.println("Could not connect to server, continuing without a connection :(");
             System.out.println(e.getMessage());
 
@@ -45,15 +45,15 @@ public class TTTConsoleGame implements BoardObserver {
     public void boardUpdated() {
         System.out.println();
         System.out.println("Current board:");
-        for(int y = 0; y < board.getHeight(); y++) {
-            for(int x = 0; x < board.getWidth(); x++) {
+        for (int y = 0; y < board.getHeight(); y++) {
+            for (int x = 0; x < board.getWidth(); x++) {
                 BoardPiece piece = board.getBoardPiece(x, y);
                 System.out.print(getPlayerChar(piece.getOwner()));
             }
             System.out.println();
         }
 
-        if(board.isGameOver()) {
+        if (board.isGameOver()) {
             System.out.println();
             System.out.println("---");
             System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
@@ -61,7 +61,7 @@ public class TTTConsoleGame implements BoardObserver {
     }
 
     private char getPlayerChar(Player player) {
-        if(player != null) {
+        if (player != null) {
             if (player.getID() == 0) {
                 return 'X';
             } else if (player.getID() == 1) {
