@@ -16,16 +16,12 @@ public class MenuController {
     public void pressTTTMenuButton(ActionEvent event) throws IOException {
         Parent root = FXMLLoader.load(getClass().getResource("TTTMenu.fxml"));
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root));
+        stage.setScene(new Scene(root, 750,750));
         stage.show();
     }
 
     @FXML protected void pressOthelloMenuButton(ActionEvent event) {
         actiontarget.setText("Othello pressed");
-    }
-
-    @FXML public void pressCreditsButton(ActionEvent event) {
-        actiontarget.setText("Credits pressed");
     }
 
     @FXML public void pressExitButton(ActionEvent event) {
