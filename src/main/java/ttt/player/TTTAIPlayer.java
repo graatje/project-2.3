@@ -8,8 +8,8 @@ import framework.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TTTRandomAIPlayer extends AIPlayer {
-    public TTTRandomAIPlayer(Board board, String name) {
+public class TTTAIPlayer extends AIPlayer {
+    public TTTAIPlayer(Board board, String name) {
         super(board, name);
     }
 

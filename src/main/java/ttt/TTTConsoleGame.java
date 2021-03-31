@@ -7,7 +7,7 @@ import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.Player;
 import framework.player.ConsoleLocalPlayer;
-import ttt.player.TTTRandomAIPlayer;
+import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
 
@@ -35,7 +35,7 @@ public class TTTConsoleGame implements BoardObserver {
 
         board.registerObserver(this);
 
-        gameManager.addPlayer(new TTTRandomAIPlayer(board, "test-ai"));
+        gameManager.addPlayer(new TTTAIPlayer(board, "test-ai"));
         gameManager.addPlayer(new ConsoleLocalPlayer(board, "test-local"));
 
         gameManager.start(gameManager.getPlayer(1));
