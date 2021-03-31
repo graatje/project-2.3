@@ -1,5 +1,6 @@
 package ttt;
 
+import Connection.Connection;
 import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
@@ -16,7 +17,9 @@ public class TTTConsoleGame implements BoardObserver {
     private final Player playerCross, playerCircle;
 
     public TTTConsoleGame() {
-        GameManager gameManager = new TTTGameManager();
+        Connection connection = new Connection("localhost", 7789);
+
+        GameManager gameManager = new TTTGameManager(connection);
         board = gameManager.getBoard();
 
         board.registerObserver(this);

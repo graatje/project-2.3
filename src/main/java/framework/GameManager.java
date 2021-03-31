@@ -1,14 +1,17 @@
 package framework;
 
+import Connection.Connection;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.player.Player;
 
 public abstract class GameManager {
+    private final Connection connection;
     private final Board board;
     private final Player[] players;
 
-    public GameManager(BoardFactory boardFactory) {
+    public GameManager(Connection connection, BoardFactory boardFactory) {
+        this.connection = connection;
         this.board = boardFactory.createBoard(this);
         this.players = new Player[2];
     }
@@ -22,6 +25,10 @@ public abstract class GameManager {
 
         // Request a move from the first player
         board.requestPlayerMove();
+    }
+
+    public Connection getConnection() {
+        return connection;
     }
 
     public Board getBoard() {
