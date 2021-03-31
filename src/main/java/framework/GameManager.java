@@ -59,7 +59,7 @@ public abstract class GameManager implements GameManagerListener {
     /**
 	 * this method requests a playermove from the board if all players have been initialized.
 	 */
-    public void start() {
+    public void start(Player startingPlayer) {
     	if(players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
     	    throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
@@ -69,6 +69,8 @@ public abstract class GameManager implements GameManagerListener {
                 throw new IllegalStateException("Not all players have been initialized yet!");
             }
         }
+
+        board.setCurrentPlayerId(startingPlayer.getID());
 
         // Request a move from the first player
         board.requestPlayerMove();
@@ -179,6 +181,14 @@ public abstract class GameManager implements GameManagerListener {
         Player opponent = new ServerPlayer(getBoard(), opponentName);
         Player self = selfPlayerFactory.createPlayer(board, "thisMachine");
 
+        addPlayer(opponent);
+        addPlayer(self);
+
+        if (playerToBegin.equals(opponentName)){
+            start(opponent);
+        }else{
+            start(self);
+        }
     }
 
     @Override

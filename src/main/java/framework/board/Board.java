@@ -241,4 +241,6 @@ public abstract class Board {
     private void notifyObservers() {
         observers.forEach(BoardObserver::boardUpdated);
     }
+
+    public void setCurrentPlayerId(int startingPlayer){currentPlayerId = startingPlayer; }
 }
