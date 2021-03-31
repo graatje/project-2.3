@@ -118,5 +118,10 @@ public abstract class GameManager {
      */
     public void removePlayer(Player player) {
         players.remove(player);
+
+        // Recalculate ID's of all other players
+        for (int id = 0; id < players.size(); id++) {
+            players.get(id).setID(id);
+        }
     }
 }
