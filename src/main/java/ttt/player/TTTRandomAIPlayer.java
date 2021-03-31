@@ -119,7 +119,9 @@ public class TTTRandomAIPlayer extends AIPlayer {
         int[][][] somelist = {{{xpoint - 1, ypoint}, {xpoint + 1, ypoint}}, {{xpoint - 1, ypoint - 1}, {xpoint + 1, ypoint - 1}}, {{xpoint, ypoint - 1}, {xpoint, ypoint + 1}}};
         for (int[][] cross : somelist) {
             try {
-                if (board.getBoardPiece(cross[0][0], cross[0][1]).getOwner().getID() == playerid && board.getBoardPiece(cross[1][0], cross[1][1]).getOwner().getID() == playerid) {
+                BoardPiece piece_00_01 = board.getBoardPiece(cross[0][0], cross[0][1]);
+                BoardPiece piece_10_11 = board.getBoardPiece(cross[1][0], cross[1][1]);
+                if ((piece_00_01.hasOwner() && piece_00_01.getOwner().getID() == playerid) && (piece_10_11.hasOwner() && piece_10_11.getOwner().getID() == playerid)) {
                     return true;
                 }
             } catch (IndexOutOfBoundsException e) {
@@ -133,8 +135,9 @@ public class TTTRandomAIPlayer extends AIPlayer {
         List<BoardPiece> boardpiecelist = new ArrayList<>();
         for (int x = 0; x < board.getWidth(); x++) {
             for (int y = 0; y < board.getHeight(); y++) {
-                if (board.getBoardPiece(x, y).hasOwner() && board.getBoardPiece(x, y).getOwner().getID() == playerid) {
-                    boardpiecelist.add(board.getBoardPiece(x, y));
+                BoardPiece piece = board.getBoardPiece(x, y);
+                if (piece.hasOwner() && piece.getOwner().getID() == playerid) {
+                    boardpiecelist.add(piece);
                 }
             }
         }
