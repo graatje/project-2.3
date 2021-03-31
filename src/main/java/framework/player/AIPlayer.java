@@ -10,8 +10,7 @@ public abstract class AIPlayer extends Player implements MoveRequestable {
 	 * 
 	 * @param board, the playing board, calls constructor of superclass Player
 	 */
-    public AIPlayer(Board board) {
-
-        super(board);
+    public AIPlayer(Board board, String name) {
+        super(board, name);
     }
 }

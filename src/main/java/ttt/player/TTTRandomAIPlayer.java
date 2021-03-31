@@ -7,8 +7,8 @@ import framework.player.AIPlayer;
 import java.util.List;
 
 public class TTTRandomAIPlayer extends AIPlayer {
-    public TTTRandomAIPlayer(Board board) {
-        super(board);
+    public TTTRandomAIPlayer(Board board, String name) {
+        super(board, name);
     }
 
     @Override

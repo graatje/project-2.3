@@ -24,8 +24,8 @@ public class TTTConsoleGame implements BoardObserver {
 
         board.registerObserver(this);
 
-        gameManager.addPlayer(new TTTRandomAIPlayer(board));
-        gameManager.addPlayer(new ConsoleLocalPlayer(board));
+        gameManager.addPlayer(new TTTRandomAIPlayer(board, "test-ai"));
+        gameManager.addPlayer(new ConsoleLocalPlayer(board, "test-local"));
 
         gameManager.start();
     }
