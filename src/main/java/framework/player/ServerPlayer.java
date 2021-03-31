@@ -1,18 +1,16 @@
 package framework.player;
 
-import Connection.ServerPlayerListener;
 import framework.board.Board;
 
-public class ServerPlayer extends Player implements ServerPlayerListener {
+/**
+ * This class is a subclass of Player and stores a ServerPlayer.
+ */
+public class ServerPlayer extends Player {
+	/**
+	 * constructor, calls constructor of superclass.
+	 * @param Board board
+	 */
     public ServerPlayer(Board board) {
         super(board);
-
-        board.getGameManager().getConnection().getClient()
-                .getCommunicationHandler().setServerPlayerListener(this);
-    }
-
-    @Override
-    public void opponentTurn(String move) {
-
     }
 }

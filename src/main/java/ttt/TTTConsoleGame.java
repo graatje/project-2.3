@@ -4,8 +4,9 @@ import Connection.Connection;
 import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
-import framework.board.piece.BoardPiece;
+import framework.board.BoardPiece;
 import framework.player.Player;
+import ttt.player.TTTConsoleLocalPlayer;
 import ttt.player.TTTRandomAIPlayer;
 
 public class TTTConsoleGame implements BoardObserver {
@@ -14,7 +15,6 @@ public class TTTConsoleGame implements BoardObserver {
     }
 
     private final Board board;
-    private final Player playerCross, playerCircle;
 
     public TTTConsoleGame() {
         Connection connection = new Connection("localhost", 7789);
@@ -24,8 +24,8 @@ public class TTTConsoleGame implements BoardObserver {
 
         board.registerObserver(this);
 
-        gameManager.setPlayer(0, (playerCross  = new TTTRandomAIPlayer(board)));
-        gameManager.setPlayer(1, (playerCircle = new TTTRandomAIPlayer(board)));
+        gameManager.addPlayer(new TTTRandomAIPlayer(board));
+        gameManager.addPlayer(new TTTConsoleLocalPlayer(board));
 
         gameManager.start();
     }
@@ -50,12 +50,14 @@ public class TTTConsoleGame implements BoardObserver {
     }
 
     private char getPlayerChar(Player player) {
-        if(player == playerCross) {
-            return 'X';
-        }else if(player == playerCircle) {
-            return 'O';
-        }else{
-            return ' ';
+        if(player != null) {
+            if (player.getID() == 0) {
+                return 'X';
+            } else if (player.getID() == 1) {
+                return 'O';
+            }
         }
+
+        return ' ';
     }
 }
