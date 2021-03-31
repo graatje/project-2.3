@@ -8,16 +8,31 @@ public class ServerPlayer extends Player implements CommunicationListener {
         super(board);
 
         board.getGameManager().getConnection().getClient()
-                .getCommunicationHandler().setCurrentCommunicationListener(this);
+                .getCommunicationHandler().setComListener(this);
     }
 
     @Override
-    public void startMatch() {
+    public void startMatch(String opponent, String playerToBegin) {
         //
     }
 
     @Override
-    public void yourTurn() {
+    public void ourTurn() {
         board.requestPlayerMove();
+    }
+
+    @Override
+    public void opponentTurn(String move) {
+
+    }
+
+    @Override
+    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
+
+    }
+
+    @Override
+    public void matchCancelled(String challengeNR) {
+
     }
 }

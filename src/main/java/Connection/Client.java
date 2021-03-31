@@ -66,6 +66,8 @@ public class Client extends Thread {
         }
     }
 
+
+
     /**
      * Cleans up the client before closing down the thread.
      */
