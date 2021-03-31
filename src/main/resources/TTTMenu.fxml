@@ -8,16 +8,15 @@
 <GridPane fx:controller="TTTMenuController" xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1">
+        <TextField id="Gebruikersnaam" fx:id="username"/>
+        <Button text="OK" onAction ="#pressOKUsername"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <Button text="Speel tegen de Computer" onAction="#pressPlayAgainstComputer"/>
     </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="1">
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="4">
         <Button text="Speel Online" onAction ="#pressPlayOnline"/>
     </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="2">
-        <Button text="Instellingen" onAction ="#pressSettings"/>
-    </HBox>
-
-    <Text fx:id="doSomething" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
 
 </GridPane>

@@ -15,7 +15,7 @@ public class App extends Application {
         primaryStage.setTitle("Bordspellen");
 
         // Run
-        primaryStage.setScene(new Scene(root, 500,600));
+        primaryStage.setScene(new Scene(root, 750,750));
         primaryStage.show();
     }
 }
