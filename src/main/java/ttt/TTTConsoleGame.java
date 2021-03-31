@@ -9,6 +9,8 @@ import framework.player.Player;
 import framework.player.ConsoleLocalPlayer;
 import ttt.player.TTTRandomAIPlayer;
 
+import java.io.IOException;
+
 public class TTTConsoleGame implements BoardObserver {
     public static void main(String[] args) {
         new TTTConsoleGame();
@@ -17,7 +19,16 @@ public class TTTConsoleGame implements BoardObserver {
     private final Board board;
 
     public TTTConsoleGame() {
-        Connection connection = new Connection("localhost", 7789);
+
+        Connection connection;
+        try{
+            connection = new Connection("localhost", 7789);
+        }catch(IOException e) {
+            System.out.println("Could not connect to server, continuing without a connection :(");
+            System.out.println(e.getMessage());
+
+            connection = null;
+        }
 
         GameManager gameManager = new TTTGameManager(connection);
         board = gameManager.getBoard();
