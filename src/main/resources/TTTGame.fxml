@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?import javafx.scene.layout.Pane?>
-<Pane fx:id="TTTBoard" prefHeight="480.0" prefWidth="640.0" fx:controller="TTTGameController" xmlns:fx="http://javafx.com/fxml">
-</Pane>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+<VBox fx:controller="TTTGameController" xmlns:fx="http://javafx.com/fxml" alignment="center">
+    <HBox alignment="CENTER">
+        <Pane fx:id="TTTBoard" prefHeight="500.0" prefWidth="500.0"/>
+    </HBox>
+</VBox>
