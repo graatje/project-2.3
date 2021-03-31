@@ -1,17 +1,21 @@
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.ResourceBundle;
 
-public class TTTGameController{
+public class TTTGameController implements Initializable {
     @FXML
     private Pane TTTBoard;
 
-    public TTTGameController() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
         int gridSize = 4;
         int boardWidth = 640; // later: grootte dynamisch opvragen?
         int boardHeight = 480;
