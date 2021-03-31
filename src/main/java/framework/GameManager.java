@@ -70,7 +70,7 @@ public abstract class GameManager implements GameManagerListener {
             }
         }
 
-        board.setCurrentPlayerId(startingPlayer.getID());
+        board.setCurrentPlayerID(startingPlayer.getID());
 
         // Request a move from the first player
         board.requestPlayerMove();

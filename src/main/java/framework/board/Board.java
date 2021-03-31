@@ -201,6 +201,12 @@ public abstract class Board {
         return gameManager.getPlayer(currentPlayerId);
     }
 
+    public int getCurrentPlayerID() {
+        return currentPlayerId;
+    }
+
+    public void setCurrentPlayerID(int startingPlayer){currentPlayerId = startingPlayer; }
+
     /**
      * @return Whether the game is over or not.
      */
@@ -241,6 +247,4 @@ public abstract class Board {
     private void notifyObservers() {
         observers.forEach(BoardObserver::boardUpdated);
     }
-
-    public void setCurrentPlayerId(int startingPlayer){currentPlayerId = startingPlayer; }
 }
