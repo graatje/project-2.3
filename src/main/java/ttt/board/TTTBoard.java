@@ -2,7 +2,7 @@ package ttt.board;
 
 import framework.GameManager;
 import framework.board.Board;
-import framework.board.piece.BoardPiece;
+import framework.board.BoardPiece;
 import framework.player.Player;
 
 import java.util.ArrayList;
