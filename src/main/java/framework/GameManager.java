@@ -62,7 +62,7 @@ public abstract class GameManager {
         board.setCurrentPlayerID(startingPlayer.getID());
 
         // Request a move from the first player
-        board.requestPlayerMove();
+//        board.requestPlayerMove();
     }
 
     /**
