@@ -1,5 +1,7 @@
 package Connection;
 
+import org.json.JSONException;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -61,7 +63,11 @@ public class Client extends Thread {
 
                 //There was input, handle it
                 if (!input.equals("")) {
-                    com.handleServerInput(input);
+                    try{
+                        com.handleServerInput(input);
+                    }catch (JSONException e){
+                        //TODO: handle this shiz
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
