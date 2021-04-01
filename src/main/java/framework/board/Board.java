@@ -86,12 +86,13 @@ public abstract class Board {
     }
 
     /**
-     * This method attempts to execute a move from a given player.
+     * Executes a RAW MOVE on the board. This does NOT finalize the raw turn. The caller of this method
+     * should finalize their own turn by executing {@link Board#finalizeRawMove()}.
      *
      * @param player The player which executed the move.
      * @param piece  The piece the player wants to affect.
      */
-    public void makeMove(Player player, BoardPiece piece) {
+    public void makeRawMove(Player player, BoardPiece piece) {
         if (getCurrentPlayer() != player) {
             throw new IllegalArgumentException("It's not that player's turn yet!");
         }
@@ -103,6 +104,24 @@ public abstract class Board {
         // All good, now actually execute the move on the board!
         executeMove(player, piece);
 
+        // Make sure all observers know of this state-change!
+        notifyObservers();
+    }
+
+    /**
+     * See {@link Board#makeRawMove(Player, BoardPiece)}
+     */
+    public void makeRawMove(Player player, int x, int y) {
+        makeRawMove(player, getBoardPiece(x, y));
+    }
+
+    /**
+     * Finalizes the current raw move by:
+     * 1. Updating the current player
+     * 2. Calculating whether the game is over or not
+     * 3. Requesting a move from the new current player if the game is not over
+     */
+    public void finalizeRawMove() {
         // Update currentPlayerId because it's now the next player's turn.
         currentPlayerId++;
         if (currentPlayerId >= gameManager.getPlayers().size()) {
@@ -127,7 +146,24 @@ public abstract class Board {
     }
 
     /**
-     * Equivalent to <code>board.makeMove(player, board.getBoardPiece(x, y))</code>
+     * This method attempts to execute a move from a given player, and immediately finalizes the move.
+     * See {@link Board#makeRawMove(Player, BoardPiece)}
+     * See {@link Board#finalizeRawMove()}
+     *
+     * @param player The player which executed the move.
+     * @param piece  The piece the player wants to affect.
+     */
+    public void makeMove(Player player, BoardPiece piece) {
+        // Make the raw turn, and finalize it immediately!
+        makeRawMove(player, piece);
+        finalizeRawMove();
+
+        // Make sure the new 'current player' is the next player
+        finalizeRawMove();
+    }
+
+    /**
+     * See {@link Board#makeMove(Player, BoardPiece)}
      */
     public void makeMove(Player player, int x, int y) {
         makeMove(player, getBoardPiece(x, y));
