@@ -69,11 +69,10 @@ public class TTTAIPlayer extends AIPlayer {
         int[] bestMove = new int[]{-1, -1};
         int bestValue = Integer.MIN_VALUE;
 
-        Player opponent = board.getGameManager().getOtherPlayer(this);
         for (int row = 0; row < board.getWidth(); row++) {
             for (int col = 0; col < board.getWidth(); col++) {
                 if (!board.getBoardPiece(row, col).hasOwner()) {
-                    board.getBoardPiece(row, col).setOwner(opponent);
+                    board.getBoardPiece(row, col).setOwner(this);
                     int moveValue = miniMax(board, 6, false);
                     board.getBoardPiece(row, col).clearOwner();
                     if (moveValue > bestValue) {
