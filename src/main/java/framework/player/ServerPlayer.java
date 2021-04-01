@@ -1,12 +1,12 @@
 package framework.player;
 
-import Connection.ServerPlayerListener;
+import Connection.ServerPlayerCommunicationListener;
 import framework.board.Board;
 
 /**
  * This class is a subclass of Player and stores a ServerPlayer.
  */
-public class ServerPlayer extends Player implements ServerPlayerListener {
+public class ServerPlayer extends Player implements ServerPlayerCommunicationListener {
     /**
      * constructor, calls constructor of superclass.
      *
@@ -16,7 +16,7 @@ public class ServerPlayer extends Player implements ServerPlayerListener {
         super(board, name);
 
         if (board.getGameManager().hasConnection()) {
-            board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerListener(this);
+            board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(this);
         }
     }
 

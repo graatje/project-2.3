@@ -1,7 +1,7 @@
 package framework;
 
 import Connection.Connection;
-import Connection.GameManagerListener;
+import Connection.GameManagerCommunicationListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.factory.PlayerFactory;
@@ -16,7 +16,7 @@ import java.util.List;
 /**
  * This class manages a game. Including connection, board and players.
  */
-public abstract class GameManager implements GameManagerListener {
+public abstract class GameManager implements GameManagerCommunicationListener {
 
     private final Connection connection;
     private final Board board;
@@ -39,7 +39,7 @@ public abstract class GameManager implements GameManagerListener {
         this.selfPlayerFactory = selfPlayerFactory;
 
         if (connection != null) {
-            connection.getClient().getCommunicationHandler().setGameManagerListener(this);
+            connection.getClient().getCommunicationHandler().setGameManagerCommunicationListener(this);
         }
     }
 
