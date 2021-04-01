@@ -31,7 +31,7 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
 
         switch (result) {
             case "WIN":
-                board.forceWin(board.getGameManager().getPlayer(getID()));
+                board.forceWin(this);
                 break;
             case "LOSS":
                 board.forceWin(board.getGameManager().getOtherPlayer(this));
