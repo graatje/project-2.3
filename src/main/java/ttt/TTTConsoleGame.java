@@ -19,7 +19,6 @@ public class TTTConsoleGame implements BoardObserver {
     private final Board board;
 
     public TTTConsoleGame() {
-
         Connection connection;
         try {
             connection = new Connection("localhost", 7789);
@@ -43,6 +42,10 @@ public class TTTConsoleGame implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
+    }
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) {
         System.out.println();
         System.out.println("Current board:");
         for (int y = 0; y < board.getHeight(); y++) {
@@ -52,20 +55,13 @@ public class TTTConsoleGame implements BoardObserver {
             }
             System.out.println();
         }
-
-        if (board.isGameOver()) {
-            System.out.println();
-            System.out.println("---");
-            System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
-        }
-    }
-
-    @Override
-    public void onPlayerMoveFinalized(Player previous, Player current) {
     }
 
     @Override
     public void onPlayerWon(Player who) {
+        System.out.println();
+        System.out.println("---");
+        System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
     }
 
     private char getPlayerChar(Player player) {
