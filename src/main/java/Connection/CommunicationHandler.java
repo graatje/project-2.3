@@ -47,33 +47,38 @@ public class CommunicationHandler {
         JSONObject json = extractJson(input);
 
         String[] split = input.split(" ");
-        if (split[1].equals("GAME")) {
-            switch (split[2]) {
-                case "MATCH":
-                    //A match was assigned to our client.
-                    gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
-                    break;
-                case "YOURTURN":
-                    //It is our turn in the match, so finalize the turn of the ServerPlayer
-                    serverPlayerCommunicationListener.finalizeTurn();
-                    break;
-                case "MOVE":
-                    //The opponent has made a move
-                    serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
-                    break;
-                case "CHALLENGE":
-                    if (input.contains("CANCELLED")) {
-                        gameManagerCommunicationListener.matchCancelled(json.getString("CHALLENGENUMBER"));
-                    }
-                    //There is new information regarding a challenge!
-                    gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
-                    break;
-                default:
-                    handleGameEndServerMessage(split[3]);
-                    break;
-            }
-        } else {
-            System.out.println(input);
+
+        switch (split[1].toUpperCase(Locale.ROOT)) {
+            case "GAME":
+                switch (split[2].toUpperCase(Locale.ROOT)) {
+                    case "MATCH":
+                        //A match was assigned to our client.
+                        gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
+                        break;
+                    case "YOURTURN":
+                        //It is our turn in the match, so finalize the turn of the ServerPlayer
+                        serverPlayerCommunicationListener.finalizeTurn();
+                        break;
+                    case "MOVE":
+                        //The opponent has made a move
+                        serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
+                        break;
+                    case "CHALLENGE":
+                        if (input.contains("CANCELLED")) {
+                            gameManagerCommunicationListener.matchCancelled(json.getString("CHALLENGENUMBER"));
+                        }
+                        //There is new information regarding a challenge!
+                        gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
+                        break;
+                    default:
+                        handleGameEndServerMessage(split[3]);
+                        break;
+                }
+                break;
+
+            case "PLAYERLIST":
+                //TODO: Do something here with the playerlist. it should be a list in "json"
+                break;
         }
     }
 
@@ -83,13 +88,14 @@ public class CommunicationHandler {
      * @return JSONObject containing the message parameters
      */
     private JSONObject extractJson(String input) {
-        if(input.contains("{")) {
+        if (input.contains("{")) {
             int startIndex = input.indexOf("{");
             String json = input.substring(startIndex);
 
             try {
                 return new JSONObject(json);
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+            }
         }
 
         return null;

@@ -17,7 +17,7 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     public ServerPlayer(Board board, String name) {
         super(board, name);
 
-        board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(this);
+        board.getGameManager().getCommunicationHandler().setServerPlayerCommunicationListener(this);
         board.registerObserver(this);
     }
 
@@ -66,7 +66,7 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     public void onPlayerMoved(Player who, BoardPiece where) {
         if(who != this) {
             int move = where.getX() + board.getWidth() * where.getY();
-            board.getGameManager().getConnection().getClient().getCommunicationHandler().sendMoveMessage(move);
+            board.getGameManager().sendMoveMessage(move);
         }
     }
 

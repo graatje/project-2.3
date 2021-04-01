@@ -2,6 +2,7 @@ package framework;
 
 import Connection.Connection;
 import Connection.GameManagerCommunicationListener;
+import Connection.CommunicationHandler;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.factory.PlayerFactory;
@@ -193,4 +194,19 @@ public abstract class GameManager implements GameManagerCommunicationListener {
     public void matchCancelled(String challengeNR) {
         activeMatches.remove(Integer.parseInt(challengeNR));
     }
+
+    public CommunicationHandler getCommunicationHandler() {return connection.getClient().getCommunicationHandler();}
+
+    public void sendForfeitMessage() {connection.sendForfeitMessage();}
+
+    public void sendAcceptChallengeMessage(String challengeNumber) {connection.sendAcceptChallengeMessage(challengeNumber);}
+
+    public void sendMoveMessage(int move) {connection.sendMoveMessage(move);}
+
+    public void sendSubscribeMessage(String gameType) {connection.sendSubscribeMessage(gameType);}
+
+    public void sendLogoutMessage() {connection.sendLogoutMessage();}
+
+    public void sendLoginMessage(String playerName) {connection.sendLoginMessage(playerName);}
+
 }
