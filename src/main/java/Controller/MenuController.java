@@ -1,3 +1,5 @@
+package Controller;
+
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,10 +16,7 @@ public class MenuController {
 
     @FXML
     public void pressTTTMenuButton(ActionEvent event) throws IOException {
-        Parent root = FXMLLoader.load(getClass().getResource("TTTMenu.fxml"));
-        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-        stage.setScene(new Scene(root, 750,750));
-        stage.show();
+        //SwitchScene.getInstance().setScene("TTTMenu.fxml");
     }
 
     @FXML protected void pressOthelloMenuButton(ActionEvent event) {
