@@ -1,8 +1,9 @@
 package Connection;
 
-public interface ServerPlayerListener
-{
+public interface ServerPlayerCommunicationListener {
     void opponentTurn(String move);
+
     void endMatch(String result);
 
+    void finalizeTurn();
 }

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class ConnectionTest {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         Connection c = new Connection("localhost", 7789);
 
         try {
