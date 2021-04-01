@@ -5,4 +5,5 @@ public interface ServerPlayerCommunicationListener {
 
     void endMatch(String result);
 
+    void finalizeTurn();
 }

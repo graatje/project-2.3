@@ -51,8 +51,8 @@ public class CommunicationHandler {
                     gameManagerCommunicationListener.startServerMatch(match.get("OPPONENT"), match.get("PLAYERTOMOVE"));
                     break;
                 case "YOURTURN":
-                    //It is our turn in the match, request a move.
-                    gameManagerCommunicationListener.ourTurn();
+                    //It is our turn in the match, so finalize the turn of the ServerPlayer
+                    serverPlayerCommunicationListener.finalizeTurn();
                     break;
                 case "MOVE":
                     //The opponent has made a move

@@ -7,6 +7,4 @@ public interface GameManagerCommunicationListener {
 
     void matchCancelled(String challengeNR);
 
-    void ourTurn();
-
 }

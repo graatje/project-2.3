@@ -19,10 +19,5 @@ public class TTTGameManager extends GameManager {
     public int getMaxPlayers() {
         return 2;
     }
-
-    @Override
-    public void ourTurn() {
-
-    }
 }
 
