@@ -46,7 +46,7 @@ public class CommunicationHandler {
     public void handleServerInput(String input) throws JSONException {
         if (input.equals("OK")) return;
 
-        System.out.println("input = " + input);
+        //System.out.println("input = " + input);
 
         JSONObject json = extractJson(input);
 
