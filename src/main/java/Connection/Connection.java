@@ -31,6 +31,7 @@ public class Connection {
         clientSocket = new Socket(serverIP, port);
         client = new Client(clientSocket, new CommunicationHandler());
         client.start();
+        client.setDaemon(true);
     }
 
     public Client getClient() {
