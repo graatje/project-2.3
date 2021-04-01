@@ -6,7 +6,7 @@ import javafx.fxml.FXML;
 import javafx.scene.text.Text;
 import java.io.IOException;
 
-public class StartMenuController extends Controller {
+public class MainMenuController extends Controller {
     @FXML private Text actiontarget;
 
     @FXML
