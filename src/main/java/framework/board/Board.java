@@ -157,9 +157,6 @@ public abstract class Board {
         // Make the raw turn, and finalize it immediately!
         makeRawMove(player, piece);
         finalizeRawMove();
-
-        // Make sure the new 'current player' is the next player
-        finalizeRawMove();
     }
 
     /**
