@@ -83,14 +83,16 @@ public class CommunicationHandler {
      * @return JSONObject containing the message parameters
      */
     private JSONObject extractJson(String input) {
-        int startIndex = input.indexOf("{");
-        String json = input.substring(startIndex);
+        if(input.contains("{")) {
+            int startIndex = input.indexOf("{");
+            String json = input.substring(startIndex);
 
-        try {
-            return new JSONObject(json);
-        } catch (JSONException e) {
-            return null;
+            try {
+                return new JSONObject(json);
+            } catch (JSONException ignored) {}
         }
+
+        return null;
     }
 
     /**
