@@ -19,7 +19,7 @@ public class TTTConsoleGame implements BoardObserver {
     public TTTConsoleGame() {
         ConnectedGameManager gameManager;
         try {
-            gameManager = new TTTConnectedGameManager("localhost", 7789, new TTTAIPlayerFactory());
+            gameManager = new TTTConnectedGameManager("localhost", 7789, new TTTAIPlayerFactory(3));
         } catch (IOException e) {
             e.printStackTrace();
 
@@ -30,6 +30,7 @@ public class TTTConsoleGame implements BoardObserver {
         board = gameManager.getBoard();
         board.registerObserver(this);
 
+//        gameManager.setSelfName("Mike");
         gameManager.login();
         gameManager.subscribe("Tic-tac-toe");
     }

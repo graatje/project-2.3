@@ -9,8 +9,15 @@ import java.util.List;
 import java.util.Random;
 
 public class TTTAIPlayer extends AIPlayer {
-    public TTTAIPlayer(Board board, String name) {
+    int difficulty = 1;
+
+
+    public TTTAIPlayer(Board board, String name, int difficulty) {
         super(board, name);
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
     }
 
     @Override
@@ -21,7 +28,23 @@ public class TTTAIPlayer extends AIPlayer {
         }
 
         // BoardPiece bestMove = getBestMove(board);
-        board.makeMove(board.getCurrentPlayer(), getEasyMove(board));
+
+        BoardPiece move = null;
+
+        switch (difficulty) {
+            case 1:
+                move = getEasyMove(board);
+                break;
+            case 2:
+                move = getMediumMove(board);
+                break;
+            case 3:
+                move = getBestMove(board);
+                break;
+
+        }
+
+        board.makeMove(board.getCurrentPlayer(), move);
     }
 
     /**
@@ -64,7 +87,7 @@ public class TTTAIPlayer extends AIPlayer {
      *
      * @param board   a playing board.
      * @param depth   , depth of the nodes to look into.
-     * @param Boolean isMax , mini(malising) or maxi(malising)
+     * @param isMax , mini(malising) or maxi(malising)
      * @return int value of the board.
      */
     private int miniMax(Board board, int depth, boolean isMax) {

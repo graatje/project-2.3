@@ -15,7 +15,7 @@ import java.net.Socket;
 import java.util.*;
 
 public abstract class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
-    private final PlayerFactory selfPlayerFactory;
+    private PlayerFactory selfPlayerFactory;
 
     private Client client;
 
@@ -81,6 +81,14 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
 
     public void setSelfName(String selfName) {
         this.selfName = selfName;
+    }
+
+    public void setSelfPlayerFactory(PlayerFactory selfPlayerFactory) {
+        this.selfPlayerFactory = selfPlayerFactory;
+    }
+
+    public PlayerFactory getSelfPlayerFactory() {
+        return selfPlayerFactory;
     }
 
     @Override
