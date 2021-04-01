@@ -1,8 +1,6 @@
 package Connection;
 
-import java.util.HashMap;
 import java.util.Locale;
-import java.util.Map;
 
 import org.json.*;
 
@@ -44,6 +42,8 @@ public class CommunicationHandler {
     public void handleServerInput(String input) throws JSONException {
         if (input.equals("OK")) return;
 
+        System.out.println("input = " + input);
+
         JSONObject json = extractJson(input);
 
         String[] split = input.split(" ");
@@ -59,7 +59,7 @@ public class CommunicationHandler {
                     break;
                 case "MOVE":
                     //The opponent has made a move
-                    serverPlayerCommunicationListener.opponentTurn(json.getString("MOVE"));
+                    serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
                     break;
                 case "CHALLENGE":
                     if (input.contains("CANCELLED")) {

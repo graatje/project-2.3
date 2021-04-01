@@ -24,7 +24,7 @@ public abstract class GameManager implements GameManagerCommunicationListener {
 
     private final List<Player> players = new ArrayList<>();
 
-    private HashMap<Integer, Match> activeMatches;
+    private final HashMap<Integer, Match> activeMatches = new HashMap<>();
 
 
     /**
@@ -60,15 +60,17 @@ public abstract class GameManager implements GameManagerCommunicationListener {
     /**
      * this method requests a playermove from the board if all players have been initialized.
      */
-    public void start(Player startingPlayer) {
+    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
         if (players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
         board.setCurrentPlayerID(startingPlayer.getID());
 
-        // Request a move from the first player
-        board.requestPlayerMove();
+        if(requestFirstPlayerMove) {
+            // Request a move from the first player
+            board.requestPlayerMove();
+        }
     }
 
     /**
@@ -184,11 +186,7 @@ public abstract class GameManager implements GameManagerCommunicationListener {
         addPlayer(opponent);
         addPlayer(self);
 
-        if (playerToBegin.equals(opponentName)) {
-            start(opponent);
-        } else {
-            start(self);
-        }
+        start(opponent, false);
     }
 
     @Override

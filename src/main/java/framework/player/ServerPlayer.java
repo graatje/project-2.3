@@ -22,22 +22,26 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     }
 
     @Override
-    public void opponentTurn(String move) {
-        try{
-            int intMove = Integer.parseInt(move);
+    public void turnReceive(String whoPlayer, String move) {
+        if(whoPlayer.equals(getName())) {
+            try{
+                int intMove = Integer.parseInt(move);
 
-            int x = intMove % getBoard().getWidth();
-            int y = intMove / getBoard().getWidth();
+                int x = intMove % getBoard().getWidth();
+                int y = intMove / getBoard().getWidth();
 
-            board.makeRawMove(this, x, y );
-        }catch (NumberFormatException e)
-        {
-            e.printStackTrace();
+                board.makeRawMove(this, x, y );
+            }catch (NumberFormatException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public void endMatch(String result) {
+        board.finalizeRawMove();
+
         result = result.strip();
 
         switch (result) {
@@ -72,7 +76,7 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     @Override
     public void onPlayerWon(Player who) {
         // We're done! Unregister ourselves as a board observer and a server listener!
-        board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(null);
-        board.unregisterObserver(this);
+//        board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(null);
+//        board.unregisterObserver(this);
     }
 }

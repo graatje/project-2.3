@@ -122,6 +122,10 @@ public abstract class Board {
      * 3. Requesting a move from the new current player if the game is not over
      */
     public void finalizeRawMove() {
+        if(isGameOver) {
+            return;
+        }
+
         Player previousPlayer = getCurrentPlayer();
 
         // Update currentPlayerId because it's now the next player's turn.
@@ -187,7 +191,7 @@ public abstract class Board {
         this.isGameOver = true;
         this.winner = winner;
 
-        observers.forEach(o -> o.onPlayerWon(winner));
+        new ArrayList<>(observers).forEach(o -> o.onPlayerWon(winner));
     }
 
     /**
