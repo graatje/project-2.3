@@ -39,8 +39,6 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
 
     @Override
     public void finalizeTurn() {
-//        if(board.getCurrentPlayer() == this) {
-            board.finalizeRawMove();
-//        }
+        board.finalizeRawMove();
     }
 }

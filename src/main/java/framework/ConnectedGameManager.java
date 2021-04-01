@@ -99,8 +99,7 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
         addPlayer(serverPlayerOpponent);
         addPlayer(self);
 
-//        start(playerToBegin.equals(opponentName) ? serverPlayerOpponent : self);
-        start(serverPlayerOpponent);
+        start(serverPlayerOpponent, false);
     }
 
     @Override

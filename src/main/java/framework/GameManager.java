@@ -50,7 +50,7 @@ public abstract class GameManager {
     /**
      * this method requests a playermove from the board if all players have been initialized.
      */
-    public void start(Player startingPlayer) {
+    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
         if (players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
@@ -62,7 +62,9 @@ public abstract class GameManager {
         board.setCurrentPlayerID(startingPlayer.getID());
 
         // Request a move from the first player
-//        board.requestPlayerMove();
+        if(requestFirstPlayerMove) {
+            board.requestPlayerMove();
+        }
     }
 
     /**
