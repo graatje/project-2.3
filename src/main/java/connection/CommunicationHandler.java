@@ -1,4 +1,4 @@
-package Connection;
+package connection;
 
 import java.util.HashMap;
 import java.util.Locale;

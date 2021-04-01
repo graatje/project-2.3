@@ -1,9 +1,8 @@
-package Controller;
+package controller;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
-import javafx.scene.shape.Line;
 import java.net.URL;
 import java.util.ResourceBundle;
 

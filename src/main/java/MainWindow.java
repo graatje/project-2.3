@@ -1,18 +1,17 @@
-import Controller.GenericGameConfigurationController;
-import Controller.GenericGameController;
-import Controller.GenericGameMenuController;
-import Controller.MainMenuController;
-import Model.GenericGameConfigurationModel;
-import Model.GenericGameMenuModel;
-import Model.GenericGameModel;
-import Model.MainMenuModel;
-import View.GenericGameConfigurationView;
-import View.GenericGameMenuView;
-import View.GenericGameView;
-import View.MainMenuView;
+import controller.GenericGameConfigurationController;
+import controller.GenericGameController;
+import controller.GenericGameMenuController;
+import controller.MainMenuController;
+import model.GenericGameConfigurationModel;
+import model.GenericGameMenuModel;
+import model.GenericGameModel;
+import model.MainMenuModel;
+import view.GenericGameConfigurationView;
+import view.GenericGameMenuView;
+import view.GenericGameView;
+import view.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
 public class MainWindow extends Stage {
@@ -23,8 +22,7 @@ public class MainWindow extends Stage {
     private MainMenuView mmView;
 
     public static final int WINDOW_WIDTH = 750;
-    public static final int WINDOW_HEIGHT = WINDOW_WIDTH;
-
+    public static final int WINDOW_HEIGHT = 750;
 
     enum viewEnum {
         MAINMENU,
@@ -33,10 +31,9 @@ public class MainWindow extends Stage {
         GAME
     }
 
-
     public MainWindow(Stage primaryStage) throws IOException {
 
-        //Controllers en views maken
+        //Controllers, views en models maken
         GenericGameConfigurationController ggcController = new GenericGameConfigurationController();
         GenericGameConfigurationModel ggcModel = new GenericGameConfigurationModel();
         ggcView = new GenericGameConfigurationView(
@@ -79,7 +76,6 @@ public class MainWindow extends Stage {
             default:
                 throw new IllegalArgumentException();
         }
-
         show();
     }
 }

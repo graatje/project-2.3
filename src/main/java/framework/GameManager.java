@@ -1,7 +1,7 @@
 package framework;
 
-import Connection.Connection;
-import Connection.GameManagerListener;
+import connection.Connection;
+import connection.GameManagerListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
 import framework.player.Player;

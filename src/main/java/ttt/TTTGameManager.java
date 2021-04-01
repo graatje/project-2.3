@@ -1,6 +1,6 @@
 package ttt;
 
-import Connection.Connection;
+import connection.Connection;
 import framework.GameManager;
 import ttt.factory.TTTBoardFactory;
 

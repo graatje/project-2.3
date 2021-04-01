@@ -1,6 +1,6 @@
-package View;
+package view;
 
-import Controller.Controller;
+import controller.Controller;
 import javafx.scene.Parent;
 
 public class GenericGameMenuView extends View {
