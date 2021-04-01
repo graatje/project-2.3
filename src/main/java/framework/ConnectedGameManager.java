@@ -132,8 +132,10 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
-        int move = where.getX() + board.getWidth() * where.getY();
-        client.sendMoveMessage(move);
+        if(who != serverPlayerOpponent) {
+            int move = where.getX() + board.getWidth() * where.getY();
+            client.sendMoveMessage(move);
+        }
     }
 
     @Override
