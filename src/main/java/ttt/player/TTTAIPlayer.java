@@ -6,6 +6,7 @@ import framework.player.AIPlayer;
 import framework.player.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class TTTAIPlayer extends AIPlayer {
@@ -20,127 +21,153 @@ public class TTTAIPlayer extends AIPlayer {
         } catch (InterruptedException ignored) {
         }
 
-        requestHardMove();
+        int[] move = getBestMove(board);
+        board.makeMove(board.getCurrentPlayer(), move[0], move[1]);
     }
+	public int miniMax(Board board, int depth, boolean isMax) {
+		int boardVal = evaluateBoard(board, depth);
+		// Terminal node (win/lose/draw) or max depth reached.
+		if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves().isEmpty()) {
+			return boardVal;
+		}
 
-    public void requestMediumMove() {
-        Player currentPlayer = board.getCurrentPlayer();
-        int opponentPlayerid = currentPlayer.getID() == 1 ? 0 : 1;
-        int[] playerids = {currentPlayer.getID(), opponentPlayerid};
-        for (int id : playerids) {
-            for (BoardPiece boardPiece : getPlayerBoardPieces(id)) {
-                for (int x = -1; x <= 1; x++) {
-                    if (boardPiece.getX() + x < 0 || boardPiece.getX() + x >= 3) {
-                        continue;
-                    }
-                    for (int y = -1; y <= 1; y++) {
-                        if (boardPiece.getY() + y <= 0 || boardPiece.getY() + y >= 3) {
-                            continue;
-                        }
-                        if (y == 0 && x == 0) {
-                            continue;
-                        }
+		// Maximising player, find the maximum attainable value.
+		if (isMax) {
+			int highestVal = Integer.MIN_VALUE;
+			for (int row = 0; row < board.getWidth(); row++) {
+				for (int col = 0; col < board.getWidth(); col++) {
+					if (!board.getBoardPiece(row, col).hasOwner()) {
+						board.getBoardPiece(row, col).setOwner(board.getCurrentPlayer()); // temporary set piece
+						highestVal = Math.max(highestVal, miniMax(board, depth - 1, false));
+						board.getBoardPiece(row, col).clearOwner();
+					}
+				}
+			}
+			return highestVal;
+			// Minimising player, find the minimum attainable value;
+		} else {
+			int opponentPlayerid = board.getCurrentPlayer().getID() == 1 ? 0 : 1;
+			Player opponent = board.getGameManager().getPlayer(opponentPlayerid);
+			int lowestVal = Integer.MAX_VALUE;
+			for (int row = 0; row < board.getWidth(); row++) {
+				for (int col = 0; col < board.getWidth(); col++) {
+					if (!board.getBoardPiece(row, col).hasOwner()) {
+						board.getBoardPiece(row, col).setOwner(opponent);
+						lowestVal = Math.min(lowestVal, miniMax(board, depth - 1, true));
+						board.getBoardPiece(row, col).clearOwner();
+					}
+				}
+			}
+			return lowestVal;
+		}
+	}
 
-                        if (calculateLines(boardPiece.getX(), boardPiece.getY(), id)) {
-                            if (Math.random() * 100 < 50) {
-                                board.makeMove(this, board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y));
-                                return;
-                            }
-                        }
-                        if (!(board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y).hasOwner())) {
-                            if (Math.random() * 100 < 50) {
-                                board.makeMove(this, board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y));
-                                return;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        List<BoardPiece> validMoves = board.getValidMoves();
-        BoardPiece move = validMoves.get((int) (Math.random() * validMoves.size()));
-    }
+	/**
+	 * Evaluate every legal move on the board and return the best one.
+	 * 
+	 * @param board Board to evaluate
+	 * @return Coordinates of best move
+	 */
+	public int[] getBestMove(Board board) {
+		int[] bestMove = new int[] { -1, -1 };
+		int bestValue = Integer.MIN_VALUE;
+		int opponentPlayerid = board.getCurrentPlayer().getID() == 1 ? 0 : 1;
+		Player opponent = board.getGameManager().getPlayer(opponentPlayerid);
+		for (int row = 0; row < board.getWidth(); row++) {
+			for (int col = 0; col < board.getWidth(); col++) {
+				if (!board.getBoardPiece(row, col).hasOwner()) {
+					board.getBoardPiece(row, col).setOwner(opponent);
+					int moveValue = miniMax(board, 6, false);
+					board.getBoardPiece(row, col).clearOwner();
+					if (moveValue > bestValue) {
 
-    public void requestHardMove() {
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException ignored) {
-        }
+						bestMove[0] = row;
+						bestMove[1] = col;
+						bestValue = moveValue;
+					}
+				}
+			}
+		}
+		return bestMove;
+	}
 
-        Player currentPlayer = board.getCurrentPlayer();
-        int opponentPlayerid = currentPlayer.getID() == 1 ? 0 : 1;
-        int[] playerids = {currentPlayer.getID(), opponentPlayerid};
-        // first check if you can do a winning move and do so if you can.
-        // then check if opponent can do a winning move and block it if you can.
-        for (int id : playerids) {
-            for (BoardPiece boardPiece : getPlayerBoardPieces(id)) {
-                for (int x = -1; x <= 1; x++) {
-                    if (boardPiece.getX() + x < 0 || boardPiece.getX() + x >= 3) {
-                        continue;
-                    }
-                    for (int y = -1; y <= 1; y++) {
-                        if (boardPiece.getY() + y <= 0 || boardPiece.getY() + y >= 3) {
-                            continue;
-                        }
-                        if (y == 0 && x == 0) {
-                            continue;
-                        }
+	/**
+	 * Evaluate the given board from the perspective of the X player, return 10 if a
+	 * winning board configuration is found, -10 for a losing one and 0 for a draw,
+	 * weight the value of a win/loss/draw according to how many moves it would take
+	 * to realise it using the depth of the game tree the board configuration is at.
+	 * 
+	 * @param board Board to evaluate
+	 * @param depth depth of the game tree the board configuration is at
+	 * @return value of the board
+	 */
+	private int evaluateBoard(Board board, int treedepth) {
+		int rowSum = 0;
+		int opponentPlayerid = board.getCurrentPlayer().getID() == 1 ? 0 : 1;
 
-                        if (calculateLines(boardPiece.getX(), boardPiece.getY(), id)) {
-                            board.makeMove(this, board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y));
-                            return;
-                        }
-                        if (!(board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y).hasOwner())) {
-                            board.makeMove(this, board.getBoardPiece(boardPiece.getX() + x, boardPiece.getY() + y));
-                            return;
-                        }
-                    }
-                }
-            }
-        }
+		HashMap<Integer, Integer> points = new HashMap<Integer, Integer>();
+		points.put(board.getCurrentPlayer().getID(), 88);
+		points.put(opponentPlayerid, 79);
+		int player1win = points.get(board.getCurrentPlayer().getID()) * board.getWidth();
 
-        int[][] preferredMoves = {{0, 0}, {2, 2}, {0, 2}, {2, 0}, {1, 1}};
-        List<BoardPiece> validMoves = board.getValidMoves();
-        //preferred move
-        for (int[] coord : preferredMoves) {
-            for (BoardPiece boardPiece : validMoves) {
-                if (boardPiece.getX() == coord[0] || boardPiece.getY() == coord[1]) {
-                    board.makeMove(this, board.getBoardPiece(boardPiece.getX(), boardPiece.getY()));
-                    return;
-                }
-            }
-        }
-        // if we haven't got a preferred piece make random move.
-        BoardPiece move = validMoves.get((int) (Math.random() * validMoves.size()));
-        board.makeMove(this, move);
-    }
+		int player2win = points.get(opponentPlayerid) * board.getWidth(); // amount of points needed in a row to win for
+																			// player2.
 
-    private boolean calculateLines(int xpoint, int ypoint, int playerid) {
-        int[][][] somelist = {{{xpoint - 1, ypoint}, {xpoint + 1, ypoint}}, {{xpoint - 1, ypoint - 1}, {xpoint + 1, ypoint - 1}}, {{xpoint, ypoint - 1}, {xpoint, ypoint + 1}}};
-        for (int[][] cross : somelist) {
-            try {
-                BoardPiece piece_00_01 = board.getBoardPiece(cross[0][0], cross[0][1]);
-                BoardPiece piece_10_11 = board.getBoardPiece(cross[1][0], cross[1][1]);
-                if ((piece_00_01.hasOwner() && piece_00_01.getOwner().getID() == playerid) && (piece_10_11.hasOwner() && piece_10_11.getOwner().getID() == playerid)) {
-                    return true;
-                }
-            } catch (IndexOutOfBoundsException e) {
-            }
-        }
-        return false;
+		// from top to bottom
+		for (int x = 0; x < board.getWidth(); x++) {
+			for (int y = 0; y < board.getWidth(); y++) {
+				if (board.getBoardPiece(x, y).hasOwner()) {
+					rowSum += points.get(board.getBoardPiece(x, y).getOwner().getID());
+				}
+			}
+			if (rowSum == player1win) {
+				return 10 + treedepth;
+			} else if (rowSum == player2win) {
+				return -10 - treedepth;
+			}
+			rowSum = 0;
+		}
+		rowSum = 0; // just in case
+		// from left to right
+		for (int y = 0; y < board.getWidth(); y++) {
+			for (int x = 0; x < board.getHeight(); x++) {
+				if (board.getBoardPiece(x, y).hasOwner()) {
+					rowSum += points.get(board.getBoardPiece(x, y).getOwner().getID());
+				}
+			}
+			if (rowSum == player1win) {
+				return 10 + treedepth;
+			} else if (rowSum == player2win) {
+				return -10 - treedepth;
+			}
+			rowSum = 0;
+		}
 
-    }
+		// top left to bottom-right
+		for (int i = 0; i < board.getWidth(); i++) {
+			if (board.getBoardPiece(i, i).hasOwner()) {
+				rowSum += points.get(board.getBoardPiece(i, i).getOwner().getID());
+			}
+		}
+		if (rowSum == player1win) {
+			return 10 + treedepth;
+		} else if (rowSum == player2win) {
+			return -10 - treedepth;
+		}
 
-    private List<BoardPiece> getPlayerBoardPieces(int playerid) {
-        List<BoardPiece> boardpiecelist = new ArrayList<>();
-        for (int x = 0; x < board.getWidth(); x++) {
-            for (int y = 0; y < board.getHeight(); y++) {
-                BoardPiece piece = board.getBoardPiece(x, y);
-                if (piece.hasOwner() && piece.getOwner().getID() == playerid) {
-                    boardpiecelist.add(piece);
-                }
-            }
-        }
-        return boardpiecelist;
-    }
+		rowSum = 0;
+		// top right to left-bottom
+		int indexMax = board.getWidth() - 1 - 1;
+		for (int i = 0; i <= indexMax; i++) {
+			if (board.getBoardPiece(i, indexMax - i).hasOwner()) {
+				rowSum += points.get(board.getBoardPiece(i, indexMax - i).getOwner().getID());
+			}
+		}
+		if (rowSum == player1win) {
+			return 10 + treedepth;
+		} else if (rowSum == player2win) {
+			return -10 - treedepth;
+		}
+		return 0;
+	}
 }
