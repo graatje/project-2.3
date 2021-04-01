@@ -2,12 +2,12 @@ package ttt;
 
 import Connection.Connection;
 import framework.GameManager;
-import ttt.factory.TTTAIPlayerFactory;
+import framework.factory.PlayerFactory;
 import ttt.factory.TTTBoardFactory;
 
 public class TTTGameManager extends GameManager {
-    public TTTGameManager(Connection connection) {
-        super(connection, new TTTBoardFactory(), new TTTAIPlayerFactory());
+    public TTTGameManager(Connection connection, PlayerFactory selfPlayerFactory) {
+        super(connection, new TTTBoardFactory(), selfPlayerFactory);
     }
 
     @Override

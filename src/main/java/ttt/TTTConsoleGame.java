@@ -5,9 +5,8 @@ import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.player.ConsoleLocalPlayer;
 import framework.player.Player;
-import ttt.player.TTTAIPlayer;
+import ttt.factory.TTTAIPlayerFactory;
 
 import java.io.IOException;
 
@@ -29,7 +28,7 @@ public class TTTConsoleGame implements BoardObserver {
             System.exit(-1);
         }
 
-        GameManager gameManager = new TTTGameManager(connection);
+        GameManager gameManager = new TTTGameManager(connection, new TTTAIPlayerFactory());
         board = gameManager.getBoard();
         board.registerObserver(this);
 
