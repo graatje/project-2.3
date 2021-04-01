@@ -1,6 +1,6 @@
 package framework.player;
 
-import Connection.ServerPlayerCommunicationListener;
+import connection.ServerPlayerCommunicationListener;
 import framework.board.Board;
 
 /**

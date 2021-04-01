@@ -1,8 +1,8 @@
 package framework;
 
-import Connection.Client;
-import Connection.CommunicationHandler;
-import Connection.GameManagerCommunicationListener;
+import connection.Client;
+import connection.CommunicationHandler;
+import connection.GameManagerCommunicationListener;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.factory.BoardFactory;
