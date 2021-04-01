@@ -1,13 +1,11 @@
 package ttt;
 
-import Connection.Connection;
 import framework.GameManager;
-import framework.factory.PlayerFactory;
 import ttt.factory.TTTBoardFactory;
 
 public class TTTGameManager extends GameManager {
-    public TTTGameManager(Connection connection, PlayerFactory selfPlayerFactory) {
-        super(connection, new TTTBoardFactory(), selfPlayerFactory);
+    public TTTGameManager() {
+        super(new TTTBoardFactory());
     }
 
     @Override

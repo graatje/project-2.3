@@ -17,31 +17,20 @@ import java.util.List;
 /**
  * This class manages a game. Including connection, board and players.
  */
-public abstract class GameManager implements GameManagerCommunicationListener {
+public abstract class GameManager {
 
-    private final Connection connection;
-    private final Board board;
-    private final PlayerFactory selfPlayerFactory;
+    protected final Board board;
 
-    private final List<Player> players = new ArrayList<>();
-
-    private final HashMap<Integer, Match> activeMatches = new HashMap<>();
+    protected final List<Player> players = new ArrayList<>();
 
 
     /**
      * constructor, initializes connection, board and players.
      *
-     * @param connection
      * @param boardFactory
      */
-    public GameManager(Connection connection, BoardFactory boardFactory, PlayerFactory selfPlayerFactory) {
-        this.connection = connection;
+    public GameManager(BoardFactory boardFactory) {
         this.board = boardFactory.createBoard(this);
-        this.selfPlayerFactory = selfPlayerFactory;
-
-        if (connection != null) {
-            connection.getClient().getCommunicationHandler().setGameManagerCommunicationListener(this);
-        }
     }
 
     /**
@@ -61,33 +50,19 @@ public abstract class GameManager implements GameManagerCommunicationListener {
     /**
      * this method requests a playermove from the board if all players have been initialized.
      */
-    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
+    public void start(Player startingPlayer) {
         if (players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
+        if(startingPlayer == null) {
+            startingPlayer = players.get((int) (Math.random() * players.size()));
+        }
+
         board.setCurrentPlayerID(startingPlayer.getID());
 
-        if(requestFirstPlayerMove) {
-            // Request a move from the first player
-            board.requestPlayerMove();
-        }
-    }
-
-    /**
-     * getter for connection
-     *
-     * @return Connection
-     */
-    public Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * @return Whether the GameManager possesses a connection object or not
-     */
-    public boolean hasConnection() {
-        return connection != null;
+        // Request a move from the first player
+        board.requestPlayerMove();
     }
 
     /**
@@ -171,42 +146,4 @@ public abstract class GameManager implements GameManagerCommunicationListener {
 
         return result;
     }
-
-    @Override
-    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
-        Match match = new Match(opponent, gametype, challengeNR);
-
-        activeMatches.put(match.getChallengeNR(), match);
-    }
-
-    @Override
-    public void startServerMatch(String opponentName, String playerToBegin) {
-        Player opponent = new ServerPlayer(getBoard(), opponentName);
-        Player self = selfPlayerFactory.createPlayer(board, "thisMachine");
-
-        addPlayer(opponent);
-        addPlayer(self);
-
-        start(opponent, false);
-    }
-
-    @Override
-    public void matchCancelled(String challengeNR) {
-        activeMatches.remove(Integer.parseInt(challengeNR));
-    }
-
-    public CommunicationHandler getCommunicationHandler() {return connection.getClient().getCommunicationHandler();}
-
-    public void sendForfeitMessage() {connection.sendForfeitMessage();}
-
-    public void sendAcceptChallengeMessage(String challengeNumber) {connection.sendAcceptChallengeMessage(challengeNumber);}
-
-    public void sendMoveMessage(int move) {connection.sendMoveMessage(move);}
-
-    public void sendSubscribeMessage(String gameType) {connection.sendSubscribeMessage(gameType);}
-
-    public void sendLogoutMessage() {connection.sendLogoutMessage();}
-
-    public void sendLoginMessage(String playerName) {connection.sendLoginMessage(playerName);}
-
 }

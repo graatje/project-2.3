@@ -1,12 +1,15 @@
 package ttt;
 
 import Connection.Connection;
+import framework.ConnectedGameManager;
 import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.Player;
 import ttt.factory.TTTAIPlayerFactory;
+import ttt.factory.TTTBoardFactory;
+import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
 
@@ -15,28 +18,34 @@ public class TTTConsoleGame implements BoardObserver {
         new TTTConsoleGame();
     }
 
-    private final Board board;
+    private Board board;
 
     public TTTConsoleGame() {
-        Connection connection = null;
-        try {
-            connection = new Connection("localhost", 7789);
-        } catch (IOException e) {
-            System.out.println("Could not connect to server, continuing without a connection :(");
-            System.out.println(e.getMessage());
+//        Connection connection = null;
+//        try {
+//            connection = new Connection("localhost", 7789);
+//        } catch (IOException e) {
+//            System.out.println("Could not connect to server, continuing without a connection :(");
+//            System.out.println(e.getMessage());
+//
+//            System.exit(-1);
+//        }
+
+        ConnectedGameManager gameManager;
+        try{
+            gameManager = new TTTConnectedGameManager("localhost", 7789, new TTTAIPlayerFactory());
+        }catch(IOException e) {
+            System.out.println("fuck");
 
             System.exit(-1);
+            return;
         }
 
-        GameManager gameManager = new TTTGameManager(connection, new TTTAIPlayerFactory());
         board = gameManager.getBoard();
         board.registerObserver(this);
 
-        String name = "TTTConsoleGame-" + (int) (Math.random() * 100);
-        connection.getClient().sendCommandToServer("login " + name + "\n");
-        connection.getClient().sendCommandToServer("subscribe Tic-tac-toe\n");
-
-        connection.getClient().sendCommandToServer("get playerlist\n");
+        gameManager.login();
+        gameManager.subscribe("Tic-tac-toe");
     }
 
     @Override

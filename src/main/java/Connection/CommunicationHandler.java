@@ -1,6 +1,7 @@
 package Connection;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import org.json.*;
@@ -11,8 +12,6 @@ public class CommunicationHandler {
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
     private ServerPlayerCommunicationListener serverPlayerCommunicationListener;
-
-    private final ArrayList<String> playerList = new ArrayList<>();
 
 
     /**
@@ -83,9 +82,12 @@ public class CommunicationHandler {
             case "PLAYERLIST":
                 JSONArray playerList = extractJsonPlayerlist(input);
 
+                List<String> lobbyPlayers = new ArrayList<>();
                 for (int i = 0; i < playerList.length(); i++) {
-                    this.playerList.add(playerList.getString(i));
+                    lobbyPlayers.add(playerList.getString(i));
                 }
+
+                gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
                 break;
         }
     }
@@ -131,8 +133,8 @@ public class CommunicationHandler {
      * @param result The last part of a SVR CHALLENGE server command
      */
     private void handleGameEndServerMessage(String result) {
-        String sub = result.substring(0, 3);
-        serverPlayerCommunicationListener.endMatch(sub);
+        String sub = result.substring(0, 3).trim();
+        gameManagerCommunicationListener.endMatch(sub);
     }
 
     /**
@@ -157,8 +159,6 @@ public class CommunicationHandler {
      * @param gameType The type of game to subscribe for
      */
     public void sendSubscribeMessage(String gameType) {
-        gameType = gameType.toUpperCase(Locale.ROOT);
-
         client.sendCommandToServer("subscribe " + gameType + "\n");
     }
 
