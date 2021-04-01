@@ -122,7 +122,7 @@ public abstract class Board {
      * 3. Requesting a move from the new current player if the game is not over
      */
     public void finalizeRawMove() {
-        if(isGameOver) {
+        if (isGameOver) {
             return;
         }
 

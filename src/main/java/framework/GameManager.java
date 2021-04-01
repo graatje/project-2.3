@@ -1,17 +1,11 @@
 package framework;
 
-import Connection.Connection;
-import Connection.GameManagerCommunicationListener;
-import Connection.CommunicationHandler;
 import framework.board.Board;
 import framework.factory.BoardFactory;
-import framework.factory.PlayerFactory;
 import framework.player.Player;
-import framework.player.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -55,14 +49,14 @@ public abstract class GameManager {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
-        if(startingPlayer == null) {
+        if (startingPlayer == null) {
             startingPlayer = players.get((int) (Math.random() * players.size()));
         }
 
         board.setCurrentPlayerID(startingPlayer.getID());
 
         // Request a move from the first player
-        if(requestFirstPlayerMove) {
+        if (requestFirstPlayerMove) {
             board.requestPlayerMove();
         }
     }

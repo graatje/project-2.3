@@ -40,15 +40,27 @@ public class Connection {
         return client;
     }
 
-    public void sendForfeitMessage() {client.sendForfeitMessage();}
+    public void sendForfeitMessage() {
+        client.sendForfeitMessage();
+    }
 
-    public void sendAcceptChallengeMessage(String challengeNumber) {client.sendAcceptChallengeMessage(challengeNumber);}
+    public void sendAcceptChallengeMessage(String challengeNumber) {
+        client.sendAcceptChallengeMessage(challengeNumber);
+    }
 
-    public void sendMoveMessage(int move) {client.sendMoveMessage(move);}
+    public void sendMoveMessage(int move) {
+        client.sendMoveMessage(move);
+    }
 
-    public void sendSubscribeMessage(String gametype) {client.sendSubscribeMessage(gametype);}
+    public void sendSubscribeMessage(String gametype) {
+        client.sendSubscribeMessage(gametype);
+    }
 
-    public void sendLogoutMessage() {client.sendLogoutMessage();}
+    public void sendLogoutMessage() {
+        client.sendLogoutMessage();
+    }
 
-    public void sendLoginMessage(String playerName) {client.sendLoginMessage(playerName);}
+    public void sendLoginMessage(String playerName) {
+        client.sendLoginMessage(playerName);
+    }
 }

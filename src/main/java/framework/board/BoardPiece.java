@@ -16,17 +16,17 @@ public class BoardPiece {
         this.x = x;
         this.y = y;
     }
-    
+
     /**
      * compares if the boardpiece is on the same position as the boardpiece it is compared with.
+     *
      * @param otherBoardPiece
      * @return boolean, true if on same position, false otherwise.
      */
-    public boolean equals(BoardPiece otherBoardPiece)
-    {
-    	return this.x == otherBoardPiece.getX() && this.y == otherBoardPiece.getY();
+    public boolean equals(BoardPiece otherBoardPiece) {
+        return this.x == otherBoardPiece.getX() && this.y == otherBoardPiece.getY();
     }
-    
+
     /**
      * Constructs a BoardPiece with an owner.
      *

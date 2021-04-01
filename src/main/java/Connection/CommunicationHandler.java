@@ -1,10 +1,12 @@
 package Connection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.json.*;
 
 public class CommunicationHandler {
 
@@ -101,9 +103,9 @@ public class CommunicationHandler {
             int startIndex = input.indexOf("[");
             String json = input.substring(startIndex);
 
-            try{
+            try {
                 return new JSONArray(json);
-            }catch (JSONException ignored) {
+            } catch (JSONException ignored) {
             }
         }
         return null;

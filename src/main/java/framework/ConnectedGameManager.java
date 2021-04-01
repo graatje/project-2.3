@@ -1,6 +1,8 @@
 package framework;
 
-import Connection.*;
+import Connection.Client;
+import Connection.CommunicationHandler;
+import Connection.GameManagerCommunicationListener;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.factory.BoardFactory;
@@ -59,7 +61,6 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
     public void subscribe(String gameName) {
         client.sendSubscribeMessage(gameName);
     }
-
 
 
     public Client getClient() {
@@ -132,15 +133,17 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
-        if(who != serverPlayerOpponent) {
+        if (who != serverPlayerOpponent) {
             int move = where.getX() + board.getWidth() * where.getY();
             client.sendMoveMessage(move);
         }
     }
 
     @Override
-    public void onPlayerMoveFinalized(Player previous, Player current) {}
+    public void onPlayerMoveFinalized(Player previous, Player current) {
+    }
 
     @Override
-    public void onPlayerWon(Player who) {}
+    public void onPlayerWon(Player who) {
+    }
 }
