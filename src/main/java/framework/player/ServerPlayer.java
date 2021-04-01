@@ -22,7 +22,9 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
 
     @Override
     public void opponentTurn(String move) {
-
+        // TODO: MOVE WITH MOVE 'move'!
+        // Call Board#makeRawMove because this splits making the move and finalizing the move in two.
+        // See the finalizeTurn method below.
     }
 
     @Override
@@ -40,5 +42,10 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
                 board.forceWin(null);
                 break;
         }
+    }
+
+    @Override
+    public void finalizeTurn() {
+        board.finalizeRawMove();
     }
 }
