@@ -61,7 +61,8 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if(who != this) {
-            // TODO: NOTIFY SERVER OF PLAYER MOVE BY US!
+            int move = where.getX() + board.getWidth() * where.getY();
+            board.getGameManager().getConnection().getClient().getCommunicationHandler().sendMoveMessage(move);
         }
     }
 
