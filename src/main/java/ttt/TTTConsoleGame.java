@@ -35,6 +35,8 @@ public class TTTConsoleGame implements BoardObserver {
         String name = "TTTConsoleGame-" + (int) (Math.random() * 100);
         connection.getClient().sendCommandToServer("login " + name + "\n");
         connection.getClient().sendCommandToServer("subscribe Tic-tac-toe\n");
+
+        connection.getClient().sendCommandToServer("get playerlist\n");
     }
 
     @Override

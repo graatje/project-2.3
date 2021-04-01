@@ -1,5 +1,6 @@
 package Connection;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 import org.json.*;
@@ -10,6 +11,8 @@ public class CommunicationHandler {
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
     private ServerPlayerCommunicationListener serverPlayerCommunicationListener;
+
+    private final ArrayList<String> playerList = new ArrayList<>();
 
 
     /**
@@ -70,18 +73,39 @@ public class CommunicationHandler {
                         //There is new information regarding a challenge!
                         gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
                         break;
-                    default:
+                    case "WIN":
+                    case "DRAW":
+                    case "LOSS":
                         handleGameEndServerMessage(split[3]);
-                        break;
                 }
                 break;
 
             case "PLAYERLIST":
-                //TODO: Do something here with the playerlist. it should be a list in "json"
+                JSONArray playerList = extractJsonPlayerlist(input);
+
+                for (int i = 0; i < playerList.length(); i++) {
+                    this.playerList.add(playerList.getString(i));
+                }
                 break;
         }
     }
 
+    /**
+     * @param input The message sent by the server
+     * @return JSONArray containing the message parameters
+     */
+    private JSONArray extractJsonPlayerlist(String input) {
+        if (input.contains("[")) {
+            int startIndex = input.indexOf("[");
+            String json = input.substring(startIndex);
+
+            try{
+                return new JSONArray(json);
+            }catch (JSONException ignored) {
+            }
+        }
+        return null;
+    }
 
     /**
      * @param input The message sent by the server
