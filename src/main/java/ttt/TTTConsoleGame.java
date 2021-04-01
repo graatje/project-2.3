@@ -19,30 +19,31 @@ public class TTTConsoleGame implements BoardObserver {
     private final Board board;
 
     public TTTConsoleGame() {
-
-        Connection connection;
+        Connection connection = null;
         try {
             connection = new Connection("localhost", 7789);
         } catch (IOException e) {
             System.out.println("Could not connect to server, continuing without a connection :(");
             System.out.println(e.getMessage());
 
-            connection = null;
+            System.exit(-1);
         }
 
         GameManager gameManager = new TTTGameManager(connection);
         board = gameManager.getBoard();
-
         board.registerObserver(this);
 
-        gameManager.addPlayer(new TTTAIPlayer(board, "test-ai"));
-        gameManager.addPlayer(new ConsoleLocalPlayer(board, "test-local"));
-
-        gameManager.start(gameManager.getPlayer(1));
+        String name = "TTTConsoleGame-" + (int) (Math.random() * 100);
+        connection.getClient().sendCommandToServer("login " + name + "\n");
+        connection.getClient().sendCommandToServer("subscribe Tic-tac-toe\n");
     }
 
     @Override
-    public void boardUpdated() {
+    public void onPlayerMoved(Player who, BoardPiece where) {
+    }
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) {
         System.out.println();
         System.out.println("Current board:");
         for (int y = 0; y < board.getHeight(); y++) {
@@ -52,12 +53,13 @@ public class TTTConsoleGame implements BoardObserver {
             }
             System.out.println();
         }
+    }
 
-        if (board.isGameOver()) {
-            System.out.println();
-            System.out.println("---");
-            System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
-        }
+    @Override
+    public void onPlayerWon(Player who) {
+        System.out.println();
+        System.out.println("---");
+        System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
     }
 
     private char getPlayerChar(Player player) {
