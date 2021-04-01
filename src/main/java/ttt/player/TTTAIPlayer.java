@@ -14,6 +14,7 @@ public class TTTAIPlayer extends AIPlayer {
 
     public TTTAIPlayer(Board board, String name, int difficulty) {
         super(board, name);
+        this.difficulty = difficulty;
     }
 
     public void setDifficulty(int difficulty) {
