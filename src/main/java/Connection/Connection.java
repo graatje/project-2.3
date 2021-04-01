@@ -30,7 +30,6 @@ public class Connection {
     private void createClient() throws IOException {
         clientSocket = new Socket(serverIP, port);
         client = new Client(clientSocket, new CommunicationHandler());
-        client.setDaemon(true);
         client.start();
     }
 
