@@ -68,7 +68,7 @@ public abstract class Board {
      *
      * @return The winner of the game, or <code>null</code> if the game ended in a draw.
      */
-    protected abstract Player calculateWinner();
+    public abstract Player calculateWinner();
 
 
     /**
@@ -105,7 +105,7 @@ public abstract class Board {
         executeMove(player, piece);
 
         // Make sure all observers know of this state-change!
-        notifyObservers();
+        observers.forEach(o -> o.onPlayerMoved(player, piece));
     }
 
     /**
@@ -122,6 +122,8 @@ public abstract class Board {
      * 3. Requesting a move from the new current player if the game is not over
      */
     public void finalizeRawMove() {
+        Player previousPlayer = getCurrentPlayer();
+
         // Update currentPlayerId because it's now the next player's turn.
         currentPlayerId++;
         if (currentPlayerId >= gameManager.getPlayers().size()) {
@@ -132,12 +134,12 @@ public abstract class Board {
         if (calculateIsGameOver()) {
             // The game is over! Calculate a winner and set the flag!
 
-            isGameOver = true;
-            winner = calculateWinner();
+            Player winner = calculateWinner();
+            forceWin(winner);
         }
 
         // Make sure all observers know of this state-change!
-        notifyObservers();
+        observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
 
         if (!isGameOver) {
             // The game is not yet over. Request the next move from the new current player.
@@ -156,9 +158,6 @@ public abstract class Board {
     public void makeMove(Player player, BoardPiece piece) {
         // Make the raw turn, and finalize it immediately!
         makeRawMove(player, piece);
-        finalizeRawMove();
-
-        // Make sure the new 'current player' is the next player
         finalizeRawMove();
     }
 
@@ -188,7 +187,7 @@ public abstract class Board {
         this.isGameOver = true;
         this.winner = winner;
 
-        notifyObservers();
+        observers.forEach(o -> o.onPlayerWon(winner));
     }
 
     /**
@@ -283,9 +282,5 @@ public abstract class Board {
      */
     public void unregisterObserver(BoardObserver observer) {
         observers.remove(observer);
-    }
-
-    private void notifyObservers() {
-        observers.forEach(BoardObserver::boardUpdated);
     }
 }

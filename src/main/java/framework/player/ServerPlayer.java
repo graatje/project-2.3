@@ -2,11 +2,13 @@ package framework.player;
 
 import Connection.ServerPlayerCommunicationListener;
 import framework.board.Board;
+import framework.board.BoardObserver;
+import framework.board.BoardPiece;
 
 /**
  * This class is a subclass of Player and stores a ServerPlayer.
  */
-public class ServerPlayer extends Player implements ServerPlayerCommunicationListener {
+public class ServerPlayer extends Player implements ServerPlayerCommunicationListener, BoardObserver {
     /**
      * constructor, calls constructor of superclass.
      *
@@ -15,9 +17,8 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     public ServerPlayer(Board board, String name) {
         super(board, name);
 
-        if (board.getGameManager().hasConnection()) {
-            board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(this);
-        }
+        board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(this);
+        board.registerObserver(this);
     }
 
     @Override
@@ -55,5 +56,22 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     @Override
     public void finalizeTurn() {
         board.finalizeRawMove();
+    }
+
+    @Override
+    public void onPlayerMoved(Player who, BoardPiece where) {
+        if(who != this) {
+            // TODO: NOTIFY SERVER OF PLAYER MOVE BY US!
+        }
+    }
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) { /* Do nothing */ }
+
+    @Override
+    public void onPlayerWon(Player who) {
+        // We're done! Unregister ourselves as a board observer and a server listener!
+        board.getGameManager().getConnection().getClient().getCommunicationHandler().setServerPlayerCommunicationListener(null);
+        board.unregisterObserver(this);
     }
 }
