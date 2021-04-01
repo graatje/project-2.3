@@ -179,7 +179,7 @@ public class CommunicationHandler {
      * @return
      */
     private String getInbetween(String full, String start, String end) {
-        int beginIndex = full.indexOf(start);
+        int beginIndex = full.indexOf(start + start.length());
         int endIndex = full.lastIndexOf(end);
 
         String result = "";
