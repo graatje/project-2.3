@@ -42,7 +42,7 @@ public class TTTConsoleGame implements BoardObserver {
     }
 
     @Override
-    public void boardUpdated() {
+    public void onPlayerMoved(Player who, BoardPiece where) {
         System.out.println();
         System.out.println("Current board:");
         for (int y = 0; y < board.getHeight(); y++) {
@@ -58,6 +58,14 @@ public class TTTConsoleGame implements BoardObserver {
             System.out.println("---");
             System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
         }
+    }
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) {
+    }
+
+    @Override
+    public void onPlayerWon(Player who) {
     }
 
     private char getPlayerChar(Player player) {
