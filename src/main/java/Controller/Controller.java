@@ -1,5 +1,5 @@
 package Controller;
 
-abstract class Controller {
+public abstract class Controller {
     //public Model model;
 }

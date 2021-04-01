@@ -10,6 +10,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException {
-        // launcher
+        MainWindow mainWindow = new MainWindow(primaryStage);
+        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
 }
