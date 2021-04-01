@@ -65,12 +65,6 @@ public abstract class GameManager implements GameManagerCommunicationListener {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
-        for (Player player : players) {
-            if (player == null) {
-                throw new IllegalStateException("Not all players have been initialized yet!");
-            }
-        }
-
         board.setCurrentPlayerID(startingPlayer.getID());
 
         // Request a move from the first player
