@@ -68,7 +68,7 @@ public abstract class Board {
      *
      * @return The winner of the game, or <code>null</code> if the game ended in a draw.
      */
-    protected abstract Player calculateWinner();
+    public abstract Player calculateWinner();
 
 
     /**
