@@ -1,5 +1,8 @@
 package ttt.player;
 
+import java.util.List;
+import java.util.Random;
+
 import framework.board.Board;
 import framework.board.BoardPiece;
 import framework.player.AIPlayer;
@@ -17,21 +20,63 @@ public class TTTAIPlayer extends AIPlayer {
         } catch (InterruptedException ignored) {
         }
 
-        BoardPiece bestMove = getBestMove(board);
-        board.makeMove(board.getCurrentPlayer(), bestMove);
+       // BoardPiece bestMove = getBestMove(board);
+        board.makeMove(board.getCurrentPlayer(), getEasyMove(board));
     }
 
+    /**
+     * this picks a random move from the valid moves.
+     * @param board, the playing board.
+     * @return BoardPiece, a random BoardPiece from valid moves.
+     */
+    public BoardPiece getEasyMove(Board board){
+    	List<BoardPiece> validMoves = board.getValidMoves();
+    	Random rand = new Random();
+    	return validMoves.get(rand.nextInt(validMoves.size()));
+    }
+    
+    /**
+     * this has a 50/50 chance of picking the best move and a move that is
+     * a random move that is not the best move.
+     * @param board, the playing board.
+     * @return BoardPiece
+     */
+    public BoardPiece getMediumMove(Board board)
+    {
+    	BoardPiece bestMove = getBestMove(board);
+    	List<BoardPiece> validMoves = board.getValidMoves();
+    	Random rand = new Random();
+    	if(rand.nextInt(100) >50){
+    		// best move
+    		return bestMove;
+    	}
+    	else { // random move that is not the best move.
+    		if(validMoves.size() > 1){  // prevent getting empty list of moves.
+    			validMoves.remove(validMoves.indexOf(bestMove));
+    		}
+    		return validMoves.get(rand.nextInt(validMoves.size()));
+    	}
+    }
+    
+    /**
+     * returns the highest value move when the end is reached because either a lack of valid moves, 
+     * the end of a node or the maximum search depth is reached.
+     * @param board a playing board.
+     * @param depth , depth of the nodes to look into.
+     * @param Boolean isMax , mini(malising) or maxi(malising)
+     * @return int value of the board.
+     */
     private int miniMax(Board board, int depth, boolean isMax) {
         int boardVal = evaluateBoard(board, depth);
 
         if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves().isEmpty()) {
-            // Terminal node (win/lose/draw) or max depth reached.
+            // end reached.
             return boardVal;
         }
 
         if (isMax) {
             // Maximising player, find the maximum attainable value.
-            int highestVal = Integer.MIN_VALUE;
+            int highestVal = Integer.MIN_VALUE;  
 
             for (int x = 0; x < board.getWidth(); x++) {
                 for (int y = 0; y < board.getHeight(); y++) {
@@ -39,14 +84,15 @@ public class TTTAIPlayer extends AIPlayer {
 
                     if (!piece.hasOwner()) {
                         piece.setOwner(this); // temporarily set piece
-                        highestVal = Math.max(highestVal, miniMax(board, depth - 1, false));
+                        // see if miniMax with the adjusted board is higher than the current highest val.
+                        highestVal = Math.max(highestVal, miniMax(board, depth - 1, false));  
                         piece.clearOwner();
                     }
                 }
             }
 
             return highestVal;
-        } else {
+        } else {  // isMin
             // Minimising player, find the minimum attainable value;
             Player opponent = board.getGameManager().getOtherPlayer(this);
             int lowestVal = Integer.MAX_VALUE;
@@ -56,9 +102,10 @@ public class TTTAIPlayer extends AIPlayer {
                     BoardPiece piece = board.getBoardPiece(x, y);
 
                     if (!piece.hasOwner()) {
-                        piece.setOwner(opponent);
+                        piece.setOwner(opponent); // temporary set piece
+                        // see if miniMax with the adjusted board is lower than the current highest val.
                         lowestVal = Math.min(lowestVal, miniMax(board, depth - 1, true));
-                        piece.clearOwner();
+                        piece.clearOwner();  // setting the piece to its previous state
                     }
                 }
             }
@@ -68,10 +115,10 @@ public class TTTAIPlayer extends AIPlayer {
     }
 
     /**
-     * Evaluate every legal move on the board and return the best one.
+     * check all valid moves. return the best move of those.
      *
-     * @param board Board to evaluate
-     * @return Coordinates of best move
+     * @param board Board, the board to check.
+     * @return the boardpiece with the best move.
      */
     private BoardPiece getBestMove(Board board) {
         BoardPiece bestMove = null;
@@ -97,7 +144,7 @@ public class TTTAIPlayer extends AIPlayer {
     }
 
     /**
-     * Evaluate the given board from the perspective of the X player, return 10 if a
+     * Evaluate the given board from the perspective of the current player, return 10 if a
      * winning board configuration is found, -10 for a losing one and 0 for a draw,
      * weight the value of a win/loss/draw according to how many moves it would take
      * to realise it using the depth of the game tree the board configuration is at.
