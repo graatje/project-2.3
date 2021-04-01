@@ -6,5 +6,4 @@ public interface GameManagerCommunicationListener {
     void getMatchRequest(String opponent, String gametype, String challengeNR);
 
     void matchCancelled(String challengeNR);
-
 }
