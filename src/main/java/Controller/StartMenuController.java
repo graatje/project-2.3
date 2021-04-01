@@ -3,20 +3,15 @@ package Controller;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 import java.io.IOException;
 
-public class MenuController {
+public class StartMenuController extends Controller {
     @FXML private Text actiontarget;
 
     @FXML
     public void pressTTTMenuButton(ActionEvent event) throws IOException {
-        //SwitchScene.getInstance().setScene("TTTMenu.fxml");
+        //SwitchScene.getInstance().setScene("GenericGameMenu.fxml");
     }
 
     @FXML protected void pressOthelloMenuButton(ActionEvent event) {

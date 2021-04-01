@@ -7,7 +7,7 @@ import javafx.scene.shape.Line;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class TTTGameController implements Initializable {
+public class GenericGameController extends Controller implements Initializable {
     @FXML
     private Pane TTTBoard;
 
