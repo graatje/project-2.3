@@ -225,7 +225,8 @@ public class CommunicationHandler {
      *
      * @param move Our chose move
      */
-    public void sendMoveMessage(String move) {
+    public void sendMoveMessage(int move) {
+
         client.sendCommandToServer("move " + move + "\n");
     }
 

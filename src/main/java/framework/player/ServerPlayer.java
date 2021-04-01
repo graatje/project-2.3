@@ -23,9 +23,17 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
 
     @Override
     public void opponentTurn(String move) {
-        // TODO: MOVE WITH MOVE 'move'!
-        // Call Board#makeRawMove because this splits making the move and finalizing the move in two.
-        // See the finalizeTurn method below.
+        try{
+            int intMove = Integer.parseInt(move);
+
+            int x = intMove % getBoard().getWidth();
+            int y = intMove / getBoard().getWidth();
+
+            board.makeRawMove(this, x, y );
+        }catch (NumberFormatException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -53,7 +61,8 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if(who != this) {
-            // TODO: NOTIFY SERVER OF PLAYER MOVE BY US!
+            int move = where.getX() + board.getWidth() * where.getY();
+            board.getGameManager().getConnection().getClient().getCommunicationHandler().sendMoveMessage(move);
         }
     }
 
