@@ -1,6 +1,6 @@
 package gui.model;
 
-abstract class Model {
+public abstract class Model {
 
     public void registerView(){
     }

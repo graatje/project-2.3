@@ -1,5 +1,6 @@
 package gui.controller;
 
+import gui.MainWindow;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -11,12 +12,12 @@ public class MainMenuController extends Controller {
     @FXML private Text actiontarget;
 
     @FXML
-    public void pressTTTMenuButton(ActionEvent event) throws IOException {
-        actiontarget.MainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
+    public void pressTTTMenuButton(ActionEvent event) {
+        mainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
     }
 
     @FXML protected void pressOthelloMenuButton(ActionEvent event) {
-        //actiontarget.gui.MainWindow.switchView(gui.MainWindow.viewEnum.GAME_MENU);
+        mainWindow.switchView(gui.MainWindow.viewEnum.GAME_MENU);
     }
 
     @FXML public void pressExitButton(ActionEvent event) {
