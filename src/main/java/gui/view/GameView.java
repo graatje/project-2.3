@@ -12,7 +12,7 @@ abstract class GameView extends View {
     }
 
     public void drawBoard(int gridSize, String paneName) {
-        Pane TTTBoard = (Pane) getElement("TTTBoard");
+        Pane TTTBoard = (Pane) lookup(paneName);
         double boardSize = TTTBoard.getPrefWidth();
         System.out.println("board size: "+boardSize);
 

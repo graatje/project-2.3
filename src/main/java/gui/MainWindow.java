@@ -40,32 +40,32 @@ public class MainWindow extends Stage {
 
     private void setupMVC() throws IOException {
         // Game settings
+        GenericGameConfigurationModel ggcModel = new GenericGameConfigurationModel();
         GenericGameConfigurationController ggcController = new GenericGameConfigurationController();
         ggcController.setMainWindow(this);
-        GenericGameConfigurationModel ggcModel = new GenericGameConfigurationModel();
         ggcView = new GenericGameConfigurationView(
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         //TODO: fxml bestanden hoofdletters of niet?
 
         // Gameboard
+        GenericGameModel ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
-        GenericGameModel ggModel = new GenericGameModel();
         ggView = new GenericGameView(
                 getFXMLParent("GenericGame.fxml", ggController), ggController, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Game Menu
+        GenericGameMenuModel ggmModel = new GenericGameMenuModel();
         GenericGameMenuController ggmController = new GenericGameMenuController();
         ggmController.setMainWindow(this);
-        GenericGameMenuModel ggmModel = new GenericGameMenuModel();
+        ggmController.setModel(ggmModel);
         ggmView = new GenericGameMenuView(
                 getFXMLParent("GenericGameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Main Menu
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("fxml_example.fxml"));
+        MainMenuModel mmModel = new MainMenuModel();
         MainMenuController mmController = new MainMenuController();
         mmController.setMainWindow(this);
-        //MainMenuModel mmModel = new MainMenuModel(); // not needed?
         mmView = new MainMenuView(
                 getFXMLParent("MainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
     }

@@ -7,10 +7,4 @@ public abstract class Model {
 
     public void updateView(){
     }
-
-    public void setPlayerName(){
-    }
-
-    public void getPlayerName(){
-    }
 }

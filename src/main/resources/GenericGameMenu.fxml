@@ -4,17 +4,21 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
 
+<?import javafx.scene.text.Text?>
 <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1">
-        <TextField id="Gebruikersnaam" fx:id="username"/>
+        <TextField id="Gebruikersnaam" fx:id="usernameField"/>
         <Button text="OK" onAction ="#pressOKUsername"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="3">
-        <Button text="Speel tegen de Computer" onAction="#pressPlayAgainstComputer"/>
+        <Text fx:id="usernameConfirmation"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="4">
+        <Button text="Speel tegen de Computer" onAction="#pressPlayAgainstComputer"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="5">
         <Button text="Speel Online" onAction ="#pressPlayOnline"/>
     </HBox>
 </GridPane>
