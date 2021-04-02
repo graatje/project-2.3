@@ -1,4 +1,4 @@
-package controller;
+package gui.controller;
 
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -16,7 +16,7 @@ public class MainMenuController extends Controller {
     }
 
     @FXML protected void pressOthelloMenuButton(ActionEvent event) {
-        //actiontarget.MainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
+        //actiontarget.gui.MainWindow.switchView(gui.MainWindow.viewEnum.GAME_MENU);
     }
 
     @FXML public void pressExitButton(ActionEvent event) {

@@ -1,9 +1,9 @@
-package view;
+package gui.view;
 
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import controller.Controller;
+import gui.controller.Controller;
 
 abstract class View extends Scene {
 

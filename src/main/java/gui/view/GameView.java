@@ -1,6 +1,6 @@
-package view;
+package gui.view;
 
-import controller.Controller;
+import gui.controller.Controller;
 import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;

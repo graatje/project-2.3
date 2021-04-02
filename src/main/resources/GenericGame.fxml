@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.GridPane?>
 
-<GridPane fx:controller="controller.GenericGameController" xmlns:fx="http://javafx.com/fxml" alignment="center">
+<GridPane fx:controller="gui.controller.GenericGameController" xmlns:fx="http://javafx.com/fxml" alignment="center">
     <HBox alignment="CENTER">
         <Pane fx:id="TTTBoard" prefHeight="500.0" prefWidth="500.0"/>
     </HBox>

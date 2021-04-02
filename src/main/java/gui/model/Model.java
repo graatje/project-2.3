@@ -1,4 +1,4 @@
-package model;
+package gui.model;
 
 abstract class Model {
 
