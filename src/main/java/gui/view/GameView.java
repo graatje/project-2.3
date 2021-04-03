@@ -36,4 +36,10 @@ public abstract class GameView extends View {
             TTTBoard.getChildren().add(verticalDivider);
         }
     }
+
+    @Override
+    //TODO: board-parameter meegeven
+    public void drawTiles() {
+
+    }
 }

@@ -11,6 +11,10 @@ public class GenericGameView extends GameView {
 
     @Override
     public void update(Model model) {
-        drawBoard(3,"#TTTBoard");
+        //TODO: opvragen van framework
+        int gridSize = 3;
+
+        //drawTiles(Board board);
+        drawBoard(gridSize,"#TTTBoard");
     }
 }

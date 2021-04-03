@@ -16,4 +16,8 @@ public abstract class View extends Scene {
     }
 
     public abstract void update(Model model);
+
+    //TODO: vragen: TTTView/Othello View maken (of generiek houden en drawTile meerdere parameters meegeven?!)
+    //TODO: Board-parameter instellen
+    public abstract void drawTiles();
 }

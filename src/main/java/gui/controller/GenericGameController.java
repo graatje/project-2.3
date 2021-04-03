@@ -1,23 +1,24 @@
 package gui.controller;
 
 import gui.MainWindow;
+import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GenericGameController extends Controller implements Initializable {
+public class GenericGameController extends Controller {
     @FXML
     private Pane TTTBoard;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        this.model.updateView();
-    }
-
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+    }
+
+    @FXML public void onMouseReleased(MouseEvent event) {
+        ((GenericGameModel)model).clickTile(event.getX(), event.getY());
     }
 }
