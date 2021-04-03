@@ -1,11 +1,12 @@
 package gui.view;
 
+import gui.model.Model;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import gui.controller.Controller;
 
-abstract class View extends Scene {
+public abstract class View extends Scene {
 
     protected Controller controller;
 
@@ -14,4 +15,5 @@ abstract class View extends Scene {
         this.controller = controller;
     }
 
+    public abstract void update(Model model);
 }

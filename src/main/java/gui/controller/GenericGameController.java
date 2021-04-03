@@ -14,6 +14,7 @@ public class GenericGameController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        this.model.updateView();
     }
 
     @FXML public void pressBackToMainMenu(ActionEvent event){

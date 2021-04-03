@@ -48,13 +48,16 @@ public class MainWindow extends Stage {
         ggcController.setModel(ggcModel);
         ggcView = new GenericGameConfigurationView(
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ggcModel.registerView(ggcView);
 
         // Gameboard
         GenericGameModel ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
+        ggController.setModel(ggModel);
         ggView = new GenericGameView(
                 getFXMLParent("GenericGame.fxml", ggController), ggController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ggModel.registerView(ggView);
 
         // Game Menu
         GenericGameMenuModel ggmModel = new GenericGameMenuModel();
@@ -63,6 +66,7 @@ public class MainWindow extends Stage {
         ggmController.setModel(ggmModel);
         ggmView = new GenericGameMenuView(
                 getFXMLParent("GenericGameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ggmModel.registerView(ggmView);
 
         // Main Menu
         MainMenuModel mmModel = new MainMenuModel();

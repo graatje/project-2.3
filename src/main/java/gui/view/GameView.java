@@ -5,7 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
-abstract class GameView extends View {
+public abstract class GameView extends View {
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
