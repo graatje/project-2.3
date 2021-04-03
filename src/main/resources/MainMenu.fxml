@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-    <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="0">
         <Button text="Boter-kaas-en-eieren" onAction="#pressTTTMenuButton"/>
@@ -15,6 +13,9 @@
         <Button text="Othello" onAction ="#pressOthelloMenuButton"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <Button text="Configuratie" onAction ="#pressConfigurationButton"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="3">
         <Button text="Spel afsluiten" onAction ="#pressExitButton"/>
     </HBox>
 

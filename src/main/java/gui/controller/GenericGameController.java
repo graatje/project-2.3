@@ -1,5 +1,7 @@
 package gui.controller;
 
+import gui.MainWindow;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.layout.Pane;
@@ -12,6 +14,9 @@ public class GenericGameController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+    }
 
+    @FXML public void pressBackToMainMenu(ActionEvent event){
+        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
 }

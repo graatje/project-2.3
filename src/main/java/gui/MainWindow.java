@@ -13,6 +13,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import java.io.IOException;
+import java.util.Stack;
 
 public class MainWindow extends Stage {
     private Stage stage;
@@ -20,6 +21,7 @@ public class MainWindow extends Stage {
     private GenericGameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
+    private Stack<viewEnum> viewStack = new Stack();
 
     public static final int WINDOW_WIDTH = 750;
     public static final int WINDOW_HEIGHT = 750;
@@ -106,4 +108,10 @@ public class MainWindow extends Stage {
         }
         show();
     }
+    public void goBackView(){
+        if(!viewStack.isEmpty()){
+            switchView(viewStack.pop());
+        }
+    }
+
 }

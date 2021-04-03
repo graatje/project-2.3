@@ -7,8 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-import java.io.IOException;
-
 public class GenericGameMenuController extends Controller {
 
     @FXML
@@ -28,5 +26,10 @@ public class GenericGameMenuController extends Controller {
     }
 
     public void pressPlayOnline(ActionEvent event) {
+        mainWindow.switchView(MainWindow.viewEnum.GAME);
+    }
+
+    @FXML public void pressBackToMainMenu(ActionEvent event){
+        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
 }

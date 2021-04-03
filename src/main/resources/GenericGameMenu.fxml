@@ -3,8 +3,8 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.geometry.Insets?>
-
 <?import javafx.scene.text.Text?>
+
 <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
@@ -20,5 +20,8 @@
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="5">
         <Button text="Speel Online" onAction ="#pressPlayOnline"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
+        <Button text="Terug naar hoofdmenu" onAction ="#pressBackToMainMenu"/>
     </HBox>
 </GridPane>
