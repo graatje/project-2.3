@@ -45,9 +45,9 @@ public class MainWindow extends Stage {
         GenericGameConfigurationModel ggcModel = new GenericGameConfigurationModel();
         GenericGameConfigurationController ggcController = new GenericGameConfigurationController();
         ggcController.setMainWindow(this);
+        ggcController.setModel(ggcModel);
         ggcView = new GenericGameConfigurationView(
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
-        //TODO: fxml bestanden hoofdletters of niet?
 
         // Gameboard
         GenericGameModel ggModel = new GenericGameModel();

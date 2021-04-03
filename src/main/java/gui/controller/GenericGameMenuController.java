@@ -9,11 +9,8 @@ import javafx.scene.text.Text;
 
 public class GenericGameMenuController extends Controller {
 
-    @FXML
-    Text usernameConfirmation;
-
-    @FXML
-    TextField usernameField;
+    @FXML Text usernameConfirmation;
+    @FXML TextField usernameField;
 
     @FXML public void pressPlayAgainstComputer(ActionEvent event) {
         mainWindow.switchView(MainWindow.viewEnum.GAME);
