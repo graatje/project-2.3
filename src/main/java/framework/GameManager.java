@@ -46,6 +46,10 @@ public class GameManager {
         }
     }
 
+    public void start(Player startingPlayer) {
+        start(startingPlayer, true);
+    }
+
     /**
      * getter for board.
      *
