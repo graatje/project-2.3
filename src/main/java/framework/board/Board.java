@@ -40,6 +40,10 @@ public abstract class Board {
         }
     }
 
+    public abstract int getMinPlayers();
+
+    public abstract int getMaxPlayers();
+
     /**
      * An implementation-specific getter for calculating all valid moves.
      *

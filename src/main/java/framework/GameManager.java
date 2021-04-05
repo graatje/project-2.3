@@ -11,12 +11,11 @@ import java.util.List;
 /**
  * This class manages a game. Including connection, board and players.
  */
-public abstract class GameManager {
+public class GameManager {
 
     protected final Board board;
 
     protected final List<Player> players = new ArrayList<>();
-
 
     /**
      * constructor, initializes connection, board and players.
@@ -28,25 +27,11 @@ public abstract class GameManager {
     }
 
     /**
-     * An implementation-specific getter for the minimum number of players.
-     *
-     * @return The minimum number of players
-     */
-    public abstract int getMinPlayers();
-
-    /**
-     * An implementation-specific getter for the maximum number of players.
-     *
-     * @return The maximum number of players
-     */
-    public abstract int getMaxPlayers();
-
-    /**
      * this method requests a playermove from the board if all players have been initialized.
      */
     public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
-        if (players.size() < getMinPlayers() || players.size() > getMaxPlayers()) {
-            throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
+        if (players.size() < board.getMinPlayers() || players.size() > board.getMaxPlayers()) {
+            throw new IllegalStateException("The number of players must be between " + board.getMinPlayers() + " and " + board.getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
         if (startingPlayer == null) {
