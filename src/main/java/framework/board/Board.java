@@ -17,6 +17,7 @@ public abstract class Board {
     private final Set<BoardObserver> observers = new HashSet<>();
 
     private int currentPlayerId;
+
     private boolean isGameOver = false;
     private Player winner;
 
@@ -79,7 +80,6 @@ public abstract class Board {
      * @return The winner of the game, or <code>null</code> if the game ended in a draw.
      */
     public abstract Player calculateWinner();
-
 
     /**
      * @return The width of the board in tiles
