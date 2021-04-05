@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
 
-public abstract class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
+public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
     private PlayerFactory selfPlayerFactory;
 
     private Client client;
@@ -33,7 +33,7 @@ public abstract class ConnectedGameManager extends GameManager implements GameMa
      * @param boardFactory
      * @param selfPlayerFactory
      */
-    public ConnectedGameManager(String serverIP, int serverPort, BoardFactory boardFactory, PlayerFactory selfPlayerFactory) throws IOException {
+    public ConnectedGameManager(BoardFactory boardFactory, String serverIP, int serverPort, PlayerFactory selfPlayerFactory) throws IOException {
         super(boardFactory);
 
         this.selfPlayerFactory = selfPlayerFactory;
