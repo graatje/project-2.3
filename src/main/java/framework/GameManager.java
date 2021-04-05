@@ -38,7 +38,7 @@ public class GameManager {
             startingPlayer = players.get((int) (Math.random() * players.size()));
         }
 
-        board.setCurrentPlayerID(startingPlayer.getID());
+        board.setCurrentPlayer(startingPlayer);
 
         // Request a move from the first player
         if (requestFirstPlayerMove) {
