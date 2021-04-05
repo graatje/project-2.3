@@ -12,4 +12,9 @@ public class GenericGameConfigurationView extends View {
     @Override
     public void update(Model model) {
     }
+
+    @Override
+    public void drawTiles() {
+
+    }
 }
