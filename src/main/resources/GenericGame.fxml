@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
+    <HBox alignment="CENTER">
+        <Pane fx:id="TTTBoard" prefHeight="500.0" prefWidth="500.0" onMouseReleased="#onMouseReleased"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
+    <Button text="Terug naar hoofdmenu" onAction ="#pressBackToMainMenu"/>
+    </HBox>
+
+
+</GridPane>
+

@@ -18,4 +18,3 @@ public class TTTGameManager extends GameManager {
         return 2;
     }
 }
-
