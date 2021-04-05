@@ -1,4 +1,4 @@
-package Connection;
+package connection;
 
 import org.json.JSONException;
 
@@ -63,9 +63,9 @@ public class Client extends Thread {
 
                 //There was input, handle it
                 if (!input.equals("")) {
-                    try{
+                    try {
                         com.handleServerInput(input);
-                    }catch (JSONException e){
+                    } catch (JSONException e) {
                         //TODO: handle this shiz
                     }
                 }
@@ -73,6 +73,7 @@ public class Client extends Thread {
                 e.printStackTrace();
             }
         }
+        dispose();
     }
 
 
@@ -94,4 +95,30 @@ public class Client extends Thread {
     public CommunicationHandler getCommunicationHandler() {
         return com;
     }
+
+    public void sendForfeitMessage() {
+        com.sendForfeitMessage();
+    }
+
+    public void sendAcceptChallengeMessage(String challengeNumber) {
+        com.sendAcceptChallengeMessage(challengeNumber);
+    }
+
+    public void sendMoveMessage(int move) {
+        com.sendMoveMessage(move);
+    }
+
+    public void sendSubscribeMessage(String gameType) {
+        com.sendSubscribeMessage(gameType);
+    }
+
+    public void sendLogoutMessage() {
+        com.sendLogoutMessage();
+    }
+
+    public void sendLoginMessage(String playerName) {
+        com.sendLoginMessage(playerName);
+    }
+
+
 }

@@ -1,8 +1,12 @@
-package Connection;
+package connection;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
-
-import org.json.*;
 
 public class CommunicationHandler {
 
@@ -42,54 +46,84 @@ public class CommunicationHandler {
     public void handleServerInput(String input) throws JSONException {
         if (input.equals("OK")) return;
 
-        System.out.println("input = " + input);
+        //System.out.println("input = " + input);
 
         JSONObject json = extractJson(input);
 
         String[] split = input.split(" ");
-        if (split[1].equals("GAME")) {
-            switch (split[2]) {
-                case "MATCH":
-                    //A match was assigned to our client.
-                    gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
-                    break;
-                case "YOURTURN":
-                    //It is our turn in the match, so finalize the turn of the ServerPlayer
-                    serverPlayerCommunicationListener.finalizeTurn();
-                    break;
-                case "MOVE":
-                    //The opponent has made a move
-                    serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
-                    break;
-                case "CHALLENGE":
-                    if (input.contains("CANCELLED")) {
-                        gameManagerCommunicationListener.matchCancelled(json.getString("CHALLENGENUMBER"));
-                    }
-                    //There is new information regarding a challenge!
-                    gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
-                    break;
-                default:
-                    handleGameEndServerMessage(split[3]);
-                    break;
-            }
-        } else {
-            System.out.println(input);
+
+        switch (split[1].toUpperCase(Locale.ROOT)) {
+            case "GAME":
+                switch (split[2].toUpperCase(Locale.ROOT)) {
+                    case "MATCH":
+                        //A match was assigned to our client.
+                        gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
+                        break;
+                    case "YOURTURN":
+                        //It is our turn in the match, so finalize the turn of the ServerPlayer
+                        serverPlayerCommunicationListener.finalizeTurn();
+                        break;
+                    case "MOVE":
+                        //The opponent has made a move
+                        serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
+                        break;
+                    case "CHALLENGE":
+                        if (input.contains("CANCELLED")) {
+                            gameManagerCommunicationListener.matchCancelled(json.getString("CHALLENGENUMBER"));
+                        }
+                        //There is new information regarding a challenge!
+                        gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
+                        break;
+                    case "WIN":
+                    case "DRAW":
+                    case "LOSS":
+                        handleGameEndServerMessage(split[3]);
+                }
+                break;
+
+            case "PLAYERLIST":
+                JSONArray playerList = extractJsonPlayerlist(input);
+
+                List<String> lobbyPlayers = new ArrayList<>();
+                for (int i = 0; i < playerList.length(); i++) {
+                    lobbyPlayers.add(playerList.getString(i));
+                }
+
+                gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
+                break;
         }
     }
 
+    /**
+     * @param input The message sent by the server
+     * @return JSONArray containing the message parameters
+     */
+    private JSONArray extractJsonPlayerlist(String input) {
+        if (input.contains("[")) {
+            int startIndex = input.indexOf("[");
+            String json = input.substring(startIndex);
+
+            try {
+                return new JSONArray(json);
+            } catch (JSONException ignored) {
+            }
+        }
+        return null;
+    }
 
     /**
      * @param input The message sent by the server
      * @return JSONObject containing the message parameters
      */
     private JSONObject extractJson(String input) {
-        if(input.contains("{")) {
+        if (input.contains("{")) {
             int startIndex = input.indexOf("{");
             String json = input.substring(startIndex);
 
             try {
                 return new JSONObject(json);
-            } catch (JSONException ignored) {}
+            } catch (JSONException ignored) {
+            }
         }
 
         return null;
@@ -101,8 +135,8 @@ public class CommunicationHandler {
      * @param result The last part of a SVR CHALLENGE server command
      */
     private void handleGameEndServerMessage(String result) {
-        String sub = result.substring(0, 3);
-        serverPlayerCommunicationListener.endMatch(sub);
+        String sub = result.substring(0, 3).trim();
+        gameManagerCommunicationListener.endMatch(sub);
     }
 
     /**
@@ -127,8 +161,6 @@ public class CommunicationHandler {
      * @param gameType The type of game to subscribe for
      */
     public void sendSubscribeMessage(String gameType) {
-        gameType = gameType.toUpperCase(Locale.ROOT);
-
         client.sendCommandToServer("subscribe " + gameType + "\n");
     }
 

@@ -1,46 +1,30 @@
 package framework;
 
-import Connection.Connection;
-import Connection.GameManagerCommunicationListener;
 import framework.board.Board;
 import framework.factory.BoardFactory;
-import framework.factory.PlayerFactory;
 import framework.player.Player;
-import framework.player.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * This class manages a game. Including connection, board and players.
  */
-public abstract class GameManager implements GameManagerCommunicationListener {
+public abstract class GameManager {
 
-    private final Connection connection;
-    private final Board board;
-    private final PlayerFactory selfPlayerFactory;
+    protected final Board board;
 
-    private final List<Player> players = new ArrayList<>();
-
-    private final HashMap<Integer, Match> activeMatches = new HashMap<>();
+    protected final List<Player> players = new ArrayList<>();
 
 
     /**
      * constructor, initializes connection, board and players.
      *
-     * @param connection
      * @param boardFactory
      */
-    public GameManager(Connection connection, BoardFactory boardFactory, PlayerFactory selfPlayerFactory) {
-        this.connection = connection;
+    public GameManager(BoardFactory boardFactory) {
         this.board = boardFactory.createBoard(this);
-        this.selfPlayerFactory = selfPlayerFactory;
-
-        if (connection != null) {
-            connection.getClient().getCommunicationHandler().setGameManagerCommunicationListener(this);
-        }
     }
 
     /**
@@ -65,28 +49,16 @@ public abstract class GameManager implements GameManagerCommunicationListener {
             throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + players.size() + "!");
         }
 
+        if (startingPlayer == null) {
+            startingPlayer = players.get((int) (Math.random() * players.size()));
+        }
+
         board.setCurrentPlayerID(startingPlayer.getID());
 
-        if(requestFirstPlayerMove) {
-            // Request a move from the first player
+        // Request a move from the first player
+        if (requestFirstPlayerMove) {
             board.requestPlayerMove();
         }
-    }
-
-    /**
-     * getter for connection
-     *
-     * @return Connection
-     */
-    public Connection getConnection() {
-        return connection;
-    }
-
-    /**
-     * @return Whether the GameManager possesses a connection object or not
-     */
-    public boolean hasConnection() {
-        return connection != null;
     }
 
     /**
@@ -169,28 +141,5 @@ public abstract class GameManager implements GameManagerCommunicationListener {
         result.removeIf(other -> other == notThis);
 
         return result;
-    }
-
-    @Override
-    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
-        Match match = new Match(opponent, gametype, challengeNR);
-
-        activeMatches.put(match.getChallengeNR(), match);
-    }
-
-    @Override
-    public void startServerMatch(String opponentName, String playerToBegin) {
-        Player opponent = new ServerPlayer(getBoard(), opponentName);
-        Player self = selfPlayerFactory.createPlayer(board, "thisMachine");
-
-        addPlayer(opponent);
-        addPlayer(self);
-
-        start(opponent, false);
-    }
-
-    @Override
-    public void matchCancelled(String challengeNR) {
-        activeMatches.remove(Integer.parseInt(challengeNR));
     }
 }
