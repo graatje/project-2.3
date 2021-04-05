@@ -1,6 +1,11 @@
 package connection;
 
-import java.io.*;
+import org.json.JSONException;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
@@ -58,15 +63,18 @@ public class Client extends Thread {
 
                 //There was input, handle it
                 if (!input.equals("")) {
-                    com.handleServerInput(input);
+                    try {
+                        com.handleServerInput(input);
+                    } catch (JSONException e) {
+                        //TODO: handle this shiz
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        dispose();
     }
-
-
 
     /**
      * Cleans up the client before closing down the thread.
@@ -85,5 +93,29 @@ public class Client extends Thread {
 
     public CommunicationHandler getCommunicationHandler() {
         return com;
+    }
+
+    public void sendForfeitMessage() {
+        com.sendForfeitMessage();
+    }
+
+    public void sendAcceptChallengeMessage(String challengeNumber) {
+        com.sendAcceptChallengeMessage(challengeNumber);
+    }
+
+    public void sendMoveMessage(int move) {
+        com.sendMoveMessage(move);
+    }
+
+    public void sendSubscribeMessage(String gameType) {
+        com.sendSubscribeMessage(gameType);
+    }
+
+    public void sendLogoutMessage() {
+        com.sendLogoutMessage();
+    }
+
+    public void sendLoginMessage(String playerName) {
+        com.sendLoginMessage(playerName);
     }
 }

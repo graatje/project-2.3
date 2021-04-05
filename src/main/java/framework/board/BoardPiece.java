@@ -18,10 +18,20 @@ public class BoardPiece {
     }
 
     /**
+     * compares if the boardpiece is on the same position as the boardpiece it is compared with.
+     *
+     * @param otherBoardPiece
+     * @return boolean, true if on same position, false otherwise.
+     */
+    public boolean equals(BoardPiece otherBoardPiece) {
+        return this.x == otherBoardPiece.getX() && this.y == otherBoardPiece.getY();
+    }
+
+    /**
      * Constructs a BoardPiece with an owner.
      *
-     * @param x The X-coordinate of this piece.
-     * @param y The X-coordinate of this piece.
+     * @param x     The X-coordinate of this piece.
+     * @param y     The X-coordinate of this piece.
      * @param owner The current owner of this piece.
      */
     public BoardPiece(int x, int y, Player owner) {

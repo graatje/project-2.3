@@ -8,17 +8,21 @@ import framework.board.Board;
 public abstract class Player {
     protected final Board board;
     private int id;
-    
+    private String name;
+
     /**
      * constructor
+     *
      * @param board, the Board.
      */
-    public Player(Board board) {
+    public Player(Board board, String name) {
+        this.name = name;
         this.board = board;
     }
 
     /**
      * getter for the board
+     *
      * @return Board board
      */
     public Board getBoard() {
@@ -37,5 +41,21 @@ public abstract class Player {
      */
     public void setID(int id) {
         this.id = id;
+    }
+
+    /**
+     * @return Name of this player
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Setter for player name
+     *
+     * @param name The name of this player
+     */
+    public void setName(String name) {
+        this.name = name;
     }
 }

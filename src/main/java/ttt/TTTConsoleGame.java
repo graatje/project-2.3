@@ -1,56 +1,66 @@
 package ttt;
 
-import connection.Connection;
-import framework.GameManager;
+import framework.ConnectedGameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.Player;
-import framework.player.ConsoleLocalPlayer;
-import ttt.player.TTTRandomAIPlayer;
+import ttt.factory.TTTAIPlayerFactory;
+
+import java.io.IOException;
 
 public class TTTConsoleGame implements BoardObserver {
     public static void main(String[] args) {
         new TTTConsoleGame();
     }
 
-    private final Board board;
+    private Board board;
 
     public TTTConsoleGame() {
-        Connection connection = new Connection("localhost", 7789);
+        ConnectedGameManager gameManager;
+        try {
+            gameManager = new TTTConnectedGameManager("localhost", 7789, new TTTAIPlayerFactory(3));
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        GameManager gameManager = new TTTGameManager(connection);
+            System.exit(-1);
+            return;
+        }
+
         board = gameManager.getBoard();
-
         board.registerObserver(this);
 
-        gameManager.addPlayer(new TTTRandomAIPlayer(board));
-        gameManager.addPlayer(new ConsoleLocalPlayer(board));
-
-        gameManager.start();
+//        gameManager.setSelfName("Mike");
+        gameManager.login();
+        gameManager.subscribe("Tic-tac-toe");
     }
 
     @Override
-    public void boardUpdated() {
+    public void onPlayerMoved(Player who, BoardPiece where) {
+    }
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) {
         System.out.println();
         System.out.println("Current board:");
-        for(int y = 0; y < board.getHeight(); y++) {
-            for(int x = 0; x < board.getWidth(); x++) {
+        for (int y = 0; y < board.getHeight(); y++) {
+            for (int x = 0; x < board.getWidth(); x++) {
                 BoardPiece piece = board.getBoardPiece(x, y);
                 System.out.print(getPlayerChar(piece.getOwner()));
             }
             System.out.println();
         }
+    }
 
-        if(board.isGameOver()) {
-            System.out.println();
-            System.out.println("---");
-            System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
-        }
+    @Override
+    public void onPlayerWon(Player who) {
+        System.out.println();
+        System.out.println("---");
+        System.out.println("GAME OVER! Winner: " + getPlayerChar(board.getWinner()));
     }
 
     private char getPlayerChar(Player player) {
-        if(player != null) {
+        if (player != null) {
             if (player.getID() == 0) {
                 return 'X';
             } else if (player.getID() == 1) {

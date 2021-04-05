@@ -1,9 +1,20 @@
 package framework.board;
 
-@FunctionalInterface
+import framework.player.Player;
+
 public interface BoardObserver {
     /**
-     * A handler for when the board state gets updated.
+     * A handler for when a player moves (aka when the board state gets updated).
      */
-    void boardUpdated();
+    void onPlayerMoved(Player who, BoardPiece where);
+
+    /**
+     * A handler for when a player move finalizes
+     */
+    void onPlayerMoveFinalized(Player previous, Player current);
+
+    /**
+     * A handler for when a player wins
+     */
+    void onPlayerWon(Player who);
 }
