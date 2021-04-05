@@ -76,7 +76,6 @@ public class Client extends Thread {
         dispose();
     }
 
-
     /**
      * Cleans up the client before closing down the thread.
      */
@@ -119,6 +118,4 @@ public class Client extends Thread {
     public void sendLoginMessage(String playerName) {
         com.sendLoginMessage(playerName);
     }
-
-
 }

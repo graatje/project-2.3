@@ -14,6 +14,16 @@ public class TTTBoard extends Board {
     }
 
     @Override
+    public int getMinPlayers() {
+        return 2;
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        return 2;
+    }
+
+    @Override
     public List<BoardPiece> getValidMoves() {
         List<BoardPiece> result = new ArrayList<>();
 
