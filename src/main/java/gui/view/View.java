@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import gui.controller.Controller;
 
-public abstract class View extends Scene {
+public abstract class View<T extends Model> extends Scene {
 
     protected Controller controller;
 
@@ -15,9 +15,5 @@ public abstract class View extends Scene {
         this.controller = controller;
     }
 
-    public abstract void update(Model model);
-
-    //TODO: vragen: TTTView/Othello View maken (of generiek houden en drawTile meerdere parameters meegeven?!)
-    //TODO: Board-parameter instellen
-    public abstract void drawTiles();
+    public abstract void update(T model);
 }

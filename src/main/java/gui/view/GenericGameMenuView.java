@@ -15,9 +15,4 @@ public class GenericGameMenuView extends View {
     public void update(Model model) {
 
     }
-
-    @Override
-    public void drawTiles() {
-
-    }
 }

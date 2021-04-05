@@ -1,27 +1,34 @@
 package gui;
 
+import framework.ConnectedGameManager;
+import framework.GameManager;
+import framework.player.LocalPlayer;
 import gui.controller.*;
 import gui.model.GenericGameConfigurationModel;
 import gui.model.GenericGameMenuModel;
 import gui.model.GenericGameModel;
 import gui.model.MainMenuModel;
+import gui.view.GameView;
 import gui.view.GenericGameConfigurationView;
 import gui.view.GenericGameMenuView;
-import gui.view.GenericGameView;
 import gui.view.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
+import ttt.factory.TTTAIPlayerFactory;
+import ttt.factory.TTTBoardFactory;
+import ttt.player.TTTAIPlayer;
+
 import java.io.IOException;
-import java.util.Stack;
+import java.util.Arrays;
 
 public class MainWindow extends Stage {
     private Stage stage;
     private GenericGameConfigurationView ggcView;
-    private GenericGameView ggView;
+    private GameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
-    private Stack<viewEnum> viewStack = new Stack();
+    //private Stack<viewEnum> viewStack = new Stack();
 
     public static final int WINDOW_WIDTH = 750;
     public static final int WINDOW_HEIGHT = 750;
@@ -50,14 +57,42 @@ public class MainWindow extends Stage {
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggcModel.registerView(ggcView);
 
-        // Gameboard
-        GenericGameModel ggModel = new GenericGameModel();
+        // TTT Gameboard
+        //TODO: dit dynamisch doen als othello/ttt geselecteerd wordt
+//        ConnectedGameManager gameManager;
+//        try {
+//            gameManager = new ConnectedGameManager(new TTTBoardFactory(), "main-vps.woutergritter.me", 7789, new TTTAIPlayerFactory(3));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//
+//            System.exit(-1);
+//            return;
+//        }
+//        gameManager.setSelfName("2zqa");
+
+        GameManager gameManager = new GameManager(new TTTBoardFactory());
+        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
+        gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), "Robot1", 2));
+
+        GenericGameModel ggModel = new GenericGameModel(gameManager);
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
-        ggView = new GenericGameView(
-                getFXMLParent("GenericGame.fxml", ggController), ggController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        ggView = new GameView(
+                getFXMLParent("GenericGame.fxml", ggController),
+                ggController,
+                WINDOW_WIDTH,
+                WINDOW_HEIGHT,
+                Arrays.asList(
+                        getClass().getResource("/boardPieces/x.png"),
+                        getClass().getResource("/boardPieces/o.png")
+                )
+        );
         ggModel.registerView(ggView);
+
+        gameManager.start(null);
+//        gameManager.login();
+//        gameManager.subscribe("Tic-tac-toe");
 
         // Game Menu
         GenericGameMenuModel ggmModel = new GenericGameMenuModel();
@@ -112,10 +147,10 @@ public class MainWindow extends Stage {
         }
         show();
     }
-    public void goBackView(){
-        if(!viewStack.isEmpty()){
-            switchView(viewStack.pop());
-        }
-    }
+//    public void goBackView(){
+//        if(!viewStack.isEmpty()){
+//            switchView(viewStack.pop());
+//        }
+//    }
 
 }
