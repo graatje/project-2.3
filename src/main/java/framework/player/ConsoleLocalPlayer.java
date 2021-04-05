@@ -64,6 +64,6 @@ public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
             y = _y;
         }
 
-        board.makeMove(this, x, y);
+        executeMove(x, y);
     }
 }

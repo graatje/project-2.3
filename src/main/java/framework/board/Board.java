@@ -10,15 +10,16 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class Board {
-    private final GameManager gameManager;
+    protected final GameManager gameManager;
     protected final int width, height;
     protected final BoardPiece[] pieces;
 
+    private final Set<BoardObserver> observers = new HashSet<>();
+
     private int currentPlayerId;
+
     private boolean isGameOver = false;
     private Player winner;
-
-    private final Set<BoardObserver> observers = new HashSet<>();
 
     /**
      * Constructs a new Board
@@ -40,8 +41,14 @@ public abstract class Board {
         }
     }
 
+    /**
+     * @return The minimum amount of players required to start a game on this board.
+     */
     public abstract int getMinPlayers();
 
+    /**
+     * @return The maximum amount of players required to start a game on this board.
+     */
     public abstract int getMaxPlayers();
 
     /**
@@ -73,7 +80,6 @@ public abstract class Board {
      * @return The winner of the game, or <code>null</code> if the game ended in a draw.
      */
     public abstract Player calculateWinner();
-
 
     /**
      * @return The width of the board in tiles
@@ -247,12 +253,11 @@ public abstract class Board {
         return gameManager.getPlayer(currentPlayerId);
     }
 
-    public int getCurrentPlayerID() {
-        return currentPlayerId;
-    }
-
-    public void setCurrentPlayerID(int startingPlayer) {
-        currentPlayerId = startingPlayer;
+    /**
+     * @param currentPlayer Sets the current player who is expected to make a move.
+     */
+    public void setCurrentPlayer(Player currentPlayer) {
+        currentPlayerId = currentPlayer.getID();
     }
 
     /**
@@ -272,6 +277,23 @@ public abstract class Board {
         }
 
         return winner;
+    }
+
+    /**
+     * @param piece The piece to check
+     * @return Whether the specified piece is a valid move or not.
+     */
+    public boolean isValidMove(BoardPiece piece) {
+        return getValidMoves().contains(piece);
+    }
+
+    /**
+     * @param x The X-coordinate of the piece to check
+     * @param y The Y-coordinate of the piece to check
+     * @return Whether the specified piece is a valid move or not.
+     */
+    public boolean isValidMove(int x, int y) {
+        return isValidMove(getBoardPiece(x, y));
     }
 
     /**

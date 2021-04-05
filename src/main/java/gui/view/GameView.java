@@ -1,20 +1,47 @@
 package gui.view;
 
+import framework.board.BoardPiece;
 import gui.controller.Controller;
+import gui.model.GenericGameModel;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
 
-public abstract class GameView extends View {
+import java.io.IOException;
+import java.net.URL;
+import java.util.List;
 
-    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
+public class GameView extends View<GenericGameModel> {
+
+    private Pane gameBoardPane;
+    private List<URL> playerIconFileURLs;
+
+    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
         super(parent, controller, windowWidth, windowHeight);
+        gameBoardPane = (Pane) lookup("#Board");
+        this.playerIconFileURLs = playerIconFileURLs;
     }
 
-    public void drawBoard(int gridSize, String paneName) {
-        Pane TTTBoard = (Pane) lookup(paneName);
-        double boardSize = TTTBoard.getPrefWidth();
-        System.out.println("board size: "+boardSize);
+    @Override
+    public void update(GenericGameModel model) {
+        int gridSize = model.getBoard().getWidth();
+        drawBoard(gridSize);
+
+        for(int x=0;x<gridSize;x++) {
+            for(int y=0;y<gridSize;y++) {
+                drawPiece(model.getBoard().getBoardPiece(x, y), gridSize);
+            }
+        }
+    }
+
+    public void drawBoard(int gridSize) {
+        // Clear board
+        gameBoardPane.getChildren().clear();
+
+        double boardSize = gameBoardPane.getPrefWidth();
+        System.out.println("DEBUG: board size: "+boardSize);
 
         // 3 gridboxes => 2 lines 1|2|3
         for(int i=0;i<gridSize-1;i++) {
@@ -32,14 +59,37 @@ public abstract class GameView extends View {
             verticalDivider.setEndX(boardSize);
             verticalDivider.setEndY(pos);
 
-            TTTBoard.getChildren().add(horizontalDivider);
-            TTTBoard.getChildren().add(verticalDivider);
+            gameBoardPane.getChildren().add(horizontalDivider);
+            gameBoardPane.getChildren().add(verticalDivider);
         }
     }
 
-    @Override
-    //TODO: board-parameter meegeven
-    public void drawTiles() {
+    public void drawPiece(BoardPiece piece, int gridSize) {
+        if(!piece.hasOwner()) {
+            return;
+        }
 
+        int x = piece.getX();
+        int y = piece.getY();
+        double cellSize = (double) gameBoardPane.getWidth()/gridSize;
+
+        // Hoop dat er geen outofbounds komt! lol
+        URL pngURL = playerIconFileURLs.get(piece.getOwner().getID());
+
+        // Create image
+        Image pieceImage;
+        try {
+            pieceImage = new Image(pngURL.openStream(), cellSize, cellSize, true, true);
+        } catch(IOException e) {
+            System.err.println("Image does not exist?");
+            e.printStackTrace();
+            return; // stop, image not found
+        }
+
+        // Draw
+        ImageView imageView = new ImageView(pieceImage);
+        imageView.setX(x*cellSize);
+        imageView.setY(y*cellSize);
+        gameBoardPane.getChildren().add(imageView);
     }
 }

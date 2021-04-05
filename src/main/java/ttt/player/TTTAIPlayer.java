@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Random;
 
 public class TTTAIPlayer extends AIPlayer {
-    int difficulty = 1;
-
+    private int difficulty = 1;
 
     public TTTAIPlayer(Board board, String name, int difficulty) {
         super(board, name);
@@ -28,10 +27,7 @@ public class TTTAIPlayer extends AIPlayer {
         } catch (InterruptedException ignored) {
         }
 
-        // BoardPiece bestMove = getBestMove(board);
-
-        BoardPiece move = null;
-
+        BoardPiece move;
         switch (difficulty) {
             case 1:
                 move = getEasyMove(board);
@@ -42,7 +38,8 @@ public class TTTAIPlayer extends AIPlayer {
             case 3:
                 move = getBestMove(board);
                 break;
-
+            default:
+                throw new IllegalStateException("Unimplemented difficulty " + difficulty + "!");
         }
 
         board.makeMove(board.getCurrentPlayer(), move);
@@ -76,7 +73,7 @@ public class TTTAIPlayer extends AIPlayer {
             return bestMove;
         } else { // random move that is not the best move.
             if (validMoves.size() > 1) {  // prevent getting empty list of moves.
-                validMoves.remove(validMoves.indexOf(bestMove));
+                validMoves.remove(bestMove);
             }
             return validMoves.get(rand.nextInt(validMoves.size()));
         }

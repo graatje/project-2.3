@@ -62,7 +62,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.sendSubscribeMessage(gameName);
     }
 
-
     public Client getClient() {
         return client;
     }
