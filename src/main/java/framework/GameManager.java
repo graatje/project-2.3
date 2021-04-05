@@ -12,7 +12,6 @@ import java.util.List;
  * This class manages a game. Including connection, board and players.
  */
 public class GameManager {
-
     protected final Board board;
 
     protected final List<Player> players = new ArrayList<>();
@@ -38,7 +37,7 @@ public class GameManager {
             startingPlayer = players.get((int) (Math.random() * players.size()));
         }
 
-        board.setCurrentPlayerID(startingPlayer.getID());
+        board.setCurrentPlayer(startingPlayer);
 
         // Request a move from the first player
         if (requestFirstPlayerMove) {
@@ -56,7 +55,6 @@ public class GameManager {
      * @return Board
      */
     public Board getBoard() {
-
         return board;
     }
 
@@ -69,12 +67,12 @@ public class GameManager {
         return Collections.unmodifiableList(players);
     }
 
+    /**
+     * getter for an individual player from the array players.
+     * @param id the index of the player in the arraylist players.
+     * @return Player player.
+     */
     public Player getPlayer(int id) {
-        /**
-         * getter for an individual player from the array players.
-         * @param int id, the index of the player in the arraylist players.
-         * @return Player player.
-         */
         if (id < 0 || id >= players.size()) {
             throw new IllegalArgumentException("Invalid player ID!");
         }

@@ -15,6 +15,12 @@ public class LocalPlayer extends Player {
         super(board, name);
     }
 
+    /**
+     * Executes a move as the local player.
+     *
+     * @param x The X-coordinate to move to
+     * @param y The Y-coordinate to move to
+     */
     public void executeMove(int x, int y) {
         board.makeMove(this, x, y);
     }
