@@ -14,4 +14,8 @@ public class LocalPlayer extends Player {
     public LocalPlayer(Board board, String name) {
         super(board, name);
     }
+
+    public void executeMove(int x, int y) {
+        board.makeMove(this, x, y);
+    }
 }
