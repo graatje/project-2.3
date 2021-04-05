@@ -274,6 +274,14 @@ public abstract class Board {
         return winner;
     }
 
+    public boolean isValidMove(BoardPiece piece) {
+        return getValidMoves().contains(piece);
+    }
+
+    public boolean isValidMove(int x, int y) {
+        return isValidMove(getBoardPiece(x, y));
+    }
+
     /**
      * Registers a BoardObserver.
      *
