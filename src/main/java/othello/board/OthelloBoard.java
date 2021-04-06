@@ -216,9 +216,9 @@ public class OthelloBoard extends Board {
 
 	@Override
 	public void prepareBoard(Player startPlayer) {
-		getBoardPiece(3,3).setOwner(startPlayer);
-		getBoardPiece(4,4).setOwner(startPlayer);
-		getBoardPiece(3,4).setOwner(gameManager.getOtherPlayer(startPlayer));
-		getBoardPiece(4,3).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(3,3).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(4,4).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(3,4).setOwner(startPlayer);
+		getBoardPiece(4,3).setOwner(startPlayer);
 	}
 }
