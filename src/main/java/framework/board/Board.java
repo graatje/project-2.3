@@ -121,14 +121,18 @@ public abstract class Board {
         }
 
         if (startingPlayer == null) {
-            currentPlayerId = (int) (Math.random() * gameManager.getNumPlayers());
-        } else {
-            currentPlayerId = startingPlayer.getID();
+            startingPlayer = gameManager.getPlayer((int) (Math.random() * gameManager.getNumPlayers()));
         }
+
+        currentPlayerId = startingPlayer.getID();
 
         prepareBoard(startingPlayer);
 
         boardState = BoardState.PLAYING;
+
+        for(BoardObserver o : observers) {
+            o.onGameStart(startingPlayer);
+        }
 
         // Request a move from the first player
         if (requestFirstPlayerMove) {
