@@ -9,7 +9,7 @@
     <padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1">
-        <TextField id="Gebruikersnaam" fx:id="usernameField"/>
+        <TextField id="Username" fx:id="usernameField"/>
         <Button text="OK" onAction ="#pressOKUsername"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="3">
@@ -17,12 +17,12 @@
     </HBox>
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="4">
-        <Button text="Speel tegen de Computer" onAction="#pressPlayAgainstComputer"/>
+        <Button text="Play against the computer" onAction="#pressPlayAgainstComputer"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="5">
-        <Button text="Speel Online" onAction ="#pressPlayOnline"/>
+        <Button text="Play Online" onAction ="#pressPlayOnline"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
-        <Button text="Terug naar hoofdmenu" onAction ="#pressBackToMainMenu"/>
+        <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
     </HBox>
 </GridPane>

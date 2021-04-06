@@ -3,11 +3,14 @@ package gui.view;
 import framework.board.BoardPiece;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
@@ -17,6 +20,7 @@ public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
+    @FXML Text infoTextField;
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
         super(parent, controller, windowWidth, windowHeight);
@@ -96,5 +100,8 @@ public class GameView extends View<GenericGameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
-
+    public void setInfoText(String message){
+        infoTextField = (Text) lookup("#message");
+        infoTextField.setText(message);
+    }
 }

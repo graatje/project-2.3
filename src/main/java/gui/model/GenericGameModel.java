@@ -7,6 +7,7 @@ import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.LocalPlayer;
 import framework.player.Player;
+import gui.view.GameView;
 import gui.view.View;
 import javafx.application.Platform;
 
@@ -15,6 +16,7 @@ public class GenericGameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize = 500; //TODO: opvragen van fxml?
+    private String infoMessage;
 
     /**
      * Sets gameManager and board variables, and registers this model as observer.
@@ -41,10 +43,13 @@ public class GenericGameModel extends Model implements BoardObserver {
             if(gameManager.getBoard().isValidMove(xTile, yTile)) {
                 ((LocalPlayer) player).executeMove(xTile, yTile);
             } else {
-                System.out.println("Ongeldige zet");
+                infoMessage = "Invalid move";
             }
-        } else {
-            System.out.println("Wacht op je beurt");
+            } else {
+            infoMessage = "Wait for your turn";
+            }
+        for(View view : observers) {
+            ((GameView)view).setInfoText(infoMessage);
         }
     }
 
@@ -72,9 +77,9 @@ public class GenericGameModel extends Model implements BoardObserver {
         String message = null;
 
         if(who == null){
-            message="Helaas, het is gelijkspel";
+            message="It's a draw";
         }else{
-            message= who.getName() + " heeft gewonnen!";
+            message= who.getName() + " has won!";
         }
 
         for(View view : observers) {
