@@ -72,9 +72,9 @@ public class GenericGameModel extends Model implements BoardObserver {
         String message = null;
 
         if(who == null){
-            message="Helaas, het is gelijkspel";
+            message="It's a draw";
         }else{
-            message= who.getName() + " heeft gewonnen!";
+            message= who.getName() + " has won!";
         }
 
         for(View view : observers) {

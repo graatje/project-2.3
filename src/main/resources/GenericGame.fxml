@@ -11,7 +11,7 @@
         <Pane fx:id="Board" prefHeight="500.0" prefWidth="500.0" onMouseReleased="#onMouseReleased"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
-        <Button text="Terug naar hoofdmenu" onAction ="#pressBackToMainMenu"/>
+        <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
         <Text id="message" fx:id="messageField"/>
