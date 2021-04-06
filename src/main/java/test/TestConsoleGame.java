@@ -32,8 +32,8 @@ public class TestConsoleGame implements BoardObserver {
         final String SERVER_SELF_NAME = "TestConsoleGame-" + (int) (Math.random() * 100);
 
         final Function<GameManager, Board> boardProvider = OthelloBoard::new;
-        final Function<Board, Player> localPlayerProvider = b -> new MinimaxAIPlayer(b, 1, MinimaxAIPlayer.AIDifficulty.EASY);
-        final Function<Board, Player> secondPlayerProvider = b -> new MinimaxAIPlayer(b, 1, MinimaxAIPlayer.AIDifficulty.EASY);
+        final Function<Board, Player> localPlayerProvider = b -> new MinimaxAIPlayer(b, 4, MinimaxAIPlayer.AIDifficulty.HARD);
+        final Function<Board, Player> secondPlayerProvider = b -> new MinimaxAIPlayer(b, 4, MinimaxAIPlayer.AIDifficulty.HARD);
 
         if(CONNECT_TO_SERVER) {
             // -- SERVER GAME -- //
@@ -88,6 +88,7 @@ public class TestConsoleGame implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
+        System.out.println("MOVE BY " + getPlayerChar(who) + ": (" + where.getX() + ", " + where.getY() + ")");
     }
 
     @Override
@@ -111,11 +112,20 @@ public class TestConsoleGame implements BoardObserver {
 
     private void printBoard() {
         System.out.println("Current board:");
+
+        System.out.print("  ");
+        for(int x = 0; x < board.getWidth(); x++) {
+            System.out.print(x + " ");
+        }
+        System.out.println();
+
         for (int y = 0; y < board.getHeight(); y++) {
+            System.out.print(y + " ");
             for (int x = 0; x < board.getWidth(); x++) {
                 BoardPiece piece = board.getBoardPiece(x, y);
-                System.out.print(getPlayerChar(piece.getOwner()));
+                System.out.print(getPlayerChar(piece.getOwner()) + " ");
             }
+            System.out.println();
             System.out.println();
         }
     }
@@ -123,7 +133,7 @@ public class TestConsoleGame implements BoardObserver {
     private char getPlayerChar(Player player) {
         if (player != null) {
             if (player.getID() == 0) {
-                return 'X';
+                return '#';
             } else if (player.getID() == 1) {
                 return 'O';
             }
