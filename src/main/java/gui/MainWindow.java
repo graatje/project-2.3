@@ -15,8 +15,7 @@ import gui.view.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import ttt.factory.TTTAIPlayerFactory;
-import ttt.factory.TTTBoardFactory;
+import ttt.board.TTTBoard;
 import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
@@ -61,7 +60,7 @@ public class MainWindow extends Stage {
         //TODO: dit dynamisch doen als othello/ttt geselecteerd wordt
 //        ConnectedGameManager gameManager;
 //        try {
-//            gameManager = new ConnectedGameManager(new TTTBoardFactory(), "main-vps.woutergritter.me", 7789, new TTTAIPlayerFactory(3));
+//            gameManager = new ConnectedGameManager(TTTBoard::new, "main-vps.woutergritter.me", 7789, b -> new TTTAIPlayer(b, 3));
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //
@@ -70,7 +69,7 @@ public class MainWindow extends Stage {
 //        }
 //        gameManager.setSelfName("2zqa");
 
-        GameManager gameManager = new GameManager(new TTTBoardFactory());
+        GameManager gameManager = new GameManager(TTTBoard::new);
         gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
         gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), "Robot1", 2));
 
