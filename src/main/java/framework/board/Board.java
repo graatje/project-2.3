@@ -83,6 +83,13 @@ public abstract class Board {
     public abstract Player calculateWinner();
 
     /**
+     * Prepares the board.
+     *
+     * @param startPlayer The player who will start.
+     */
+    public abstract void prepareBoard(Player startPlayer);
+
+    /**
      * @return The width of the board in tiles
      */
     public int getWidth() {
@@ -118,6 +125,8 @@ public abstract class Board {
         } else {
             currentPlayerId = startingPlayer.getID();
         }
+
+        prepareBoard(startingPlayer);
 
         boardState = BoardState.PLAYING;
 

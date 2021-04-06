@@ -76,6 +76,9 @@ public class TTTBoard extends Board {
         return null;
     }
 
+    @Override
+    public void prepareBoard(Player startPlayer) { /* Start with an empty board */ }
+
     private Player getPlayerOwningLine(int sx, int sy, int dx, int dy) {
         if (dx == 0 && dy == 0) {
             throw new IllegalArgumentException("dx and dy cannot both be 0.");
