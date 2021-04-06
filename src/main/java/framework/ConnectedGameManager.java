@@ -55,6 +55,20 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.start();
     }
 
+    /**
+     * Closes the previous connection, and starts a new one
+     *
+     * @param serverIP
+     * @param serverPort
+     * @throws IOException
+     */
+    public void resetClient(String serverIP, int serverPort) throws IOException{
+        client.sendLogoutMessage();
+        client.dispose();
+
+        createClient(serverIP, serverPort);
+    }
+
     public void login() {
         client.sendLoginMessage(selfName);
     }
@@ -89,6 +103,14 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     public void setSelfPlayerSupplier(Function<Board, Player> selfPlayerSupplier) {
         this.selfPlayerSupplier = selfPlayerSupplier;
+    }
+
+    public void challengePlayer(String playerToChallenge, String gameType){
+        client.sendChallengeMessage(playerToChallenge, gameType);
+    }
+
+    public void acceptChallenge(int challengeNr){
+        client.acceptChallenge(challengeNr);
     }
 
     @Override
@@ -156,4 +178,5 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onPlayerWon(Player who) {
     }
+
 }
