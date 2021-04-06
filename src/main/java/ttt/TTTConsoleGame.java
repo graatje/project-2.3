@@ -22,7 +22,7 @@ public class TTTConsoleGame implements BoardObserver {
         try {
             gameManager = new ConnectedGameManager(
                     TTTBoard::new,
-                    "localhost",
+                    "main-vps.woutergritter.me",
                     7789,
                     b -> new TTTAIPlayer(b, 3)
             );
