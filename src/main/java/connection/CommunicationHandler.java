@@ -91,6 +91,10 @@ public class CommunicationHandler {
 
                 gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
                 break;
+
+            case "ERR":
+                System.out.println(input);
+                break;
         }
     }
 
