@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public class CommunicationHandler {
 
+    protected static final boolean DEBUG = false;
+
     private Client client;
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
@@ -44,9 +46,11 @@ public class CommunicationHandler {
      * @param input The message given by the server
      */
     public void handleServerInput(String input) throws JSONException {
-        if (input.equals("OK")) return;
+        if (DEBUG) {
+            System.out.println("DEBUG: from server = " + input);
+        }
 
-        //System.out.println("DEBUG: input = " + input);
+        if (input.equals("OK")) return;
 
         JSONObject json = extractJson(input);
 
@@ -199,9 +203,9 @@ public class CommunicationHandler {
      * Challenges a player in the lobby
      *
      * @param playerToChallenge The other player to challenge
-     * @param gameType The game to play
+     * @param gameType          The game to play
      */
-    public void sendChallengeMessage(String playerToChallenge, String gameType){
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {
         client.sendCommandToServer("challenge \"" + playerToChallenge + "\"" + gameType + "\"\n");
     }
 
