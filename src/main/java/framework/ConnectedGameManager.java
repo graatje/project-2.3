@@ -95,6 +95,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.sendChallengeMessage(playerToChallenge, gameType);
     }
 
+    public void acceptChallenge(int challengeNr){
+        client.acceptChallenge(challengeNr);
+    }
+
     @Override
     public void getMatchRequest(String opponent, String gametype, String challengeNR) {
         Match match = new Match(opponent, gametype, challengeNR);

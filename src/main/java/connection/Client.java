@@ -120,4 +120,6 @@ public class Client extends Thread {
     }
 
     public void sendChallengeMessage(String playerToChallenge, String gameType) {com.sendChallengeMessage(playerToChallenge, gameType);}
+
+    public void acceptChallenge(int challengeNr) {com.sendAcceptChallengeMessage(""+challengeNr); }
 }
