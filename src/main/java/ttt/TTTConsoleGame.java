@@ -1,11 +1,9 @@
 package ttt;
 
 import framework.ConnectedGameManager;
-import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.player.ConsoleLocalPlayer;
 import framework.player.Player;
 import ttt.board.TTTBoard;
 import ttt.player.TTTAIPlayer;
@@ -43,15 +41,15 @@ public class TTTConsoleGame implements BoardObserver {
 //        gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), 2));
 //        gameManager.addPlayer(new ConsoleLocalPlayer(gameManager.getBoard()));
 
+        /* Send commands to the server through the console input. Comment this when using a ConsoleLocalPlayer! */
         new Thread(() -> {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-            try{
-                while(true) {
+            try {
+                while (true) {
                     String line = reader.readLine();
-                    System.out.println("SENDING COMMAND: " + line);
                     gameManager.getClient().sendCommandToServer(line + '\n');
                 }
-            }catch(IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();

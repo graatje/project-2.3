@@ -90,9 +90,9 @@ public class TTTAIPlayer extends AIPlayer {
      * returns the highest value move when the end is reached because either a lack of valid moves,
      * the end of a node or the maximum search depth is reached.
      *
-     * @param board   a playing board.
-     * @param depth   , depth of the nodes to look into.
-     * @param isMax , mini(malising) or maxi(malising)
+     * @param board a playing board.
+     * @param depth depth of the nodes to look into.
+     * @param isMax mini(malising) or maxi(malising)
      * @return int value of the board.
      */
     private int miniMax(Board board, int depth, boolean isMax) {

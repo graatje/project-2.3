@@ -14,7 +14,7 @@ public abstract class Player {
      * constructor
      *
      * @param board the Board.
-     * @param name the player-name.
+     * @param name  the player-name.
      */
     public Player(Board board, String name) {
         this.name = name;

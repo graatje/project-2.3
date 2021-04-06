@@ -68,6 +68,7 @@ public class GameManager {
 
     /**
      * getter for an individual player from the array players.
+     *
      * @param id the index of the player in the arraylist players.
      * @return Player player.
      */

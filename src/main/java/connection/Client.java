@@ -45,6 +45,10 @@ public class Client extends Thread {
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
+        if (CommunicationHandler.DEBUG) {
+            System.out.println("DEBUG: to server   = " + command.trim());
+        }
+
         outputStream.print(command);
         outputStream.flush();
     }
@@ -73,13 +77,13 @@ public class Client extends Thread {
                 e.printStackTrace();
             }
         }
-        dispose();
+        close();
     }
 
     /**
      * Cleans up the client before closing down the thread.
      */
-    public void dispose() {
+    public void close() {
         try {
             running = false;
             inputStream.close();
@@ -119,7 +123,11 @@ public class Client extends Thread {
         com.sendLoginMessage(playerName);
     }
 
-    public void sendChallengeMessage(String playerToChallenge, String gameType) {com.sendChallengeMessage(playerToChallenge, gameType);}
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {
+        com.sendChallengeMessage(playerToChallenge, gameType);
+    }
 
-    public void acceptChallenge(int challengeNr) {com.sendAcceptChallengeMessage(""+challengeNr); }
+    public void acceptChallenge(int challengeNr) {
+        com.sendAcceptChallengeMessage("" + challengeNr);
+    }
 }
