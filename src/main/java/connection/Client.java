@@ -45,7 +45,7 @@ public class Client extends Thread {
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
-        if(CommunicationHandler.DEBUG) {
+        if (CommunicationHandler.DEBUG) {
             System.out.println("DEBUG: to server   = " + command.trim());
         }
 
@@ -123,7 +123,11 @@ public class Client extends Thread {
         com.sendLoginMessage(playerName);
     }
 
-    public void sendChallengeMessage(String playerToChallenge, String gameType) {com.sendChallengeMessage(playerToChallenge, gameType);}
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {
+        com.sendChallengeMessage(playerToChallenge, gameType);
+    }
 
-    public void acceptChallenge(int challengeNr) {com.sendAcceptChallengeMessage(""+challengeNr); }
+    public void acceptChallenge(int challengeNr) {
+        com.sendAcceptChallengeMessage("" + challengeNr);
+    }
 }

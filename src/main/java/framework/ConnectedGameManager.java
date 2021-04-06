@@ -62,7 +62,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
      * @param serverPort
      * @throws IOException
      */
-    public void resetClient(String serverIP, int serverPort) throws IOException{
+    public void resetClient(String serverIP, int serverPort) throws IOException {
         client.sendLogoutMessage();
         client.dispose();
 
@@ -105,11 +105,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfPlayerSupplier = selfPlayerSupplier;
     }
 
-    public void challengePlayer(String playerToChallenge, String gameType){
+    public void challengePlayer(String playerToChallenge, String gameType) {
         client.sendChallengeMessage(playerToChallenge, gameType);
     }
 
-    public void acceptChallenge(int challengeNr){
+    public void acceptChallenge(int challengeNr) {
         client.acceptChallenge(challengeNr);
     }
 
