@@ -74,7 +74,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             }
 
             clonedBoard._executeMove(this, clonedBoard.getBoardPiece(x, y));
-            int moveValue = miniMax(clonedBoard, 6, false);
+            int moveValue = miniMax(clonedBoard, depth, false);
 
             if (moveValue > bestValue) {
                 bestMove = boardPiece;
