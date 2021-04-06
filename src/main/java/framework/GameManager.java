@@ -1,12 +1,12 @@
 package framework;
 
 import framework.board.Board;
-import framework.factory.BoardFactory;
 import framework.player.Player;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * This class manages a game. Including connection, board and players.
@@ -19,10 +19,10 @@ public class GameManager {
     /**
      * constructor, initializes connection, board and players.
      *
-     * @param boardFactory
+     * @param boardSupplier The board supplier
      */
-    public GameManager(BoardFactory boardFactory) {
-        this.board = boardFactory.createBoard(this);
+    public GameManager(Function<GameManager, Board> boardSupplier) {
+        this.board = boardSupplier.apply(this);
     }
 
     /**
