@@ -14,7 +14,7 @@
         <Text fx:id="ipConfirmation"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="0">
-        <Button text="Terug naar hoofdmenu" onAction ="#pressBackToMainMenu"/>
+        <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
     </HBox>
 
 </GridPane>
