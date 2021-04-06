@@ -230,7 +230,9 @@ public abstract class Board {
      */
     public void makeMove(Player player, BoardPiece piece) {
         // Make the raw turn, and finalize it immediately!
-        makeRawMove(player, piece);
+        if (piece != null) {
+            makeRawMove(player, piece);
+        }
         finalizeRawMove();
     }
 
