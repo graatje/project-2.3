@@ -4,11 +4,9 @@ import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.factory.BoardFactory;
 import framework.player.LocalPlayer;
 import framework.player.Player;
 import javafx.application.Platform;
-import ttt.factory.TTTBoardFactory;
 
 public class GenericGameModel extends Model implements BoardObserver {
 
