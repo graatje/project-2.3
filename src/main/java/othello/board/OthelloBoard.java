@@ -84,7 +84,7 @@ public class OthelloBoard extends Board {
 
         while (initialized && x + xchange >= 0 && y + ychange >= 0 && x + xchange < width && y + ychange < height) {  // out of bounds check
             x = x + xchange;
-            y = y + xchange;
+            y = y + ychange;
             BoardPiece boardPiece = getBoardPiece(x, y);
             if (boardPiece.getOwner() == currentPlayer) {  // check if the tile is you.
                 return true;
@@ -118,8 +118,11 @@ public class OthelloBoard extends Board {
             return;
         }
         // change a tile in all directions
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = -1; y <=1; y++) {
+            for (int x = -1; x <=1; x++) {
+            	if(x==0 && y==0) {
+            		continue;
+            	}
                 changeMoveLine(piece, x, y);
             }
         }
@@ -127,6 +130,7 @@ public class OthelloBoard extends Board {
     }
 
     private void changeMoveLine(BoardPiece piece, int xchange, int ychange) {
+    	
         // temporary arraylist of captured opponents.
         ArrayList<BoardPiece> templist = new ArrayList<BoardPiece>();
         int x = piece.getX() + xchange;
@@ -145,7 +149,7 @@ public class OthelloBoard extends Board {
 
         while (initialized && x + xchange >= 0 && y + ychange >= 0 && x + xchange < width && y + ychange < height) {
             x = x + xchange;
-            y = y + xchange;
+            y = y + ychange;
             BoardPiece boardPiece = getBoardPiece(x, y);
             if (!boardPiece.hasOwner() || boardPiece.getOwner().getID() == getCurrentPlayer().getID()) {
                 break;
