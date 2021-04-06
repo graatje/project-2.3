@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public class CommunicationHandler {
 
+    private static final boolean DEBUG_SERVER_OUTPUT = false;
+
     private Client client;
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
@@ -44,9 +46,11 @@ public class CommunicationHandler {
      * @param input The message given by the server
      */
     public void handleServerInput(String input) throws JSONException {
-        if (input.equals("OK")) return;
+        if(DEBUG_SERVER_OUTPUT) {
+            System.out.println("DEBUG: server input = " + input);
+        }
 
-        //System.out.println("DEBUG: input = " + input);
+        if (input.equals("OK")) return;
 
         JSONObject json = extractJson(input);
 
