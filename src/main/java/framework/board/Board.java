@@ -1,5 +1,7 @@
 package framework.board;
 
+import framework.BoardState;
+import framework.ConnectedGameManager;
 import framework.GameManager;
 import framework.player.MoveRequestable;
 import framework.player.Player;
@@ -16,9 +18,8 @@ public abstract class Board {
 
     private final Set<BoardObserver> observers = new HashSet<>();
 
+    private BoardState boardState = BoardState.WAITING;
     private int currentPlayerId;
-
-    private boolean isGameOver = false;
     private Player winner;
 
     /**
@@ -96,6 +97,62 @@ public abstract class Board {
     }
 
     /**
+     * this method requests a playermove from the board if all players have been initialized.
+     */
+    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
+        if (boardState != BoardState.WAITING) {
+            throw new IllegalStateException("The game cannot start in this state! (Current state: " + boardState + ")");
+        }
+
+        if (gameManager.getNumPlayers() < getMinPlayers() || gameManager.getNumPlayers() > getMaxPlayers()) {
+            throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + gameManager.getNumPlayers() + "!");
+        }
+
+        // Reset pieces
+        for (BoardPiece piece : pieces) {
+            piece.clearOwner();
+        }
+
+        if (startingPlayer == null) {
+            currentPlayerId = (int) (Math.random() * gameManager.getNumPlayers());
+        } else {
+            currentPlayerId = startingPlayer.getID();
+        }
+
+        // Request a move from the first player
+        if (requestFirstPlayerMove) {
+            requestPlayerMove();
+        }
+    }
+
+    public void start(Player startingPlayer) {
+        start(startingPlayer, true);
+    }
+
+    public void reset() {
+        if(boardState == BoardState.PLAYING) {
+            if(gameManager instanceof ConnectedGameManager) {
+                // Let the server know we're done..
+                ((ConnectedGameManager) gameManager).getClient().sendForfeitMessage();
+            }
+
+            forceWin(null);
+        }
+
+        // Reset pieces
+        for (BoardPiece piece : pieces) {
+            piece.clearOwner();
+        }
+
+        boardState = BoardState.WAITING;
+
+        // Doesn't really matter, because this will be overridden when the start method gets called..
+        currentPlayerId = 0;
+
+        winner = null;
+    }
+
+    /**
      * Executes a RAW MOVE on the board. This does NOT finalize the raw turn. The caller of this method
      * should finalize their own turn by executing {@link Board#finalizeRawMove()}.
      *
@@ -132,7 +189,7 @@ public abstract class Board {
      * 3. Requesting a move from the new current player if the game is not over
      */
     public void finalizeRawMove() {
-        if (isGameOver) {
+        if (boardState != BoardState.PLAYING) {
             return;
         }
 
@@ -155,7 +212,7 @@ public abstract class Board {
         // Make sure all observers know of this state-change!
         observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
 
-        if (!isGameOver) {
+        if (boardState == BoardState.PLAYING) {
             // The game is not yet over. Request the next move from the new current player.
             requestPlayerMove();
         }
@@ -198,7 +255,7 @@ public abstract class Board {
      * @param winner The player who should be considered the winner, or <code>null</code> to indicate a draw.
      */
     public void forceWin(Player winner) {
-        this.isGameOver = true;
+        this.boardState = BoardState.GAME_OVER;
         this.winner = winner;
 
         new ArrayList<>(observers).forEach(o -> o.onPlayerWon(winner));
@@ -260,11 +317,8 @@ public abstract class Board {
         currentPlayerId = currentPlayer.getID();
     }
 
-    /**
-     * @return Whether the game is over or not.
-     */
-    public boolean isGameOver() {
-        return isGameOver;
+    public BoardState getBoardState() {
+        return boardState;
     }
 
     /**
@@ -272,7 +326,7 @@ public abstract class Board {
      * @throws IllegalStateException when the game is not over yet.
      */
     public Player getWinner() {
-        if (!isGameOver) {
+        if (boardState != BoardState.GAME_OVER) {
             throw new IllegalStateException("The game isn't over yet!");
         }
 

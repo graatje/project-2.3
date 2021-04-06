@@ -26,27 +26,17 @@ public class GameManager {
     }
 
     /**
-     * this method requests a playermove from the board if all players have been initialized.
+     * See {@link Board#start(Player, boolean)}
      */
     public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
-        if (players.size() < board.getMinPlayers() || players.size() > board.getMaxPlayers()) {
-            throw new IllegalStateException("The number of players must be between " + board.getMinPlayers() + " and " + board.getMaxPlayers() + ", and is currently " + players.size() + "!");
-        }
-
-        if (startingPlayer == null) {
-            startingPlayer = players.get((int) (Math.random() * players.size()));
-        }
-
-        board.setCurrentPlayer(startingPlayer);
-
-        // Request a move from the first player
-        if (requestFirstPlayerMove) {
-            board.requestPlayerMove();
-        }
+        board.start(startingPlayer, requestFirstPlayerMove);
     }
 
+    /**
+     * See {@link Board#start(Player)}
+     */
     public void start(Player startingPlayer) {
-        start(startingPlayer, true);
+        board.start(startingPlayer);
     }
 
     /**
@@ -65,6 +55,15 @@ public class GameManager {
      */
     public List<Player> getPlayers() {
         return Collections.unmodifiableList(players);
+    }
+
+    /**
+     * Getter for the number of players
+     *
+     * @return The number of players
+     */
+    public int getNumPlayers() {
+        return players.size();
     }
 
     /**
