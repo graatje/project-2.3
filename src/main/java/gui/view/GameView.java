@@ -71,7 +71,7 @@ public class GameView extends View<GenericGameModel> {
 
         int x = piece.getX();
         int y = piece.getY();
-        double cellSize = (double) gameBoardPane.getWidth()/gridSize;
+        double cellSize = (double) gameBoardPane.getPrefWidth()/gridSize;
 
         // Hoop dat er geen outofbounds komt! lol
         URL pngURL = playerIconFileURLs.get(piece.getOwner().getID());
