@@ -106,7 +106,8 @@ public abstract class Board {
     /**
      * this method requests a playermove from the board if all players have been initialized.
      */
-    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
+    // TODO: FIX THIS HORRIBLE MESS!!!!!!
+    public void start(Player startingPlayer, Player actualStartingPlayer, boolean requestFirstPlayerMove) {
         if (boardState != BoardState.WAITING) {
             throw new IllegalStateException("The game cannot start in this state! (Current state: " + boardState + ")");
         }
@@ -126,7 +127,7 @@ public abstract class Board {
 
         currentPlayerId = startingPlayer.getID();
 
-        prepareBoard(startingPlayer);
+        prepareBoard(actualStartingPlayer);
 
         boardState = BoardState.PLAYING;
 
@@ -138,6 +139,10 @@ public abstract class Board {
         if (requestFirstPlayerMove) {
             requestPlayerMove();
         }
+    }
+
+    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
+        start(startingPlayer, startingPlayer, requestFirstPlayerMove);
     }
 
     public void start(Player startingPlayer) {
