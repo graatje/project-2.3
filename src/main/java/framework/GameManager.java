@@ -12,7 +12,7 @@ import java.util.function.Function;
  * This class manages a game. Including connection, board and players.
  */
 public class GameManager {
-    protected final Board board;
+    protected Board board;
 
     protected final List<Player> players = new ArrayList<>();
 
@@ -46,6 +46,10 @@ public class GameManager {
      */
     public Board getBoard() {
         return board;
+    }
+
+    public void setNewBoard(Function<GameManager, Board> boardSupplier) {
+        this.board = boardSupplier.apply(this);
     }
 
     /**
