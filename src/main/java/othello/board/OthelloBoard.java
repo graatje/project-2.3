@@ -23,7 +23,7 @@ public class OthelloBoard extends Board {
     public List<BoardPiece> getValidMoves(Player currentPlayer) {
         List<BoardPiece> validMoves = new ArrayList<BoardPiece>();
         for (int y = 0; y < height; y++) {
-            for (int x = 0; y < width; x++) {
+            for (int x = 0; x < width; x++) {
                 BoardPiece boardPiece = getBoardPiece(x, y);
                 if (!boardPiece.hasOwner()) {
                     if (checkValidMove(boardPiece, currentPlayer)) {
@@ -119,7 +119,7 @@ public class OthelloBoard extends Board {
         }
         // change a tile in all directions
         for (int y = 0; y < height; y++) {
-            for (int x = 0; y < width; x++) {
+            for (int x = 0; x < width; x++) {
                 changeMoveLine(piece, x, y);
             }
         }
@@ -165,17 +165,8 @@ public class OthelloBoard extends Board {
      */
     @Override
     protected boolean calculateIsGameOver() {
-        if (getValidMoves().isEmpty()) {
-            Player originalPlayer = getCurrentPlayer();
-
-            // peek if the opponent has no valid moves either.
-            Player opponent = gameManager.getOtherPlayer(getCurrentPlayer());
-
-            if (getValidMoves(opponent).isEmpty()) {
-                return true;  // game is over.
-            }
-        }
-        return false;
+    	return getValidMoves().isEmpty() &&
+				getValidMoves(gameManager.getOtherPlayer(getCurrentPlayer())).isEmpty();
     }
 
     /**
