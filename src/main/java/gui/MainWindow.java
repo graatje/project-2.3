@@ -69,6 +69,7 @@ public class MainWindow extends Stage {
 //        }
 //        gameManager.setSelfName("2zqa");
 
+        //TODO: naar dataklasse (singleton of parameters?)
         GameManager gameManager = new GameManager(TTTBoard::new);
         gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
         gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), "Robot1", 2));

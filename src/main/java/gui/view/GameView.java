@@ -92,4 +92,6 @@ public class GameView extends View<GenericGameModel> {
         imageView.setY(y*cellSize);
         gameBoardPane.getChildren().add(imageView);
     }
+
+
 }

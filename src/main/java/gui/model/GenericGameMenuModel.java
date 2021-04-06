@@ -10,4 +10,6 @@ public class GenericGameMenuModel extends Model{
     public void getPlayerName(){
     }
 
+    //TODO: property gameModel, resetten()
+
 }
