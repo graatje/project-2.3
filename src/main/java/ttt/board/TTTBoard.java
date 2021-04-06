@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TTTBoard extends Board {
-    public TTTBoard(GameManager gameManager, int width, int height) {
-        super(gameManager, width, height);
+    public TTTBoard(GameManager gameManager) {
+        super(gameManager, 3, 3);
     }
 
     @Override

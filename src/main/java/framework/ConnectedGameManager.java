@@ -3,19 +3,19 @@ package framework;
 import connection.Client;
 import connection.CommunicationHandler;
 import connection.GameManagerCommunicationListener;
+import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.factory.BoardFactory;
-import framework.factory.PlayerFactory;
 import framework.player.Player;
 import framework.player.ServerPlayer;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
+import java.util.function.Function;
 
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
-    private PlayerFactory selfPlayerFactory;
+    private Function<Board, Player> selfPlayerSupplier;
 
     private Client client;
 
@@ -28,15 +28,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     /**
      * constructor, initializes connection, board and players.
      *
+     * @param boardSupplier
      * @param serverIP
      * @param serverPort
-     * @param boardFactory
-     * @param selfPlayerFactory
+     * @param selfPlayerSupplier
+     * @throws IOException
      */
-    public ConnectedGameManager(BoardFactory boardFactory, String serverIP, int serverPort, PlayerFactory selfPlayerFactory) throws IOException {
-        super(boardFactory);
+    public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, Function<Board, Player> selfPlayerSupplier) throws IOException {
+        super(boardSupplier);
 
-        this.selfPlayerFactory = selfPlayerFactory;
+        this.selfPlayerSupplier = selfPlayerSupplier;
 
         createClient(serverIP, serverPort);
         client.sendCommandToServer("get playerlist\n");
@@ -82,12 +83,12 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
-    public void setSelfPlayerFactory(PlayerFactory selfPlayerFactory) {
-        this.selfPlayerFactory = selfPlayerFactory;
+    public Function<Board, Player> getSelfPlayerSupplier() {
+        return selfPlayerSupplier;
     }
 
-    public PlayerFactory getSelfPlayerFactory() {
-        return selfPlayerFactory;
+    public void setSelfPlayerSupplier(Function<Board, Player> selfPlayerSupplier) {
+        this.selfPlayerSupplier = selfPlayerSupplier;
     }
 
     @Override
@@ -100,7 +101,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
         serverPlayerOpponent = new ServerPlayer(getBoard(), opponentName);
-        Player self = selfPlayerFactory.createPlayer(board, selfName);
+
+        Player self = selfPlayerSupplier.apply(board);
+        self.setName(selfName);
 
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
