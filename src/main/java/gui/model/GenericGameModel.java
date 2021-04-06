@@ -23,6 +23,10 @@ public class GenericGameModel extends Model implements BoardObserver {
         gameManager.getBoard().registerObserver(this);
     }
 
+    //TODO: setGameType(enum type)
+    // maakt gamemanager, stelt bord in, reset manager
+    // gameconfiguratie-klasse in framework (IP, username, port)
+
     public void clickTile(double x, double y) {
         double cellSize = boardSize/board.getWidth();
         int xTile = (int) Math.floor(x/cellSize);
@@ -64,6 +68,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
+        //TODO: Platform.runLater()
         String message = null;
 
         if(who == null){
