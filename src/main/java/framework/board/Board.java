@@ -119,6 +119,8 @@ public abstract class Board {
             currentPlayerId = startingPlayer.getID();
         }
 
+        boardState = BoardState.PLAYING;
+
         // Request a move from the first player
         if (requestFirstPlayerMove) {
             requestPlayerMove();
