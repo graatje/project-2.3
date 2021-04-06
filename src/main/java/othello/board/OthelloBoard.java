@@ -147,7 +147,7 @@ public class OthelloBoard extends Board {
         if (initialized) {
             templist.add(getBoardPiece(x, y));
         }
-
+        boolean brokeOut = false;
         while (initialized && x + xchange >= 0 && y + ychange >= 0 && x + xchange < width && y + ychange < height) {
             x = x + xchange;
             y = y + ychange;
@@ -156,6 +156,7 @@ public class OthelloBoard extends Board {
                 return;
             }else if(boardPiece.getOwner().getID() == getCurrentPlayer().getID())
             {
+            	brokeOut = true;
             	break;
             }
             
@@ -163,8 +164,10 @@ public class OthelloBoard extends Board {
                 templist.add(getBoardPiece(x, y));
             }
         }
-        for (BoardPiece boardPiece : templist) {
-            boardPiece.setOwner(getCurrentPlayer());
+        if(brokeOut) {
+	        for (BoardPiece boardPiece : templist) {
+	            boardPiece.setOwner(getCurrentPlayer());
+	        }
         }
     }
 
