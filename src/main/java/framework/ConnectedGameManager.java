@@ -183,4 +183,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     public void onPlayerWon(Player who) {
     }
 
+    @Override
+    public void onGameStart(Player startingPlayer) {
+    }
 }
