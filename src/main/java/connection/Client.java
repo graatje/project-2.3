@@ -118,4 +118,6 @@ public class Client extends Thread {
     public void sendLoginMessage(String playerName) {
         com.sendLoginMessage(playerName);
     }
+
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {com.sendChallengeMessage(playerToChallenge, gameType);}
 }

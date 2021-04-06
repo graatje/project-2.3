@@ -46,7 +46,7 @@ public class CommunicationHandler {
     public void handleServerInput(String input) throws JSONException {
         if (input.equals("OK")) return;
 
-        //System.out.println("input = " + input);
+        //System.out.println("DEBUG: input = " + input);
 
         JSONObject json = extractJson(input);
 
@@ -190,5 +190,15 @@ public class CommunicationHandler {
         client.sendCommandToServer("forfeit \n");
     }
 
+
+    /**
+     * Challenges a player in the lobby
+     *
+     * @param playerToChallenge The other player to challenge
+     * @param gameType The game to play
+     */
+    public void sendChallengeMessage(String playerToChallenge, String gameType){
+        client.sendCommandToServer("challenge \"" + playerToChallenge + "\"" + gameType + "\"\n");
+    }
 
 }

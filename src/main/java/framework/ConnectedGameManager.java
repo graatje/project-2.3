@@ -90,6 +90,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         return selfPlayerFactory;
     }
 
+    public void challengePlayer(String playerToChallenge, String gameType){
+        client.sendChallengeMessage(playerToChallenge, gameType);
+    }
+
     @Override
     public void getMatchRequest(String opponent, String gametype, String challengeNR) {
         Match match = new Match(opponent, gametype, challengeNR);
@@ -153,4 +157,5 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onPlayerWon(Player who) {
     }
+
 }
