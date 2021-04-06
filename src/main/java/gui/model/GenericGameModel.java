@@ -6,6 +6,7 @@ import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.LocalPlayer;
 import framework.player.Player;
+import gui.view.View;
 import javafx.application.Platform;
 
 public class GenericGameModel extends Model implements BoardObserver {
@@ -58,6 +59,17 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
-        System.out.println("someone won :D");
+        String message = null;
+
+        if(who == null){
+            message="Helaas, het is gelijkspel";
+        }else{
+            message= who.getName() + " heeft gewonnen!";
+        }
+
+        for(View view : observers) {
+            view.showDialog(message);
+        }
     }
 }
+
