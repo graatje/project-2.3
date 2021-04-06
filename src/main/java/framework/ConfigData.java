@@ -3,6 +3,8 @@ package framework;
 public class ConfigData {
     private static ConfigData instance;
 
+    private GameManager gameManager;
+
     private String serverIP;
     private int serverPort;
 
@@ -24,6 +26,13 @@ public class ConfigData {
         playerName = "Group C4";
     }
 
+    public GameManager getGameManager() {
+        return gameManager;
+    }
+
+    public void setGameManager(GameManager gameManager) {
+        this.gameManager = gameManager;
+    }
 
     public String getServerIP() {
         return serverIP;
