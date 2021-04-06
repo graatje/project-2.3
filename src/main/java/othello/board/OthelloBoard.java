@@ -114,6 +114,7 @@ public class OthelloBoard extends Board {
      */
     @Override
     protected void executeMove(Player player, BoardPiece piece) {
+    	System.out.println("x:" + piece.getX() + "y:" + piece.getY());
         if (!checkValidMove(piece, player)) {
             return;
         }
@@ -151,9 +152,14 @@ public class OthelloBoard extends Board {
             x = x + xchange;
             y = y + ychange;
             BoardPiece boardPiece = getBoardPiece(x, y);
-            if (!boardPiece.hasOwner() || boardPiece.getOwner().getID() == getCurrentPlayer().getID()) {
-                break;
-            } else {  // opponent
+            if (!boardPiece.hasOwner()) {
+                return;
+            }else if(boardPiece.getOwner().getID() == getCurrentPlayer().getID())
+            {
+            	break;
+            }
+            
+            else {  // opponent
                 templist.add(getBoardPiece(x, y));
             }
         }
