@@ -29,6 +29,9 @@ public class GameView extends View<GenericGameModel> {
     }
 
     @Override
+    /**
+     * Draws board with tiles
+     */
     public void update(GenericGameModel model) {
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);

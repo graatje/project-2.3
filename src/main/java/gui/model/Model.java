@@ -13,14 +13,12 @@ public abstract class Model {
 
     public void registerView(View view) {
         observers.add(view);
-
-        //TODO: dit niet hier uitvoeren?
-        updateView();
     }
 
     public void updateView() {
         for(View view : observers) {
             view.update(this);
+            System.err.println("DEBUG: updating.. "+view);
         }
     }
 }

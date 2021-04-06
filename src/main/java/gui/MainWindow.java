@@ -1,8 +1,5 @@
 package gui;
 
-import framework.ConnectedGameManager;
-import framework.GameManager;
-import framework.player.LocalPlayer;
 import gui.controller.*;
 import gui.model.GenericGameConfigurationModel;
 import gui.model.GenericGameMenuModel;
@@ -15,8 +12,6 @@ import gui.view.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
-import ttt.board.TTTBoard;
-import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
 import java.util.Arrays;
@@ -70,11 +65,11 @@ public class MainWindow extends Stage {
 //        gameManager.setSelfName("2zqa");
 
         //TODO: naar dataklasse (singleton of parameters?)
-        GameManager gameManager = new GameManager(TTTBoard::new);
-        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
-        gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), "Robot1", 2));
+//        GameManager gameManager = new GameManager(TTTBoard::new);
+//        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
+//        gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Robot1", 6, MinimaxAIPlayer.AIDifficulty.HARD));
 
-        GenericGameModel ggModel = new GenericGameModel(gameManager);
+        GenericGameModel ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
@@ -90,7 +85,7 @@ public class MainWindow extends Stage {
         );
         ggModel.registerView(ggView);
 
-        gameManager.start(null);
+//        gameManager.start(null);
 //        gameManager.login();
 //        gameManager.subscribe("Tic-tac-toe");
 

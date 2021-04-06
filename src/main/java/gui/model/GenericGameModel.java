@@ -1,5 +1,6 @@
 package gui.model;
 
+import framework.ConfigData;
 import framework.GameManager;
 import framework.board.Board;
 import framework.board.BoardObserver;
@@ -12,22 +13,26 @@ import javafx.application.Platform;
 
 public class GenericGameModel extends Model implements BoardObserver {
 
-    private final Board board;
+    private Board board;
     private GameManager gameManager;
     private double boardSize = 500; //TODO: opvragen van fxml?
     private String infoMessage;
 
-    public GenericGameModel(GameManager gameManager) {
-        this.gameManager = gameManager;
-        this.board = gameManager.getBoard();
-        gameManager.getBoard().registerObserver(this);
+    /**
+     * Sets gameManager and board variables, and registers this model as observer.
+     */
+    private void setupGameManager() {
+        gameManager = ConfigData.getInstance().getGameManager();
+        board = gameManager.getBoard();
+        board.registerObserver(this);
     }
 
-    //TODO: setGameType(enum type)
-    // maakt gamemanager, stelt bord in, reset manager
-    // gameconfiguratie-klasse in framework (IP, username, port)
-
     public void clickTile(double x, double y) {
+        //TODO: andere manier bedenken zodat we niet steeds hoeven te checken bij deze methode?
+        if(gameManager == null) {
+            setupGameManager();
+        }
+
         double cellSize = boardSize/board.getWidth();
         int xTile = (int) Math.floor(x/cellSize);
         int yTile = (int) Math.floor(y/cellSize);

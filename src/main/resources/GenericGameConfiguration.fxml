@@ -7,10 +7,16 @@
 <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="1">
-        <TextField id="IP" fx:id="ipAddressField"/>
+        <Text>IP:</Text><TextField id="IP" fx:id="ipAddressField"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="2">
+        <Text>Port:</Text><TextField id="port" fx:id="portField"/>
+    </HBox>
+
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="3">
         <Button text="OK" onAction ="#pressOKip"/>
     </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="3">
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="4">
         <Text fx:id="ipConfirmation"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="0">
