@@ -11,12 +11,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public abstract class Board {
+public abstract class Board implements Cloneable {
     protected final GameManager gameManager;
     protected final int width, height;
-    protected final BoardPiece[] pieces;
+    protected BoardPiece[] pieces;
 
-    private final Set<BoardObserver> observers = new HashSet<>();
+    private Set<BoardObserver> observers = new HashSet<>();
 
     private BoardState boardState = BoardState.WAITING;
     private int currentPlayerId;
@@ -281,6 +281,22 @@ public abstract class Board {
         this.winner = winner;
 
         new ArrayList<>(observers).forEach(o -> o.onPlayerWon(winner));
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Board cloned = (Board) super.clone();
+
+        // Deep-clone pieces
+        cloned.pieces = new BoardPiece[this.pieces.length];
+        for(int i = 0; i < this.pieces.length; i++) {
+            cloned.pieces[i] = this.pieces[i].clone();
+        }
+
+        // Reset observers
+        cloned.observers = new HashSet<>();
+
+        return cloned;
     }
 
     /**
