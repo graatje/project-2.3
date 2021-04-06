@@ -125,6 +125,11 @@ public abstract class Board implements Cloneable {
             startingPlayer = gameManager.getPlayer((int) (Math.random() * gameManager.getNumPlayers()));
         }
 
+        // TODO: FIX THIS HORRIBLE MESS TOO!!
+        if(actualStartingPlayer == null) {
+            actualStartingPlayer = startingPlayer;
+        }
+
         currentPlayerId = startingPlayer.getID();
 
         prepareBoard(actualStartingPlayer);
