@@ -1,5 +1,7 @@
 package framework;
 
+import framework.player.MinimaxAIPlayer;
+
 public class ConfigData {
     private static ConfigData instance;
 
@@ -11,6 +13,9 @@ public class ConfigData {
     private String playerName;
     private String gameType;
 
+    private MinimaxAIPlayer.AIDifficulty difficulty;
+
+    public static final int MINIMAX_DEPTH = 6;
 
     public static ConfigData getInstance() {
         if (instance == null) {
@@ -24,6 +29,15 @@ public class ConfigData {
         serverIP = "main-vps.woutergritter.me";
         serverPort = 7789;
         playerName = "Group C4";
+        difficulty = MinimaxAIPlayer.AIDifficulty.EASY;
+    }
+
+    public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
+        return difficulty;
+    }
+
+    public void setAIDifficulty(MinimaxAIPlayer.AIDifficulty difficulty) {
+        this.difficulty = difficulty;
     }
 
     public GameManager getGameManager() {

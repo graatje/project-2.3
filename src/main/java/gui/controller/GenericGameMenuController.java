@@ -1,11 +1,16 @@
 package gui.controller;
 
+import framework.ConfigData;
+import framework.GameManager;
 import gui.MainWindow;
 import gui.model.GenericGameMenuModel;
+import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
+import othello.board.OthelloBoard;
+import ttt.board.TTTBoard;
 
 public class GenericGameMenuController extends Controller {
 
@@ -14,7 +19,7 @@ public class GenericGameMenuController extends Controller {
 
     @FXML public void pressPlayAgainstComputer(ActionEvent event) {
         mainWindow.switchView(MainWindow.viewEnum.GAME);
-        //TODO: gamemanager resetten/aanmaken
+        ((GenericGameMenuModel)model).setLocalGameManager();
     }
 
     @FXML public void pressOKUsername(ActionEvent event) {
@@ -24,10 +29,11 @@ public class GenericGameMenuController extends Controller {
     }
 
     public void pressPlayOnline(ActionEvent event) {
+        ((GenericGameMenuModel)model).setOnlineGameManager();
         mainWindow.switchView(MainWindow.viewEnum.GAME);
     }
 
-    @FXML public void pressBackToMainMenu(ActionEvent event){
+    @FXML public void pressBackToMainMenu(ActionEvent event) {
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
 }
