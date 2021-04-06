@@ -57,23 +57,23 @@ public abstract class Board implements Cloneable {
      *
      * @return All valid moves.
      */
-    public abstract List<BoardPiece> getValidMoves();
+    public abstract List<BoardPiece> getValidMoves(Player asWho);
 
     /**
      * An implementation-specific method for executing a move on the board.
      * No argument-checking needs to be done in this method, because it is protected and only gets called internally from the super-class Board.
      *
-     * @param player The player which executed the move.
+     * @param asWho The player which executed the move.
      * @param piece  The piece the player wants to affect.
      */
-    protected abstract void executeMove(Player player, BoardPiece piece);
+    public abstract void _executeMove(Player asWho, BoardPiece piece);
 
     /**
      * An implementation-specific method for calculating if the game is currently over.
      *
      * @return Whether the game is currently over or not.
      */
-    protected abstract boolean calculateIsGameOver();
+    public abstract boolean calculateIsGameOver();
 
     /**
      * An implementation-specific method for calculating the winner of the game.
@@ -89,18 +89,8 @@ public abstract class Board implements Cloneable {
      */
     public abstract void prepareBoard(Player startPlayer);
 
-    /**
-     * @return The width of the board in tiles
-     */
-    public int getWidth() {
-        return width;
-    }
-
-    /**
-     * @return The height of the board in tiles
-     */
-    public int getHeight() {
-        return height;
+    public List<BoardPiece> getValidMoves() {
+        return getValidMoves(getCurrentPlayer());
     }
 
     /**
@@ -189,12 +179,12 @@ public abstract class Board implements Cloneable {
             throw new IllegalArgumentException("It's not that player's turn yet!");
         }
 
-        if (!getValidMoves().contains(piece)) {
+        if (!getValidMoves(player).contains(piece)) {
             throw new IllegalArgumentException("That is not a valid move!");
         }
 
         // All good, now actually execute the move on the board!
-        executeMove(player, piece);
+        _executeMove(player, piece);
 
         // Make sure all observers know of this state-change!
         observers.forEach(o -> o.onPlayerMoved(player, piece));
@@ -347,6 +337,20 @@ public abstract class Board implements Cloneable {
     }
 
     /**
+     * @return The width of the board in tiles
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @return The height of the board in tiles
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
      * @return The player who is currently expected to make a move.
      */
     public Player getCurrentPlayer() {
@@ -380,8 +384,12 @@ public abstract class Board implements Cloneable {
      * @param piece The piece to check
      * @return Whether the specified piece is a valid move or not.
      */
-    public boolean isValidMove(BoardPiece piece) {
-        return getValidMoves().contains(piece);
+    public boolean isValidMove(Player asWho, BoardPiece piece) {
+        return getValidMoves(asWho).contains(piece);
+    }
+
+    public boolean isValidMove(BoardPiece boardPiece) {
+        return isValidMove(getCurrentPlayer(), boardPiece);
     }
 
     /**
@@ -389,8 +397,12 @@ public abstract class Board implements Cloneable {
      * @param y The Y-coordinate of the piece to check
      * @return Whether the specified piece is a valid move or not.
      */
+    public boolean isValidMove(Player asWho, int x, int y) {
+        return isValidMove(asWho, getBoardPiece(x, y));
+    }
+
     public boolean isValidMove(int x, int y) {
-        return isValidMove(getBoardPiece(x, y));
+        return isValidMove(getCurrentPlayer(), x, y);
     }
 
     /**
