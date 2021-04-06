@@ -64,7 +64,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
      */
     public void resetClient(String serverIP, int serverPort) throws IOException {
         client.sendLogoutMessage();
-        client.dispose();
+        client.close();
 
         createClient(serverIP, serverPort);
     }
@@ -79,6 +79,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     public Client getClient() {
         return client;
+    }
+
+    public void closeClient(){
+        client.close();
     }
 
     public Map<Integer, Match> getActiveMatches() {

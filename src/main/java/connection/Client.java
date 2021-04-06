@@ -77,13 +77,13 @@ public class Client extends Thread {
                 e.printStackTrace();
             }
         }
-        dispose();
+        close();
     }
 
     /**
      * Cleans up the client before closing down the thread.
      */
-    public void dispose() {
+    public void close() {
         try {
             running = false;
             inputStream.close();
