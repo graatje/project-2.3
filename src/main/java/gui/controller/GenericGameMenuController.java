@@ -14,6 +14,7 @@ public class GenericGameMenuController extends Controller {
 
     @FXML public void pressPlayAgainstComputer(ActionEvent event) {
         mainWindow.switchView(MainWindow.viewEnum.GAME);
+        //TODO: gamemanager resetten/aanmaken
     }
 
     @FXML public void pressOKUsername(ActionEvent event) {
