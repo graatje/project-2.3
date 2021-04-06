@@ -11,14 +11,14 @@ public class ConfigData {
 
 
     public static ConfigData getInstance() {
-        if (instance == null){
+        if (instance == null) {
             instance = new ConfigData();
         }
 
         return instance;
     }
 
-    private ConfigData(){
+    private ConfigData() {
         serverIP = "main-vps.woutergritter.me";
         serverPort = 7789;
         playerName = "Group C4";
@@ -37,8 +37,8 @@ public class ConfigData {
         return serverPort;
     }
 
-    public void setServerPort(int serverPort) {
-        this.serverPort = serverPort;
+    public void setServerPort(String serverPort) throws NumberFormatException {
+        this.serverPort = Integer.parseInt(serverPort);
     }
 
     public String getPlayerName() {
@@ -54,7 +54,7 @@ public class ConfigData {
     }
 
     public void setGameType(String gameType) {
-        switch (gameType){
+        switch (gameType) {
             case "Tic-tac-toe":
             case "Othello":
                 this.gameType = gameType;
