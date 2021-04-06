@@ -45,6 +45,10 @@ public class Client extends Thread {
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
+        if(CommunicationHandler.DEBUG) {
+            System.out.println("DEBUG: to server   = " + command.trim());
+        }
+
         outputStream.print(command);
         outputStream.flush();
     }

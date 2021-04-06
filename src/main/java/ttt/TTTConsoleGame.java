@@ -43,12 +43,12 @@ public class TTTConsoleGame implements BoardObserver {
 //        gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), 2));
 //        gameManager.addPlayer(new ConsoleLocalPlayer(gameManager.getBoard()));
 
+        /* Send commands to the server through the console input. Comment this when using a ConsoleLocalPlayer! */
         new Thread(() -> {
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
             try{
                 while(true) {
                     String line = reader.readLine();
-                    System.out.println("SENDING COMMAND: " + line);
                     gameManager.getClient().sendCommandToServer(line + '\n');
                 }
             }catch(IOException e) {
