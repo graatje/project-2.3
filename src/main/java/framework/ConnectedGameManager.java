@@ -194,7 +194,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onPlayerWon(Player who) {
-        client.close();
     }
 
     @Override

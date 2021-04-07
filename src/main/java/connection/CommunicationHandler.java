@@ -138,16 +138,6 @@ public class CommunicationHandler {
     }
 
     /**
-     * Handles the server message for finished games
-     *
-     * @param result The last part of a SVR CHALLENGE server command
-     */
-    private void handleGameEndServerMessage(String result) {
-        String sub = result.substring(0, 3).trim();
-        gameManagerCommunicationListener.endMatch(sub);
-    }
-
-    /**
      * Send a login message to the server
      *
      * @param playerName Our player name
