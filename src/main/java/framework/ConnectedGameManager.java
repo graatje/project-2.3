@@ -174,6 +174,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
             case "DRAW": // Draw!
                 board.forceWin(null);
                 break;
+            default:
+                System.err.println("Received match end result '" + result + "' from the server, which is not a valid result!");
+                break;
         }
     }
 
