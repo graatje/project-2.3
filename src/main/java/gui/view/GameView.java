@@ -105,7 +105,15 @@ public class GameView extends View<GenericGameModel> {
     }
 
     public void setInfoText(String message){
-        infoTextField = (Text) lookup("#message");
-        infoTextField.setText(message);
+        new Thread(() -> {
+            infoTextField = (Text) lookup("#message");
+            infoTextField.setText(message);
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            infoTextField.setText("");
+        }).start();
     }
 }
