@@ -11,76 +11,60 @@ import othello.board.OthelloBoard;
 import ttt.board.TTTBoard;
 
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 
-public class GenericGameMenuModel extends Model{
+public class GenericGameMenuModel extends Model {
+
+    private GenericGameModel gameModel;
+
+    public GenericGameMenuModel(GenericGameModel gameModel){
+        this.gameModel = gameModel;
+    }
 
     public void setPlayerName(String username) {
-        // TODO: moeten geldige usernames (leeg, gekke tekens, lengte) hier of in framework getest worden?
-        System.out.println("Username will be set to: \""+username+"\".");
+        System.out.println("Username will be set to: \"" + username + "\".");
+        ConfigData.getInstance().setPlayerName(username);
     }
 
-    public void setLocalGameManager() {
+    public void setGameManager() {
         GameManager gameManager = null;
-
-        //TODO: factory pattern hier?
-        switch(ConfigData.getInstance().getGameType()) {
-            case "Tic-tac-toe":
-                gameManager = new GameManager(TTTBoard::new);
-                break;
-            case "Othello":
-                gameManager = new GameManager(OthelloBoard::new);
-                break;
-        }
-
-        // Add players
-        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-        gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Robot1", 6, ConfigData.getInstance().getAIDifficulty()));
-
-        startGame(gameManager);
-    }
-
-    public void setOnlineGameManager() {
-        ConnectedGameManager gameManager = null;
 
         String ip = ConfigData.getInstance().getServerIP();
         int port = ConfigData.getInstance().getServerPort();
         MinimaxAIPlayer.AIDifficulty difficulty = ConfigData.getInstance().getAIDifficulty();
 
-        //TODO: factory pattern hier?
         try {
+
+            System.out.println(ConfigData.getInstance().getGameType());
             switch (ConfigData.getInstance().getGameType()) {
-                case "Tic-tac-toe":
+                case TTT_LOCAL:
+                    gameManager = new GameManager(TTTBoard::new);
+                    break;
+                case OTHELLO_LOCAL:
+                    gameManager = new GameManager(OthelloBoard::new);
+                    break;
+                case TTT_ONLINE:
                     gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, ConfigData.MINIMAX_DEPTH, difficulty));
                     break;
-                case "Othello":
+                case OTHELLO_ONLINE:
                     gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, ConfigData.MINIMAX_DEPTH, difficulty));
                     break;
             }
         } catch (IOException e) {
-            for(View view : observers) {
-                view.showDialog("Couldn't connect to server.");
-            }
+            e.printStackTrace();
         }
 
-        //TODO: voeg players toe: server- en AIplayer
-        //gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Robot1Online", 6, ConfigData.getInstance().getAIDifficulty()));
-
-
-        startGame(gameManager);
-
-    }
-
-    private void startGame(GameManager gameManager) {
-        if(gameManager == null) {
-            throw new IllegalStateException("This shouldnt happen?!");
-        }
         ConfigData.getInstance().setGameManager(gameManager);
+        gameModel.setupGameManager();
 
-        //Local: user vs AI
-        //Online: AI vs onlinePlayer
-
-        //TODO: update GameView - maar hoe?
-        gameManager.start(null);
+        if (!(gameManager instanceof ConnectedGameManager)){
+            gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
+            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.MINIMAX_DEPTH, ConfigData.getInstance().getAIDifficulty()));
+            gameManager.start(null);
+        } else{
+            ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
+            ((ConnectedGameManager) gameManager).login();
+            ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
+        }
     }
-
 }

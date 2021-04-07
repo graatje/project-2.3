@@ -11,7 +11,7 @@ public class ConfigData {
     private int serverPort;
 
     private String playerName;
-    private String gameType;
+    private GameType gameType;
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
@@ -68,23 +68,17 @@ public class ConfigData {
         return playerName;
     }
 
+    // TODO: moeten geldige usernames (leeg, gekke tekens, lengte) hier of in framework getest worden?
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
-    public String getGameType() {
+    public GameType getGameType() {
         return gameType;
     }
 
-    public void setGameType(String gameType) {
-        switch (gameType) {
-            case "Tic-tac-toe":
-            case "Othello":
-                this.gameType = gameType;
-                break;
-            default:
-                throw new RuntimeException("Invalid gametype! Please use \"Tic-tac-toe\" or \"Othello\"");
-        }
-
+    public void setGameType(GameType gameType) {
+        this.gameType = gameType;
     }
 }
+

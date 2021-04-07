@@ -21,7 +21,7 @@ public class GenericGameModel extends Model implements BoardObserver {
     /**
      * Sets gameManager and board variables, and registers this model as observer.
      */
-    private void setupGameManager() {
+    public void setupGameManager() {
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
@@ -85,6 +85,12 @@ public class GenericGameModel extends Model implements BoardObserver {
         for(View view : observers) {
             view.showDialog(message);
         }
+    }
+
+    //@Override
+    public void onGameStart(Player startingPlayer) {
+        System.out.println("GenericGameModel.onGameStart");
+        updateView();
     }
 }
 
