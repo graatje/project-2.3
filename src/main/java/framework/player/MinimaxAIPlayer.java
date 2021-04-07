@@ -3,56 +3,71 @@ package framework.player;
 import framework.board.Board;
 import framework.board.BoardPiece;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 public class MinimaxAIPlayer extends AIPlayer {
-    private int depth;
+    private int startDepth;
     private AIDifficulty difficulty;
 
-    public MinimaxAIPlayer(Board board, String name, int depth, AIDifficulty difficulty) {
+    private UUID minimaxSession;
+    private BoardPiece bestMove;
+    private int bestValue;
+    private final Set<UUID> runningThreads = new HashSet<>();
+
+    public MinimaxAIPlayer(Board board, String name, int startDepth, AIDifficulty difficulty) {
         super(board, name);
 
-        this.depth = depth;
+        this.startDepth = startDepth;
         this.difficulty = difficulty;
     }
 
-    public MinimaxAIPlayer(Board board, int depth, AIDifficulty difficulty) {
+    public MinimaxAIPlayer(Board board, int startDepth, AIDifficulty difficulty) {
         super(board);
 
-        this.depth = depth;
+        this.startDepth = startDepth;
         this.difficulty = difficulty;
     }
 
     @Override
     public void requestMove() {
-        BoardPiece move;
-        switch(difficulty) {
+        List<BoardPiece> validMoves = board.getValidMoves(this);
+        if(validMoves.size() == 0) {
+            board.makeMove(this, null);
+        }else if(validMoves.size() == 1) {
+            board.makeMove(this, validMoves.get(0));
+        }
+
+        switch (difficulty) {
             case EASY:
-                move = getRandomMove();
+                executeRandomMove();
                 break;
             case MEDIUM:
-                move = Math.random() > 0.5 ? getRandomMove() : getMinimaxMove();
+                if (Math.random() > 0.5) {
+                    executeRandomMove();
+                } else {
+                    executeMinimaxMove();
+                }
                 break;
             case HARD:
-                move = getMinimaxMove();
+                executeMinimaxMove();
                 break;
             default:
                 throw new IllegalStateException("Invalid AI difficulty '" + difficulty + "'!");
         }
-        if(board.getValidMoves().isEmpty()) {
-        	board.makeMove(this, null);
-        }else {
-        	board.makeMove(this, move);
-        }
     }
 
-    public BoardPiece getRandomMove() {
+    public void executeRandomMove() {
         List<BoardPiece> validMoves = board.getValidMoves(this);
-        if(validMoves.isEmpty()) {
-            return null;
+
+        BoardPiece randomMove = null;
+        if (!validMoves.isEmpty()) {
+            randomMove = validMoves.get((int) (Math.random() * validMoves.size()));
         }
 
-        return validMoves.get((int) (Math.random() * validMoves.size()));
+        board.makeMove(this, randomMove);
     }
 
     /**
@@ -60,32 +75,101 @@ public class MinimaxAIPlayer extends AIPlayer {
      *
      * @return the boardpiece with the best move.
      */
-    public BoardPiece getMinimaxMove() {
-        BoardPiece bestMove = null;
-        int bestValue = Integer.MIN_VALUE;
+    public void executeMinimaxMove() {
+        UUID session = UUID.randomUUID();
+        synchronized (this) {
+            bestMove = null;
+            bestValue = Integer.MIN_VALUE;
+            minimaxSession = session;
+        }
 
-        for(BoardPiece boardPiece : board.getValidMoves(this)) {
-            int x = boardPiece.getX();
-            int y = boardPiece.getY();
+        performAsyncMinimax(session, this.startDepth);
 
-            Board clonedBoard;
-            try{
-                clonedBoard = board.clone();
-            }catch(CloneNotSupportedException e) {
+        new Thread(() -> {
+            try {
+                Thread.sleep(9000);
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-                return null;
             }
 
-            clonedBoard._executeMove(this, clonedBoard.getBoardPiece(x, y));
-            int moveValue = miniMax(clonedBoard, depth, false);
+            onMinimaxDone(session);
+        }).start();
+    }
 
-            if (moveValue > bestValue) {
-                bestMove = boardPiece;
-                bestValue = moveValue;
+    private void onMinimaxDone(UUID session) {
+        BoardPiece bestMove;
+        synchronized (this) {
+            if(minimaxSession != session) {
+                return;
+            }
+
+            bestMove = this.bestMove;
+
+            this.minimaxSession = null;
+        }
+
+        if (bestMove == null) {
+            List<BoardPiece> validMoves = board.getValidMoves(this);
+            if (!validMoves.isEmpty()) {
+                System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
+                bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
         }
 
-        return bestMove;
+        board.makeMove(this, bestMove);
+    }
+
+    private void performAsyncMinimax(UUID session, int depth) {
+        synchronized (this) {
+            if (minimaxSession != session) {
+                return;
+            }
+        }
+
+        List<BoardPiece> validMoves = board.getValidMoves(this);
+
+        for (BoardPiece boardPiece : validMoves) {
+            int x = boardPiece.getX();
+            int y = boardPiece.getY();
+
+            final UUID threadUuid = UUID.randomUUID();
+            synchronized (runningThreads) {
+                runningThreads.add(threadUuid);
+            }
+
+            new Thread(() -> {
+                Board clonedBoard;
+                try {
+                    clonedBoard = board.clone();
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                    return;
+                }
+
+                clonedBoard._executeMove(this, clonedBoard.getBoardPiece(x, y));
+                int moveValue = miniMax(session, clonedBoard, depth, board.getGameManager().getOtherPlayer(this));
+
+                synchronized (this) {
+                    if (moveValue > bestValue) {
+                        bestMove = boardPiece;
+                        bestValue = moveValue;
+                    }
+                }
+
+                boolean isEmpty;
+                synchronized (runningThreads) {
+                    runningThreads.remove(threadUuid);
+                    isEmpty = runningThreads.isEmpty();
+                }
+
+                if (isEmpty) {
+                    // We're DONE!
+                    if (minimaxSession == session) {
+                        performAsyncMinimax(session, depth + 1);
+                    }
+                }
+            }).start();
+        }
     }
 
     /**
@@ -94,40 +178,55 @@ public class MinimaxAIPlayer extends AIPlayer {
      *
      * @param board a playing board.
      * @param depth depth of the nodes to look into.
-     * @param isMax mini(malising) or maxi(malising)
+     * @param playerToMove the player to move. If playerToMove == this is true, the algorithm will maximise, otherwise minimise.
      * @return int value of the board.
      */
-    private int miniMax(Board board, int depth, boolean isMax) {
+    private int miniMax(UUID session, Board board, int depth, Player playerToMove) {
+        synchronized (this) {
+            if (minimaxSession != session) {
+                return 0;
+            }
+        }
+
         int boardVal = evaluateBoard(board, depth);
 
-        Player playerToMove = isMax ? this : board.getGameManager().getOtherPlayer(this);
+        Player other = board.getGameManager().getOtherPlayer(playerToMove);
+        boolean lookForMax = playerToMove == this;
 
         if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves(playerToMove).isEmpty()) {
             // end reached.
             return boardVal;
         }
 
-        int extremeVal = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int extremeVal = lookForMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-        for(BoardPiece boardPiece : board.getValidMoves(playerToMove)) {
+        for (BoardPiece boardPiece : board.getValidMoves(playerToMove)) {
             int x = boardPiece.getX();
             int y = boardPiece.getY();
 
             Board clonedBoard;
-            try{
+            try {
                 clonedBoard = board.clone();
-            }catch(CloneNotSupportedException e) {
+            } catch (CloneNotSupportedException e) {
                 e.printStackTrace();
                 return 0;
             }
 
             clonedBoard._executeMove(playerToMove, clonedBoard.getBoardPiece(x, y));
-            int val = miniMax(clonedBoard, depth - 1, !isMax);
 
-            if(isMax) {
-                if(val > extremeVal) extremeVal = val;
+            Player nextToMove;
+            if(!board.getValidMoves(other).isEmpty()) {
+                nextToMove = other;
             }else{
-                if(val < extremeVal) extremeVal = val;
+                nextToMove = playerToMove;
+            }
+
+            int val = miniMax(session, clonedBoard, depth - 1, nextToMove);
+
+            if (lookForMax) {
+                if (val > extremeVal) extremeVal = val;
+            } else {
+                if (val < extremeVal) extremeVal = val;
             }
         }
 
@@ -158,12 +257,12 @@ public class MinimaxAIPlayer extends AIPlayer {
         }
     }
 
-    public int getDepth() {
-        return depth;
+    public int getStartDepth() {
+        return startDepth;
     }
 
-    public void setDepth(int depth) {
-        this.depth = depth;
+    public void setStartDepth(int startDepth) {
+        this.startDepth = startDepth;
     }
 
     public AIDifficulty getDifficulty() {
