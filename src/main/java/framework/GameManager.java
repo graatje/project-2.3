@@ -84,6 +84,16 @@ public class GameManager {
         return players.get(id);
     }
 
+    public Player getPlayer(String name) {
+        for(Player player : players) {
+            if(player.getName().equals(name)) {
+                return player;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * Adds a player to the game.
      *

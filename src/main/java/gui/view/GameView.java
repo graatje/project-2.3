@@ -71,6 +71,10 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
+    public void clearBoard(){
+        gameBoardPane.getChildren().clear();
+    }
+
     public void drawPiece(BoardPiece piece, int gridSize) {
         if(!piece.hasOwner()) {
             return;

@@ -39,12 +39,15 @@ public class MinimaxAIPlayer extends AIPlayer {
             default:
                 throw new IllegalStateException("Invalid AI difficulty '" + difficulty + "'!");
         }
-
-        board.makeMove(this, move);
+        if(board.getValidMoves().isEmpty()) {
+        	board.makeMove(this, null);
+        }else {
+        	board.makeMove(this, move);
+        }
     }
 
     public BoardPiece getRandomMove() {
-        List<BoardPiece> validMoves = board.getValidMoves();
+        List<BoardPiece> validMoves = board.getValidMoves(this);
         if(validMoves.isEmpty()) {
             return null;
         }
@@ -61,13 +64,23 @@ public class MinimaxAIPlayer extends AIPlayer {
         BoardPiece bestMove = null;
         int bestValue = Integer.MIN_VALUE;
 
-        for(BoardPiece piece : board.getValidMoves()) {
-            piece.setOwner(this);
-            int moveValue = miniMax(board, 6, false);
-            piece.clearOwner();
+        for(BoardPiece boardPiece : board.getValidMoves(this)) {
+            int x = boardPiece.getX();
+            int y = boardPiece.getY();
+
+            Board clonedBoard;
+            try{
+                clonedBoard = board.clone();
+            }catch(CloneNotSupportedException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            clonedBoard._executeMove(this, clonedBoard.getBoardPiece(x, y));
+            int moveValue = miniMax(clonedBoard, depth, false);
 
             if (moveValue > bestValue) {
-                bestMove = piece;
+                bestMove = boardPiece;
                 bestValue = moveValue;
             }
         }
@@ -85,47 +98,40 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @return int value of the board.
      */
     private int miniMax(Board board, int depth, boolean isMax) {
-        int boardVal = evaluateBoard(depth);
+        int boardVal = evaluateBoard(board, depth);
 
-        if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves().isEmpty()) {
+        Player playerToMove = isMax ? this : board.getGameManager().getOtherPlayer(this);
+
+        if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves(playerToMove).isEmpty()) {
             // end reached.
             return boardVal;
         }
 
-        if (isMax) {
-            // Maximising player, find the maximum attainable value.
-            int highestVal = Integer.MIN_VALUE;
+        int extremeVal = isMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-            for(BoardPiece piece : board.getValidMoves()) {
-                piece.setOwner(this); // temporarily set piece
-                int val = miniMax(board, depth - 1, false);
-                piece.clearOwner();
+        for(BoardPiece boardPiece : board.getValidMoves(playerToMove)) {
+            int x = boardPiece.getX();
+            int y = boardPiece.getY();
 
-                // see if miniMax with the adjusted board is higher than the current highest val.
-                if(val > highestVal) {
-                    highestVal = val;
-                }
+            Board clonedBoard;
+            try{
+                clonedBoard = board.clone();
+            }catch(CloneNotSupportedException e) {
+                e.printStackTrace();
+                return 0;
             }
 
-            return highestVal;
-        } else {  // isMin
-            // Minimising player, find the minimum attainable value;
-            Player opponent = board.getGameManager().getOtherPlayer(this);
-            int lowestVal = Integer.MAX_VALUE;
+            clonedBoard._executeMove(playerToMove, clonedBoard.getBoardPiece(x, y));
+            int val = miniMax(clonedBoard, depth - 1, !isMax);
 
-            for(BoardPiece piece : board.getValidMoves()) {
-                piece.setOwner(opponent); // temporary set piece
-                int val = miniMax(board, depth - 1, true);
-                piece.clearOwner();  // setting the piece to its previous state
-
-                // see if miniMax with the adjusted board is lower than the current highest val.
-                if(val < lowestVal) {
-                    lowestVal = val;
-                }
+            if(isMax) {
+                if(val > extremeVal) extremeVal = val;
+            }else{
+                if(val < extremeVal) extremeVal = val;
             }
-
-            return lowestVal;
         }
+
+        return extremeVal;
     }
 
     /**
@@ -137,7 +143,7 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @param treeDepth depth of the game tree the board configuration is at
      * @return value of the board
      */
-    private int evaluateBoard(int treeDepth) {
+    private int evaluateBoard(Board board, int treeDepth) {
         Player winner = board.calculateWinner();
 
         if (winner == this) {

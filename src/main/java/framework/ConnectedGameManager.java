@@ -69,6 +69,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         createClient(serverIP, serverPort);
     }
 
+    @Override
+    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
+        throw new UnsupportedOperationException("A connected game cannot be started locally!");
+    }
+
+    @Override
+    public void start(Player startingPlayer) {
+        throw new UnsupportedOperationException("A connected game cannot be started locally!");
+    }
+
     public void login() {
         client.sendLoginMessage(selfName);
     }
@@ -136,7 +146,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         addPlayer(serverPlayerOpponent);
         addPlayer(self);
 
-        start(serverPlayerOpponent, false);
+        board.start(serverPlayerOpponent, getPlayer(playerToBegin), false);
     }
 
     @Override
@@ -181,6 +191,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onPlayerWon(Player who) {
+        client.close();
     }
 
+    @Override
+    public void onGameStart(Player startingPlayer) {
+    }
 }

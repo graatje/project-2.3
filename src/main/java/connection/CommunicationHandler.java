@@ -10,7 +10,7 @@ import java.util.Locale;
 
 public class CommunicationHandler {
 
-    protected static final boolean DEBUG = false;
+    protected static final boolean DEBUG = true;
 
     private Client client;
 
