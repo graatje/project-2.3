@@ -21,35 +21,30 @@ public class GenericGameModel extends Model implements BoardObserver {
     /**
      * Sets gameManager and board variables, and registers this model as observer.
      */
-    private void setupGameManager() {
+    public void setupGameManager() {
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
     }
 
     public void clickTile(double x, double y) {
-        //TODO: andere manier bedenken zodat we niet steeds hoeven te checken bij deze methode?
-        if(gameManager == null) {
-            setupGameManager();
-        }
-
-        double cellSize = boardSize/board.getWidth();
-        int xTile = (int) Math.floor(x/cellSize);
-        int yTile = (int) Math.floor(y/cellSize);
+        double cellSize = boardSize / board.getWidth();
+        int xTile = (int) Math.floor(x / cellSize);
+        int yTile = (int) Math.floor(y / cellSize);
 
         //TODO: meegeven met framework
         Player player = gameManager.getBoard().getCurrentPlayer();
-        if(player instanceof LocalPlayer) {
-            if(gameManager.getBoard().isValidMove(xTile, yTile)) {
+        if (player instanceof LocalPlayer) {
+            if (gameManager.getBoard().isValidMove(xTile, yTile)) {
                 ((LocalPlayer) player).executeMove(xTile, yTile);
             } else {
                 infoMessage = "Invalid move";
             }
-            } else {
+        } else {
             infoMessage = "Wait for your turn";
-            }
-        for(View view : observers) {
-            ((GameView)view).setInfoText(infoMessage);
+        }
+        for (View view : observers) {
+            ((GameView) view).setInfoText(infoMessage);
         }
     }
 
@@ -73,18 +68,25 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
-        //TODO: Platform.runLater()
-        String message = null;
+        Platform.runLater(() -> {
 
-        if(who == null){
-            message="It's a draw";
-        }else{
-            message= who.getName() + " has won!";
-        }
+            String message = null;
 
-        for(View view : observers) {
-            view.showDialog(message);
-        }
+            if (who == null) {
+                message = "It's a draw";
+            } else {
+                message = who.getName() + " has won!";
+            }
+
+            for (View view : observers) {
+                view.showDialog(message);
+            }
+        });
+    }
+
+    @Override
+    public void onGameStart(Player startingPlayer) {
+        Platform.runLater(this::updateView);
     }
 }
 

@@ -22,6 +22,8 @@ public class MainWindow extends Stage {
     private GameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
+
+    private GenericGameModel ggModel;
     //private Stack<viewEnum> viewStack = new Stack();
 
     public static final int WINDOW_WIDTH = 750;
@@ -51,25 +53,8 @@ public class MainWindow extends Stage {
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggcModel.registerView(ggcView);
 
-        // TTT Gameboard
-        //TODO: dit dynamisch doen als othello/ttt geselecteerd wordt
-//        ConnectedGameManager gameManager;
-//        try {
-//            gameManager = new ConnectedGameManager(TTTBoard::new, "main-vps.woutergritter.me", 7789, b -> new TTTAIPlayer(b, 3));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//
-//            System.exit(-1);
-//            return;
-//        }
-//        gameManager.setSelfName("2zqa");
-
-        //TODO: naar dataklasse (singleton of parameters?)
-//        GameManager gameManager = new GameManager(TTTBoard::new);
-//        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
-//        gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Robot1", 6, MinimaxAIPlayer.AIDifficulty.HARD));
-
-        GenericGameModel ggModel = new GenericGameModel();
+        // Gameboard
+        ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
@@ -85,12 +70,8 @@ public class MainWindow extends Stage {
         );
         ggModel.registerView(ggView);
 
-//        gameManager.start(null);
-//        gameManager.login();
-//        gameManager.subscribe("Tic-tac-toe");
-
         // Game Menu
-        GenericGameMenuModel ggmModel = new GenericGameMenuModel();
+        GenericGameMenuModel ggmModel = new GenericGameMenuModel(ggModel);
         GenericGameMenuController ggmController = new GenericGameMenuController();
         ggmController.setMainWindow(this);
         ggmController.setModel(ggmModel);
