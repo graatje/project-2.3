@@ -61,10 +61,9 @@ public class Client extends Thread {
     public void run() {
         running = true;
 
-        while (running) {
-            try {
-                String input = inputStream.readLine();
-
+        String input;
+        try {
+            while (running && (input = inputStream.readLine()) != null) {
                 //There was input, handle it
                 if (!input.equals("")) {
                     try {
@@ -73,9 +72,10 @@ public class Client extends Thread {
                         //TODO: handle this shiz
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
         close();
     }
