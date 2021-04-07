@@ -361,6 +361,10 @@ public abstract class Board implements Cloneable {
      * @return The player who is currently expected to make a move.
      */
     public Player getCurrentPlayer() {
+        if(currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
+            return null;
+        }
+
         return gameManager.getPlayer(currentPlayerId);
     }
 
