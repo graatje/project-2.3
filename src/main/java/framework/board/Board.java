@@ -217,6 +217,9 @@ public abstract class Board implements Cloneable {
             currentPlayerId = 0;
         }
 
+        // Make sure all observers know of this state-change!
+        observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
+
         // See if the game is over after this move
         if (calculateIsGameOver()) {
             // The game is over! Calculate a winner and set the flag!
@@ -224,9 +227,6 @@ public abstract class Board implements Cloneable {
             Player winner = calculateWinner();
             forceWin(winner);
         }
-
-        // Make sure all observers know of this state-change!
-        observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
 
         if (boardState == BoardState.PLAYING) {
             // The game is not yet over. Request the next move from the new current player.
