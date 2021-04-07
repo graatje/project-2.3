@@ -81,7 +81,7 @@ public class CommunicationHandler {
                     case "WIN":
                     case "DRAW":
                     case "LOSS":
-                        handleGameEndServerMessage(split[3]);
+                        gameManagerCommunicationListener.endMatch(split[2]);
                 }
                 break;
 
