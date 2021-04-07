@@ -42,10 +42,10 @@ public class GenericGameMenuModel extends Model {
                     gameManager = new GameManager(OthelloBoard::new);
                     break;
                 case TTT_ONLINE:
-                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, ConfigData.MINIMAX_DEPTH, difficulty));
+                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, 6, difficulty));
                     break;
                 case OTHELLO_ONLINE:
-                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, ConfigData.MINIMAX_DEPTH, difficulty));
+                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, 6, difficulty));
                     break;
             }
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class GenericGameMenuModel extends Model {
 
         if (!(gameManager instanceof ConnectedGameManager)){
             gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.MINIMAX_DEPTH, ConfigData.getInstance().getAIDifficulty()));
+            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", 6, ConfigData.getInstance().getAIDifficulty()));
             gameManager.start(null);
         } else{
             ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());

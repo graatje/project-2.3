@@ -85,6 +85,7 @@ public class Client extends Thread {
      */
     public void close() {
         try {
+            Thread.sleep(1000);
             running = false;
             inputStream.close();
             outputStream.close();

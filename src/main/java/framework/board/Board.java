@@ -1,6 +1,7 @@
 package framework.board;
 
 import framework.BoardState;
+import framework.ConfigData;
 import framework.ConnectedGameManager;
 import framework.GameManager;
 import framework.player.MoveRequestable;
@@ -221,7 +222,7 @@ public abstract class Board implements Cloneable {
         observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
 
         // See if the game is over after this move
-        if (calculateIsGameOver()) {
+        if (!(gameManager instanceof ConnectedGameManager) && calculateIsGameOver()) {
             // The game is over! Calculate a winner and set the flag!
 
             Player winner = calculateWinner();
@@ -273,6 +274,7 @@ public abstract class Board implements Cloneable {
      * @param winner The player who should be considered the winner, or <code>null</code> to indicate a draw.
      */
     public void forceWin(Player winner) {
+
         this.boardState = BoardState.GAME_OVER;
         this.winner = winner;
 

@@ -70,6 +70,8 @@ public class GenericGameModel extends Model implements BoardObserver {
     public void onPlayerWon(Player who) {
         Platform.runLater(() -> {
 
+            System.out.println("onPlayerWon called in GenericGameModel : " + who.getName());
+
             String message = null;
 
             if (who == null) {
