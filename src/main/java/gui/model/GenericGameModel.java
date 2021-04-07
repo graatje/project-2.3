@@ -86,8 +86,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onGameStart(Player startingPlayer) {
-        System.out.println("GenericGameModel.onGameStart");
-        updateView();
+        Platform.runLater(this::updateView);
     }
 }
 
