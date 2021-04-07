@@ -22,7 +22,7 @@ public class GenericGameMenuModel extends Model {
     }
 
     public void setPlayerName(String username) {
-        System.out.println("Username will be set to: \"" + username + "\".");
+        //System.out.println("Username will be set to: \"" + username + "\".");
         ConfigData.getInstance().setPlayerName(username);
     }
 
@@ -34,8 +34,6 @@ public class GenericGameMenuModel extends Model {
         MinimaxAIPlayer.AIDifficulty difficulty = ConfigData.getInstance().getAIDifficulty();
 
         try {
-
-            System.out.println(ConfigData.getInstance().getGameType());
             switch (ConfigData.getInstance().getGameType()) {
                 case TTT_LOCAL:
                     gameManager = new GameManager(TTTBoard::new);

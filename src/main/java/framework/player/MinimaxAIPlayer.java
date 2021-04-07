@@ -40,6 +40,12 @@ public class MinimaxAIPlayer extends AIPlayer {
                 throw new IllegalStateException("Invalid AI difficulty '" + difficulty + "'!");
         }
 
+
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         board.makeMove(this, move);
     }
 

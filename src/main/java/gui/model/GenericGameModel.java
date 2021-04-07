@@ -84,6 +84,12 @@ public class GenericGameModel extends Model implements BoardObserver {
         });
     }
 
+    public void clearBoard(){
+        for (View view : observers) {
+            ((GameView)view).clearBoard();
+        }
+    }
+
     @Override
     public void onGameStart(Player startingPlayer) {
         Platform.runLater(this::updateView);

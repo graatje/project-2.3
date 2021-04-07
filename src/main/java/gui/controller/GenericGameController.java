@@ -1,5 +1,8 @@
 package gui.controller;
 
+import framework.ConfigData;
+import framework.ConnectedGameManager;
+import framework.GameManager;
 import gui.MainWindow;
 import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
@@ -16,6 +19,7 @@ public class GenericGameController extends Controller {
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+        ((GenericGameModel)model).clearBoard();
     }
 
     @FXML public void onMouseReleased(MouseEvent event) {
