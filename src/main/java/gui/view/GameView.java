@@ -19,6 +19,7 @@ import java.util.List;
 public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
+    private boolean displayingInfo = false;
     private List<URL> playerIconFileURLs;
     @FXML Text infoTextField;
 
@@ -82,7 +83,7 @@ public class GameView extends View<GenericGameModel> {
 
         int x = piece.getX();
         int y = piece.getY();
-        double cellSize = (double) gameBoardPane.getPrefWidth()/gridSize;
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
 
         // Hoop dat er geen outofbounds komt! lol
         URL pngURL = playerIconFileURLs.get(piece.getOwner().getID());
@@ -104,16 +105,24 @@ public class GameView extends View<GenericGameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
+    /**
+     * if not displaying a message show a message when this method gets called.
+     * @param message, the message to display.
+     */
     public void setInfoText(String message){
-        new Thread(() -> {
-            infoTextField = (Text) lookup("#message");
-            infoTextField.setText(message);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            infoTextField.setText("");
-        }).start();
+        if(!displayingInfo) {
+            new Thread(() -> {
+                displayingInfo = true;
+                infoTextField = (Text) lookup("#message");
+                infoTextField.setText(message);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                displayingInfo = false;
+                infoTextField.setText("");
+            }).start();
+        }
     }
 }
