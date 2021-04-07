@@ -14,19 +14,29 @@ public class OthelloBoard extends Board {
         super(gameManager, 8, 8);
     }
 
+    @Override
+    public int getMinPlayers() {
+        return 2;
+    }
+
+    @Override
+    public int getMaxPlayers() {
+        return 2;
+    }
+
     /**
      * get a list of valid moves.
      *
      * @return List<BoardPiece> , a list of valid moves.
      */
-
-    public List<BoardPiece> getValidMoves(Player currentPlayer) {
+    @Override
+    public List<BoardPiece> getValidMoves(Player asWho) {
         List<BoardPiece> validMoves = new ArrayList<BoardPiece>();
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 BoardPiece boardPiece = getBoardPiece(x, y);
                 if (!boardPiece.hasOwner()) {
-                    if (checkValidMove(boardPiece, currentPlayer)) {
+                    if (checkValidMove(boardPiece, asWho)) {
                         validMoves.add(boardPiece);
                     }
                 }
@@ -35,25 +45,20 @@ public class OthelloBoard extends Board {
         return validMoves;
     }
 
-    @Override
-    public List<BoardPiece> getValidMoves() {
-        return getValidMoves(getCurrentPlayer());
-    }
-
     /**
      * check if the specified boardpiece is a valid move.
      *
      * @param boardPiece the boardpiece you want to check of if it is a valid move.
      * @return boolean if it is a valid move.
      */
-    private boolean checkValidMove(BoardPiece boardPiece, Player currentPlayer) {
+    private boolean checkValidMove(BoardPiece boardPiece, Player asWho) {
         // check
         for (int y = -1; y <= 1; y++) {
             for (int x = -1; x <= 1; x++) {
                 if (x == 0 && y == 0) {
                     continue;
                 }
-                if (checkLine(boardPiece, x, y, currentPlayer)) {
+                if (checkLine(boardPiece, x, y, asWho)) {
                     return true;
                 }
             }
@@ -69,7 +74,7 @@ public class OthelloBoard extends Board {
      * @param ychange the vertical direction the line goes in.
      * @return boolean, true if you can capture a piece of the opponent.
      */
-    private boolean checkLine(BoardPiece piece, int xchange, int ychange, Player currentPlayer) {
+    private boolean checkLine(BoardPiece piece, int xchange, int ychange, Player asWho) {
         int x = piece.getX() + xchange;
         int y = piece.getY() + ychange;
         boolean initialized = false;  // if it can be a valid move.
@@ -77,16 +82,16 @@ public class OthelloBoard extends Board {
             BoardPiece boardPiece = getBoardPiece(x, y);
 
             // check if it is the opponent.
-            if (boardPiece.hasOwner() && boardPiece.getOwner() != currentPlayer) {
+            if (boardPiece.hasOwner() && boardPiece.getOwner() != asWho) {
                 initialized = true;
             }
         }
 
         while (initialized && x + xchange >= 0 && y + ychange >= 0 && x + xchange < width && y + ychange < height) {  // out of bounds check
             x = x + xchange;
-            y = y + xchange;
+            y = y + ychange;
             BoardPiece boardPiece = getBoardPiece(x, y);
-            if (boardPiece.getOwner() == currentPlayer) {  // check if the tile is you.
+            if (boardPiece.getOwner() == asWho) {  // check if the tile is you.
                 return true;
             } else if (!boardPiece.hasOwner()) {
                 break;
@@ -95,31 +100,17 @@ public class OthelloBoard extends Board {
         return false;
     }
 
-    /**
-     *
-     */
     @Override
-    public int getMinPlayers() {
-        return 2;
-    }
-
-
-    @Override
-    public int getMaxPlayers() {
-        return 2;
-    }
-
-    /**
-     *
-     */
-    @Override
-    protected void executeMove(Player player, BoardPiece piece) {
-        if (!checkValidMove(piece, player)) {
+    public void _executeMove(Player asWho, BoardPiece piece) {
+        if (!checkValidMove(piece, asWho)) {
             return;
         }
         // change a tile in all directions
-        for (int y = 0; y < height; y++) {
-            for (int x = 0; x < width; x++) {
+        for (int y = -1; y <=1; y++) {
+            for (int x = -1; x <=1; x++) {
+            	if(x==0 && y==0) {
+            		continue;
+            	}
                 changeMoveLine(piece, x, y);
             }
         }
@@ -127,6 +118,7 @@ public class OthelloBoard extends Board {
     }
 
     private void changeMoveLine(BoardPiece piece, int xchange, int ychange) {
+    	
         // temporary arraylist of captured opponents.
         ArrayList<BoardPiece> templist = new ArrayList<BoardPiece>();
         int x = piece.getX() + xchange;
@@ -142,19 +134,27 @@ public class OthelloBoard extends Board {
         if (initialized) {
             templist.add(getBoardPiece(x, y));
         }
-
+        boolean brokeOut = false;
         while (initialized && x + xchange >= 0 && y + ychange >= 0 && x + xchange < width && y + ychange < height) {
             x = x + xchange;
-            y = y + xchange;
+            y = y + ychange;
             BoardPiece boardPiece = getBoardPiece(x, y);
-            if (!boardPiece.hasOwner() || boardPiece.getOwner().getID() == getCurrentPlayer().getID()) {
-                break;
-            } else {  // opponent
+            if (!boardPiece.hasOwner()) {
+                return;
+            }else if(boardPiece.getOwner().getID() == getCurrentPlayer().getID())
+            {
+            	brokeOut = true;
+            	break;
+            }
+            
+            else {  // opponent
                 templist.add(getBoardPiece(x, y));
             }
         }
-        for (BoardPiece boardPiece : templist) {
-            boardPiece.setOwner(getCurrentPlayer());
+        if(brokeOut) {
+	        for (BoardPiece boardPiece : templist) {
+	            boardPiece.setOwner(getCurrentPlayer());
+	        }
         }
     }
 
@@ -164,7 +164,7 @@ public class OthelloBoard extends Board {
      * @return boolean true if game is over, false if not.
      */
     @Override
-    protected boolean calculateIsGameOver() {
+    public boolean calculateIsGameOver() {
     	return getValidMoves().isEmpty() &&
 				getValidMoves(gameManager.getOtherPlayer(getCurrentPlayer())).isEmpty();
     }
@@ -203,9 +203,9 @@ public class OthelloBoard extends Board {
 
 	@Override
 	public void prepareBoard(Player startPlayer) {
-		getBoardPiece(3,3).setOwner(startPlayer);
-		getBoardPiece(4,4).setOwner(startPlayer);
-		getBoardPiece(3,4).setOwner(gameManager.getOtherPlayer(startPlayer));
-		getBoardPiece(4,3).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(3,3).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(4,4).setOwner(gameManager.getOtherPlayer(startPlayer));
+		getBoardPiece(3,4).setOwner(startPlayer);
+		getBoardPiece(4,3).setOwner(startPlayer);
 	}
 }

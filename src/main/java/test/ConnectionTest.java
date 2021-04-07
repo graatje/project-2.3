@@ -1,4 +1,6 @@
-package connection;
+package test;
+
+import connection.Connection;
 
 import java.io.BufferedReader;
 import java.io.IOException;

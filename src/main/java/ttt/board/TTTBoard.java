@@ -24,7 +24,7 @@ public class TTTBoard extends Board {
     }
 
     @Override
-    public List<BoardPiece> getValidMoves() {
+    public List<BoardPiece> getValidMoves(Player asWho) {
         List<BoardPiece> result = new ArrayList<>();
 
         for (int y = 0; y < height; y++) {
@@ -41,12 +41,12 @@ public class TTTBoard extends Board {
     }
 
     @Override
-    protected void executeMove(Player player, BoardPiece piece) {
-        piece.setOwner(player);
+    public void _executeMove(Player asWho, BoardPiece piece) {
+        piece.setOwner(asWho);
     }
 
     @Override
-    protected boolean calculateIsGameOver() {
+    public boolean calculateIsGameOver() {
         return getValidMoves().isEmpty() || calculateWinner() != null;
     }
 

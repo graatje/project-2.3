@@ -136,7 +136,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         addPlayer(serverPlayerOpponent);
         addPlayer(self);
 
-        start(serverPlayerOpponent, false);
+        board.start(serverPlayerOpponent, getPlayer(playerToBegin), false);
     }
 
     @Override
@@ -181,6 +181,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onPlayerWon(Player who) {
+        client.close();
     }
 
+    @Override
+    public void onGameStart(Player startingPlayer) {
+    }
 }

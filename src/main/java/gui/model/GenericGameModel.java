@@ -28,11 +28,6 @@ public class GenericGameModel extends Model implements BoardObserver {
     }
 
     public void clickTile(double x, double y) {
-        //TODO: andere manier bedenken zodat we niet steeds hoeven te checken bij deze methode?
-        if(gameManager == null) {
-            setupGameManager();
-        }
-
         double cellSize = boardSize/board.getWidth();
         int xTile = (int) Math.floor(x/cellSize);
         int yTile = (int) Math.floor(y/cellSize);
@@ -87,7 +82,7 @@ public class GenericGameModel extends Model implements BoardObserver {
         }
     }
 
-    //@Override
+    @Override
     public void onGameStart(Player startingPlayer) {
         System.out.println("GenericGameModel.onGameStart");
         updateView();
