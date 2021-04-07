@@ -65,7 +65,7 @@ public abstract class Board implements Cloneable {
      * No argument-checking needs to be done in this method, because it is protected and only gets called internally from the super-class Board.
      *
      * @param asWho The player which executed the move.
-     * @param piece  The piece the player wants to affect.
+     * @param piece The piece the player wants to affect.
      */
     public abstract void _executeMove(Player asWho, BoardPiece piece);
 
@@ -117,7 +117,7 @@ public abstract class Board implements Cloneable {
         }
 
         // TODO: FIX THIS HORRIBLE MESS TOO!!
-        if(actualStartingPlayer == null) {
+        if (actualStartingPlayer == null) {
             actualStartingPlayer = startingPlayer;
         }
 
@@ -127,7 +127,7 @@ public abstract class Board implements Cloneable {
 
         boardState = BoardState.PLAYING;
 
-        for(BoardObserver o : observers) {
+        for (BoardObserver o : observers) {
             // TODO: FIX THIS HORRIBLE MESS
             o.onGameStart(actualStartingPlayer);
         }
@@ -222,7 +222,7 @@ public abstract class Board implements Cloneable {
         observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
 
         // See if the game is over after this move
-        if (!(gameManager instanceof ConnectedGameManager) && calculateIsGameOver()) {
+        if (calculateIsGameOver()) {
             // The game is over! Calculate a winner and set the flag!
 
             Player winner = calculateWinner();
@@ -275,6 +275,10 @@ public abstract class Board implements Cloneable {
      */
     public void forceWin(Player winner) {
 
+        if (this.boardState != BoardState.PLAYING){
+            return;
+        }
+
         this.boardState = BoardState.GAME_OVER;
         this.winner = winner;
 
@@ -287,7 +291,7 @@ public abstract class Board implements Cloneable {
 
         // Deep-clone pieces
         cloned.pieces = new BoardPiece[this.pieces.length];
-        for(int i = 0; i < this.pieces.length; i++) {
+        for (int i = 0; i < this.pieces.length; i++) {
             cloned.pieces[i] = this.pieces[i].clone();
         }
 

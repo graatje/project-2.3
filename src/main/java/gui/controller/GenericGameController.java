@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+
+import java.io.ObjectInputFilter;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,6 +21,13 @@ public class GenericGameController extends Controller {
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+
+        GameManager gm = ConfigData.getInstance().getGameManager();
+
+        if (gm instanceof ConnectedGameManager){
+            ((ConnectedGameManager) gm).closeClient();
+        }
+
         ((GenericGameModel)model).clearBoard();
     }
 
