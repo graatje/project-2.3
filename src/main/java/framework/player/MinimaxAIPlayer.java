@@ -245,18 +245,32 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @return value of the board
      */
     private int evaluateBoard(Board board, int treeDepth) {
-        Player winner = board.calculateWinner();
-
-        if (winner == this) {
-            // Win for self
-            return 10 + treeDepth;
-        } else if (winner != null) {
-            // Win for other
-            return -10 - treeDepth;
-        } else {
-            // Draw or no win
-            return 0;
+        int nSelf = 0;
+        int nOther = 0;
+        for(int y = 0; y < board.getHeight(); y++) {
+            for(int x = 0; x < board.getWidth(); x++) {
+                BoardPiece piece = board.getBoardPiece(x, y);
+                if(piece.getOwner() == this) {
+                    nSelf++;
+                }else if(piece.hasOwner()) {
+                    nOther++;
+                }
+            }
         }
+
+        return nSelf - nOther;
+
+//        Player winner = board.calculateWinner();
+//        if (winner == this) {
+//            // Win for self
+//            return 10 + treeDepth;
+//        } else if (winner != null) {
+//            // Win for other
+//            return -10 - treeDepth;
+//        } else {
+//            // Draw or no win
+//            return 0;
+//        }
     }
 
     public int getStartDepth() {
