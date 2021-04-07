@@ -22,6 +22,9 @@ public class GameView extends View<GenericGameModel> {
     private List<URL> playerIconFileURLs;
     @FXML Text infoTextField;
 
+    // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
+    public static final double MARGIN = 0.2;
+
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#Board");
@@ -90,7 +93,7 @@ public class GameView extends View<GenericGameModel> {
         // Create image
         Image pieceImage;
         try {
-            pieceImage = new Image(pngURL.openStream(), cellSize, cellSize, true, true);
+            pieceImage = new Image(pngURL.openStream(), cellSize*(1-MARGIN), cellSize*(1-MARGIN), true, true);
         } catch(IOException e) {
             System.err.println("Image does not exist?");
             e.printStackTrace();
@@ -99,8 +102,8 @@ public class GameView extends View<GenericGameModel> {
 
         // Draw
         ImageView imageView = new ImageView(pieceImage);
-        imageView.setX(x*cellSize);
-        imageView.setY(y*cellSize);
+        imageView.setX(cellSize*(x+MARGIN/2));
+        imageView.setY(cellSize*(y+MARGIN/2));
         gameBoardPane.getChildren().add(imageView);
     }
 
