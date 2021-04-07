@@ -39,8 +39,11 @@ public class MinimaxAIPlayer extends AIPlayer {
             default:
                 throw new IllegalStateException("Invalid AI difficulty '" + difficulty + "'!");
         }
-
-        board.makeMove(this, move);
+        if(board.getValidMoves().isEmpty()) {
+        	board.makeMove(this, null);
+        }else {
+        	board.makeMove(this, move);
+        }
     }
 
     public BoardPiece getRandomMove() {
