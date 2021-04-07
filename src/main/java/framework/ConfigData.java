@@ -15,8 +15,6 @@ public class ConfigData {
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
-    public static final int MINIMAX_DEPTH = 6;
-
     public static ConfigData getInstance() {
         if (instance == null) {
             instance = new ConfigData();
