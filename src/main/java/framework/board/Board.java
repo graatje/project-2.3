@@ -127,7 +127,8 @@ public abstract class Board implements Cloneable {
         boardState = BoardState.PLAYING;
 
         for(BoardObserver o : observers) {
-            o.onGameStart(startingPlayer);
+            // TODO: FIX THIS HORRIBLE MESS
+            o.onGameStart(actualStartingPlayer);
         }
 
         // Request a move from the first player
