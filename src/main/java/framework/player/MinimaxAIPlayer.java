@@ -36,8 +36,10 @@ public class MinimaxAIPlayer extends AIPlayer {
         List<BoardPiece> validMoves = board.getValidMoves(this);
         if(validMoves.size() == 0) {
             board.makeMove(this, null);
+            return;
         }else if(validMoves.size() == 1) {
             board.makeMove(this, validMoves.get(0));
+            return;
         }
 
         switch (difficulty) {
@@ -87,7 +89,7 @@ public class MinimaxAIPlayer extends AIPlayer {
 
         new Thread(() -> {
             try {
-                Thread.sleep(9000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
