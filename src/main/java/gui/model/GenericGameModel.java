@@ -34,6 +34,11 @@ public class GenericGameModel extends Model implements BoardObserver {
 
         //TODO: meegeven met framework
         Player player = gameManager.getBoard().getCurrentPlayer();
+
+        if (player == null){
+            return;
+        }
+
         if (player instanceof LocalPlayer) {
             if (gameManager.getBoard().isValidMove(xTile, yTile)) {
                 ((LocalPlayer) player).executeMove(xTile, yTile);
