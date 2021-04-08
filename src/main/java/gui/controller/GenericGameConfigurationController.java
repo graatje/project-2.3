@@ -32,7 +32,9 @@ public class GenericGameConfigurationController extends Controller {
 
     @FXML void pressOKip(ActionEvent event){
         ((GenericGameConfigurationModel)model).setIPandPort(ipAddressField.getText(), portField.getText());
-        ipConfirmation.setText("[TESTING] IP set to \""+ipAddressField.getText() +"\".");
+        model.setInfoMessage("henlo!");
+        model.updateView();
+        //ipConfirmation.setText("[TESTING] IP set to \""+ipAddressField.getText() +"\".");
 
         if(comboBoxDifficulty.getValue().equals("Easy")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.EASY);
