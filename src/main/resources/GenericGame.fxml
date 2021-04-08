@@ -5,21 +5,25 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.text.Text?>
+<?import javafx.scene.layout.BorderPane?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
-    <HBox alignment="CENTER">
-        <Pane fx:id="Board" prefHeight="500.0" prefWidth="500.0" onMouseReleased="#onMouseReleased"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
-        <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
-        <Text id="message" fx:id="messageField"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="8">
-        <Text id="name" fx:id="nameFieldP1"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="8">
-        <Text id="name" fx:id="nameFieldP2"/>
-    </HBox>
-</GridPane>
+
+<BorderPane>
+    <top>
+    <HBox fx:id = "playerInformationHBox" xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
+    </top>
+
+    <center>
+    <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
+        <HBox alignment="CENTER">
+            <Pane fx:id="Board" prefHeight="500.0" prefWidth="500.0" onMouseReleased="#onMouseReleased"/>
+        </HBox>
+        <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
+            <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
+        </HBox>
+        <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
+            <Text id="message" fx:id="messageField"/>
+        </HBox>
+    </GridPane>
+    </center>
+</BorderPane>

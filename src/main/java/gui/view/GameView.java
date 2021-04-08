@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
@@ -23,15 +24,16 @@ public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
-    @FXML Text nameTextField;
-
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
 
-    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
+    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#Board");
+    }
+
+    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
@@ -40,9 +42,10 @@ public class GameView extends View<GenericGameModel> {
      * Draws board with tiles
      */
     public void update(GenericGameModel model) {
+        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
         setBackgroundColorBoard(model.getBackgroundColor());
         //show username on board
-        showUsername(model.getPlayerNames(model.getGameManager().getPlayers()));
+        showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
         showDialog(model.getDialogMessage());
         showInfoText(model.getInfoMessage(), "#message");
         int gridSize = model.getBoard().getWidth();
@@ -116,9 +119,14 @@ public class GameView extends View<GenericGameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
-    public void showUsername(String name){
-        nameTextField = (Text) lookup("#name");
-        nameTextField.setText(name);
+    public void showPlayerInformation(ArrayList<String> playerInformationList){
+        HBox playerInformationHBox = (HBox) lookup("#playerInformationHBox");
+
+        playerInformationHBox.getChildren().clear();
+
+        for (String playerInformation : playerInformationList){
+            playerInformationHBox.getChildren().add(new Text(playerInformation));
+        }
     }
 
     public void setBackgroundColorBoard(ArrayList<Integer> colors){

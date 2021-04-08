@@ -15,9 +15,9 @@ public abstract class View<T extends Model> extends Scene {
 
     protected Controller controller;
     private boolean displayingInfo = false;
+    public static final int MESSAGE_CLEARING_DELAY_MS = 2000;
 
-    @FXML
-    private Text infoTextField;
+    @FXML private Text infoTextField;
 
     public View(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, windowWidth, windowHeight);
@@ -25,7 +25,6 @@ public abstract class View<T extends Model> extends Scene {
     }
 
     public abstract void update(T model);
-
 
     public void showDialog(String message) {
         if(message != null && !message.isBlank()) {
@@ -54,7 +53,7 @@ public abstract class View<T extends Model> extends Scene {
                 //TODO: check of lookup wel gelukt is, anders error gooien?
                 infoTextField.setText(message);
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep(MESSAGE_CLEARING_DELAY_MS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
