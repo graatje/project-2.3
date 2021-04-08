@@ -16,4 +16,7 @@
     <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
         <Text id="message" fx:id="messageField"/>
     </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
+        <Text id="name" fx:id="nameField"/>
+    </HBox>
 </GridPane>

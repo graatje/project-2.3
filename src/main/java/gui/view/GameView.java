@@ -1,5 +1,6 @@
 package gui.view;
 
+import framework.ConfigData;
 import framework.board.BoardPiece;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
@@ -8,19 +9,26 @@ import javafx.scene.Parent;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
+    private boolean displayingInfo = false;
     private List<URL> playerIconFileURLs;
     @FXML Text infoTextField;
+    @FXML Text nameTextField;
+
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
@@ -36,6 +44,10 @@ public class GameView extends View<GenericGameModel> {
      * Draws board with tiles
      */
     public void update(GenericGameModel model) {
+        setBackgroundColorBoard(model.getBackgroundColor());
+        //show username on board
+        showUsername(model.getPlayerNames(model.getGameManager().getPlayers()));
+
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);
 
@@ -85,7 +97,7 @@ public class GameView extends View<GenericGameModel> {
 
         int x = piece.getX();
         int y = piece.getY();
-        double cellSize = (double) gameBoardPane.getPrefWidth()/gridSize;
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
 
         // Hoop dat er geen outofbounds komt! lol
         URL pngURL = playerIconFileURLs.get(piece.getOwner().getID());
@@ -107,16 +119,37 @@ public class GameView extends View<GenericGameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
+    /**
+     * if not displaying a message show a message when this method gets called.
+     * @param message, the message to display.
+     */
     public void setInfoText(String message){
-        new Thread(() -> {
-            infoTextField = (Text) lookup("#message");
-            infoTextField.setText(message);
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            infoTextField.setText("");
-        }).start();
+        if(!displayingInfo) {
+            new Thread(() -> {
+                displayingInfo = true;
+                infoTextField = (Text) lookup("#message");
+                infoTextField.setText(message);
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                displayingInfo = false;
+                infoTextField.setText("");
+            }).start();
+        }
+    }
+
+    public void showUsername(String name){
+        nameTextField = (Text) lookup("#name");
+        nameTextField.setText(name);
+    }
+
+    public void setBackgroundColorBoard(ArrayList<Integer> colors){
+        if (colors == null){
+            gameBoardPane.setBackground(new Background(new BackgroundFill(null, null, null)));
+        }else {
+            gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(colors.get(0), colors.get(1), colors.get(2)), null, null)));
+        }
     }
 }
