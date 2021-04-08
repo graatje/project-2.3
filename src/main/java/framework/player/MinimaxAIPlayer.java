@@ -9,7 +9,8 @@ import java.util.Set;
 import java.util.UUID;
 
 public class MinimaxAIPlayer extends AIPlayer {
-    private int startDepth;
+    private static final int START_DEPTH = 1;
+
     private AIDifficulty difficulty;
 
     private UUID minimaxSession;
@@ -17,17 +18,15 @@ public class MinimaxAIPlayer extends AIPlayer {
     private int bestValue;
     private final Set<UUID> runningThreads = new HashSet<>();
 
-    public MinimaxAIPlayer(Board board, String name, int startDepth, AIDifficulty difficulty) {
+    public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
         super(board, name);
 
-        this.startDepth = startDepth;
         this.difficulty = difficulty;
     }
 
-    public MinimaxAIPlayer(Board board, int startDepth, AIDifficulty difficulty) {
+    public MinimaxAIPlayer(Board board, AIDifficulty difficulty) {
         super(board);
 
-        this.startDepth = startDepth;
         this.difficulty = difficulty;
     }
 
@@ -85,7 +84,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             minimaxSession = session;
         }
 
-        performAsyncMinimax(session, this.startDepth);
+        performAsyncMinimax(session, START_DEPTH);
 
         new Thread(() -> {
             try {
@@ -140,16 +139,13 @@ public class MinimaxAIPlayer extends AIPlayer {
             }
 
             new Thread(() -> {
-                Board clonedBoard;
-                try {
-                    clonedBoard = board.clone();
-                } catch (CloneNotSupportedException e) {
-                    e.printStackTrace();
-                    return;
+                synchronized (this) {
+                    if (minimaxSession != session) {
+                        return;
+                    }
                 }
 
-                clonedBoard._executeMove(this, clonedBoard.getBoardPiece(x, y));
-                int moveValue = miniMax(session, clonedBoard, depth, board.getGameManager().getOtherPlayer(this));
+                int moveValue = miniMax(session, board, depth, this, x, y);
 
                 synchronized (this) {
                     if (moveValue > bestValue) {
@@ -178,52 +174,59 @@ public class MinimaxAIPlayer extends AIPlayer {
      * returns the highest value move when the end is reached because either a lack of valid moves,
      * the end of a node or the maximum search depth is reached.
      *
-     * @param board a playing board.
+     * @param _board a playing board.
      * @param depth depth of the nodes to look into.
-     * @param playerToMove the player to move. If playerToMove == this is true, the algorithm will maximise, otherwise minimise.
      * @return int value of the board.
      */
-    private int miniMax(UUID session, Board board, int depth, Player playerToMove) {
+    private int miniMax(UUID session, Board _board, int depth, Player player, int moveX, int moveY) {
         synchronized (this) {
             if (minimaxSession != session) {
                 return 0;
             }
         }
 
+        // Clone the board
+        Board board;
+        try {
+            board = _board.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+            return 0;
+        }
+        board.setDisableRequestMove(true);
+
+        // Execute the move
+        if(moveX == -1 && moveY == -1) {
+            board.makeMove(player, null);
+        }else{
+            board.makeMove(player, moveX, moveY);
+        }
+
         int boardVal = evaluateBoard(board, depth);
-
-        Player other = board.getGameManager().getOtherPlayer(playerToMove);
-        boolean lookForMax = playerToMove == this;
-
-        if (Math.abs(boardVal) > 0 || depth == 0 || board.getValidMoves(playerToMove).isEmpty()) {
+        if (depth == 0 || board.calculateIsGameOver()) {
             // end reached.
             return boardVal;
         }
 
+        Player playerToMove = board.getCurrentPlayer();
+        boolean lookForMax = playerToMove == this;
         int extremeVal = lookForMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
-        for (BoardPiece boardPiece : board.getValidMoves(playerToMove)) {
-            int x = boardPiece.getX();
-            int y = boardPiece.getY();
+        List<BoardPiece> validMoves = board.getValidMoves(playerToMove);
+        if(validMoves.isEmpty()) { /* && board.canPass(playerToMove) */
+            validMoves.add(null);
+        }
 
-            Board clonedBoard;
-            try {
-                clonedBoard = board.clone();
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-                return 0;
-            }
-
-            clonedBoard._executeMove(playerToMove, clonedBoard.getBoardPiece(x, y));
-
-            Player nextToMove;
-            if(!board.getValidMoves(other).isEmpty()) {
-                nextToMove = other;
+        for (BoardPiece _boardPiece : validMoves) {
+            int x, y;
+            if(_boardPiece != null) {
+                x = _boardPiece.getX();
+                y = _boardPiece.getY();
             }else{
-                nextToMove = playerToMove;
+                x = y = -1;
             }
 
-            int val = miniMax(session, clonedBoard, depth - 1, nextToMove);
+            int val = miniMax(session, board, depth - 1, playerToMove, x, y);
 
             if (lookForMax) {
                 if (val > extremeVal) extremeVal = val;
@@ -245,6 +248,8 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @return value of the board
      */
     private int evaluateBoard(Board board, int treeDepth) {
+        // TODO: Maybe add a game-specific AI implementation for MinimaxAIPlayer#evaluateBoard?
+        // Eg. for Othello give borders more points
         int nSelf = 0;
         int nOther = 0;
         for(int y = 0; y < board.getHeight(); y++) {
@@ -271,14 +276,6 @@ public class MinimaxAIPlayer extends AIPlayer {
 //            // Draw or no win
 //            return 0;
 //        }
-    }
-
-    public int getStartDepth() {
-        return startDepth;
-    }
-
-    public void setStartDepth(int startDepth) {
-        this.startDepth = startDepth;
     }
 
     public AIDifficulty getDifficulty() {
