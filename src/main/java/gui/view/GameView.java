@@ -1,12 +1,10 @@
 package gui.view;
 
-import framework.ConfigData;
 import framework.board.BoardPiece;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.fxml.FXML;
 import javafx.scene.Parent;
-import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -24,11 +22,12 @@ import java.util.List;
 public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
-    private boolean displayingInfo = false;
     private List<URL> playerIconFileURLs;
-    @FXML Text infoTextField;
     @FXML Text nameTextField;
 
+
+    // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
+    public static final double MARGIN = 0.2;
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
         super(parent, controller, windowWidth, windowHeight);
@@ -44,7 +43,8 @@ public class GameView extends View<GenericGameModel> {
         setBackgroundColorBoard(model.getBackgroundColor());
         //show username on board
         showUsername(model.getPlayerNames(model.getGameManager().getPlayers()));
-
+        showDialog(model.getDialogMessage());
+        showInfoText(model.getInfoMessage(), "#message");
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);
 
@@ -57,7 +57,7 @@ public class GameView extends View<GenericGameModel> {
 
     public void drawBoard(int gridSize) {
         // Clear board
-        gameBoardPane.getChildren().clear();
+        clearBoard();
 
         double boardSize = gameBoardPane.getPrefWidth();
         System.out.println("DEBUG: board size: "+boardSize);
@@ -83,7 +83,7 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
-    public void clearBoard(){
+    public void clearBoard() {
         gameBoardPane.getChildren().clear();
     }
 
@@ -102,7 +102,7 @@ public class GameView extends View<GenericGameModel> {
         // Create image
         Image pieceImage;
         try {
-            pieceImage = new Image(pngURL.openStream(), cellSize, cellSize, true, true);
+            pieceImage = new Image(pngURL.openStream(), cellSize*(1-MARGIN), cellSize*(1-MARGIN), true, true);
         } catch(IOException e) {
             System.err.println("Image does not exist?");
             e.printStackTrace();
@@ -111,30 +111,9 @@ public class GameView extends View<GenericGameModel> {
 
         // Draw
         ImageView imageView = new ImageView(pieceImage);
-        imageView.setX(x*cellSize);
-        imageView.setY(y*cellSize);
+        imageView.setX(cellSize*(x+MARGIN/2));
+        imageView.setY(cellSize*(y+MARGIN/2));
         gameBoardPane.getChildren().add(imageView);
-    }
-
-    /**
-     * if not displaying a message show a message when this method gets called.
-     * @param message, the message to display.
-     */
-    public void setInfoText(String message){
-        if(!displayingInfo) {
-            new Thread(() -> {
-                displayingInfo = true;
-                infoTextField = (Text) lookup("#message");
-                infoTextField.setText(message);
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                displayingInfo = false;
-                infoTextField.setText("");
-            }).start();
-        }
     }
 
     public void showUsername(String name){

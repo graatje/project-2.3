@@ -32,7 +32,6 @@ public class GenericGameModel extends Model implements BoardObserver {
     }
 
     public void clickTile(double x, double y) {
-        String infoMessage = "";
         double cellSize = boardSize / board.getWidth();
         int xTile = (int) Math.floor(x / cellSize);
         int yTile = (int) Math.floor(y / cellSize);
@@ -48,17 +47,12 @@ public class GenericGameModel extends Model implements BoardObserver {
             if (gameManager.getBoard().isValidMove(xTile, yTile)) {
                 ((LocalPlayer) player).executeMove(xTile, yTile);
             } else {
-                infoMessage = "Invalid move";
+                setInfoMessage("Invalid move.");
             }
         } else {
-            infoMessage = "Wait for your turn";
+            setInfoMessage("Please wait for your move");
         }
-        if(!infoMessage.isEmpty()) {
-            for (View view : observers) {
-                ((GameView) view).setInfoText(infoMessage);
-            }
-        }
-
+        updateView();
     }
 
     public Board getBoard() {
@@ -91,16 +85,15 @@ public class GenericGameModel extends Model implements BoardObserver {
                 message = who.getName() + " has won!";
             }
 
-            for (View view : observers) {
-                view.showDialog(message);
-            }
+            setDialogMessage(message);
+            updateView();
         });
     }
 
     public void clearBoard(){
-        for (View view : observers) {
-            ((GameView)view).clearBoard();
-        }
+        //TODO: deze methode is puur omdat anders het bord nog blijft staan tot de volgende wedstrijd begint (bv bij multiplayer)
+        // herimplementeren? betere manier?
+        //updateView();
     }
 
     @Override
