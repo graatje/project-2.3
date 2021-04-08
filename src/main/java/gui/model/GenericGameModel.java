@@ -91,7 +91,8 @@ public class GenericGameModel extends Model implements BoardObserver {
     }
 
     public void clearBoard(){
-        // deze methode is puur omdat anders het bord nog blijft staan tot de volgende wedstrijd begint (bv bij multiplayer)
+        //TODO: deze methode is puur omdat anders het bord nog blijft staan tot de volgende wedstrijd begint (bv bij multiplayer)
+        // herimplementeren? betere manier?
         //updateView();
     }
 
