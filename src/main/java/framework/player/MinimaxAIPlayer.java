@@ -15,7 +15,7 @@ public class MinimaxAIPlayer extends AIPlayer {
 
     private UUID minimaxSession;
     private BoardPiece bestMove;
-    private int bestValue;
+    private float bestValue;
     private boolean anyEndedInNonGameOver;
     private int highestDepth;
     private final Set<UUID> runningThreads = new HashSet<>();
@@ -82,7 +82,7 @@ public class MinimaxAIPlayer extends AIPlayer {
         UUID session = UUID.randomUUID();
         synchronized (this) {
             bestMove = null;
-            bestValue = Integer.MIN_VALUE;
+            bestValue = Float.MIN_VALUE;
             minimaxSession = session;
             highestDepth = 0;
         }
@@ -156,7 +156,7 @@ public class MinimaxAIPlayer extends AIPlayer {
                     }
                 }
 
-                int moveValue = miniMax(session, board, depth, this, x, y);
+                float moveValue = miniMax(session, board, depth, this, x, y);
 
                 synchronized (this) {
                     if (moveValue > bestValue) {
@@ -195,7 +195,7 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @param depth depth of the nodes to look into.
      * @return int value of the board.
      */
-    private int miniMax(UUID session, Board _board, int depth, Player player, int moveX, int moveY) {
+    private float miniMax(UUID session, Board _board, int depth, Player player, int moveX, int moveY) {
         synchronized (this) {
             if (minimaxSession != session) {
                 return 0;
@@ -233,7 +233,7 @@ public class MinimaxAIPlayer extends AIPlayer {
 
         Player playerToMove = board.getCurrentPlayer();
         boolean lookForMax = playerToMove == this;
-        int extremeVal = lookForMax ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        float extremeVal = lookForMax ? Float.MIN_VALUE : Float.MAX_VALUE;
 
         List<BoardPiece> validMoves = board.getValidMoves(playerToMove);
         if(validMoves.isEmpty()) { /* && board.canPass(playerToMove) */
@@ -249,7 +249,7 @@ public class MinimaxAIPlayer extends AIPlayer {
                 x = y = -1;
             }
 
-            int val = miniMax(session, board, depth - 1, playerToMove, x, y);
+            float val = miniMax(session, board, depth - 1, playerToMove, x, y);
 
             if (lookForMax) {
                 if (val > extremeVal) extremeVal = val;
@@ -270,50 +270,89 @@ public class MinimaxAIPlayer extends AIPlayer {
      * @param treeDepth depth of the game tree the board configuration is at
      * @return value of the board
      */
-    private int evaluateBoard(Board board, int treeDepth) {
+    private float evaluateBoard(Board board, int treeDepth) {
         // TODO: Maybe add a game-specific AI implementation for MinimaxAIPlayer#evaluateBoard?
         // Eg. for Othello give borders more points
-        if(board.calculateIsGameOver()) {
-            Player winner = board.calculateWinner();
-            if(winner == this) {
-                return 100;
-            }else if(winner != null) {
-                return -100;
-            }else{
-                return 0;
-            }
-        }
 
-        int nSelf = 0;
-        int nOther = 0;
-        for(int y = 0; y < board.getHeight(); y++) {
-            for(int x = 0; x < board.getWidth(); x++) {
-                BoardPiece piece = board.getBoardPiece(x, y);
-                if(!piece.hasOwner()) {
-                    continue;
-                }
+        int[][] board_value = {
+            {20, -3, 11, 8,  8, 11, -3, 20},
+            {-3, -7, -4, 1,  1, -4, -7, -3},
+            {11, -4, 2,  2,  2,  2, -4, 11},
+            { 8,  1, 2, -3, -3,  2,  1,  8},
+            { 8,  1, 2, -3, -3,  2,  1,  8},
+            {11, -4, 2,  2,  2,  2, -4, 11},
+            {-3, -7, -4, 1,  1, -4, -7, -3},
+            {20, -3, 11, 8,  8, 11, -3, 20}
+        };
 
-                boolean xBorder = (x == 0 || x == board.getWidth() - 1);
-                boolean yBorder = (y == 0 || y == board.getHeight() - 1);
-
-                int piecePoints;
-                if(xBorder && yBorder) {
-                    piecePoints = 20;
-                }else if(xBorder || yBorder) {
-                    piecePoints = 8;
-                }else{
-                    piecePoints = 1;
-                }
-
-                if(piece.getOwner() == this) {
-                    nSelf += piecePoints;
-                }else {
-                    nOther += piecePoints;
+        int b = 0, w = 0;
+        for(int x = 0; x < 8; x++) {
+            for(int y = 0; y < 8; y++) {
+                Player owner = board.getBoardPiece(x, y).getOwner();
+                if(owner == this) {
+                    b += board_value[x][y];
+                }else if(owner != null) {
+                    w += board_value[x][y];
                 }
             }
         }
 
-        return nSelf - nOther;
+        float value = 0;
+        if(b + w != 0) {
+            value = (float) (b - w) / (b + w);
+        }
+
+        b += board.getValidMoves(this).size();
+        w += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
+
+        if(b + w != 0) {
+            value += (float) (b - w) / (b + w);
+        }
+
+        return value;
+
+
+//        if(board.calculateIsGameOver()) {
+//            Player winner = board.calculateWinner();
+//            if(winner == this) {
+//                return 100;
+//            }else if(winner != null) {
+//                return -100;
+//            }else{
+//                return 0;
+//            }
+//        }
+//
+//        int nSelf = 0;
+//        int nOther = 0;
+//        for(int y = 0; y < board.getHeight(); y++) {
+//            for(int x = 0; x < board.getWidth(); x++) {
+//                BoardPiece piece = board.getBoardPiece(x, y);
+//                if(!piece.hasOwner()) {
+//                    continue;
+//                }
+//
+//                boolean xBorder = (x == 0 || x == board.getWidth() - 1);
+//                boolean yBorder = (y == 0 || y == board.getHeight() - 1);
+//
+//                int piecePoints;
+//                if(xBorder && yBorder) {
+//                    piecePoints = 20;
+//                }else if(xBorder || yBorder) {
+//                    piecePoints = 8;
+//                }else{
+//                    piecePoints = 1;
+//                }
+//
+//                if(piece.getOwner() == this) {
+//                    nSelf += piecePoints;
+//                }else {
+//                    nOther += piecePoints;
+//                }
+//            }
+//        }
+//
+//        return nSelf - nOther;
 
 //        Player winner = board.calculateWinner();
 //        if (winner == this) {
