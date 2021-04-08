@@ -17,6 +17,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class GenericGameModel extends Model implements BoardObserver {
 
@@ -138,5 +139,45 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     public String getPlayerNames(List<Player> players){
         return players.get(0).getName() + " VS. " + players.get(1).getName();
+    }
+
+    public ArrayList<String> getPlayerInfo(Map<Player, Integer> playerInfo){
+        ArrayList<String> playerInformation = new ArrayList<>();
+
+        for (Player player : playerInfo.keySet()){
+            String color = null;
+            String p1 = null;
+            String p2 = null;
+            boolean showPiecesCount = true;
+
+            switch(ConfigData.getInstance().getGameType()){
+                case TTT:
+                case TTT_LOCAL:
+                case TTT_ONLINE:
+                    p1 = "Noughts (O)";
+                    p2 = "Crosses (X)";
+                    showPiecesCount = false;
+                    break;
+
+                case OTHELLO:
+                case OTHELLO_LOCAL:
+                case OTHELLO_ONLINE:
+                    p1 = "Black";
+                    p2 = "White";
+                    break;
+            }
+            if(player.getID() == 0){
+                color = p1;
+            }else if (player.getID() == 1){
+                color = p2;
+            }
+
+            String playerinfo = player.getName() + "\n" + color;
+            if(showPiecesCount == true){
+                playerinfo += "\n" + playerInfo.get(player);
+            }
+            playerInformation.add(playerinfo);
+        }
+        return playerInformation;
     }
 }
