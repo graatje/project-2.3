@@ -1,11 +1,9 @@
 package framework.board;
 
-import framework.BoardState;
-import framework.ConfigData;
-import framework.ConnectedGameManager;
-import framework.GameManager;
+import framework.*;
 import framework.player.MoveRequestable;
 import framework.player.Player;
+import framework.player.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,6 +20,8 @@ public abstract class Board implements Cloneable {
     private BoardState boardState = BoardState.WAITING;
     private int currentPlayerId;
     private Player winner;
+
+    private boolean disableRequestMove = false;
 
     /**
      * Constructs a new Board
@@ -97,8 +97,7 @@ public abstract class Board implements Cloneable {
     /**
      * this method requests a playermove from the board if all players have been initialized.
      */
-    // TODO: FIX THIS HORRIBLE MESS!!!!!!
-    public void start(Player startingPlayer, Player actualStartingPlayer, boolean requestFirstPlayerMove) {
+    public void start(Player startingPlayer) {
         if (boardState != BoardState.WAITING) {
             throw new IllegalStateException("The game cannot start in this state! (Current state: " + boardState + ")");
         }
@@ -116,34 +115,20 @@ public abstract class Board implements Cloneable {
             startingPlayer = gameManager.getPlayer((int) (Math.random() * gameManager.getNumPlayers()));
         }
 
-        // TODO: FIX THIS HORRIBLE MESS TOO!!
-        if (actualStartingPlayer == null) {
-            actualStartingPlayer = startingPlayer;
-        }
-
         currentPlayerId = startingPlayer.getID();
 
-        prepareBoard(actualStartingPlayer);
+
+        prepareBoard(startingPlayer);
 
         boardState = BoardState.PLAYING;
 
         for (BoardObserver o : observers) {
-            // TODO: FIX THIS HORRIBLE MESS
-            o.onGameStart(actualStartingPlayer);
+            o.onGameStart(startingPlayer);
         }
 
-        // Request a move from the first player
-        if (requestFirstPlayerMove) {
+        if (ConfigData.getInstance().getGameType().isLocal){
             requestPlayerMove();
         }
-    }
-
-    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
-        start(startingPlayer, startingPlayer, requestFirstPlayerMove);
-    }
-
-    public void start(Player startingPlayer) {
-        start(startingPlayer, true);
     }
 
     public void reset() {
@@ -262,6 +247,10 @@ public abstract class Board implements Cloneable {
      * Calls {@link MoveRequestable#requestMove()} on the current player, if the current player implements {@link MoveRequestable}
      */
     public void requestPlayerMove() {
+        if(disableRequestMove) {
+            return;
+        }
+
         Player currentPlayer = gameManager.getPlayer(currentPlayerId);
         if (currentPlayer instanceof MoveRequestable) {
             ((MoveRequestable) currentPlayer).requestMove();
@@ -275,7 +264,7 @@ public abstract class Board implements Cloneable {
      */
     public void forceWin(Player winner) {
 
-        if (this.boardState != BoardState.PLAYING){
+        if (this.boardState != BoardState.PLAYING) {
             return;
         }
 
@@ -361,7 +350,8 @@ public abstract class Board implements Cloneable {
      * @return The player who is currently expected to make a move.
      */
     public Player getCurrentPlayer() {
-        if(currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
+        if (currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
+            System.err.println("Returning NULL for getCurrentPlayer! ID was: " + currentPlayerId);
             return null;
         }
 
@@ -432,5 +422,13 @@ public abstract class Board implements Cloneable {
      */
     public void unregisterObserver(BoardObserver observer) {
         observers.remove(observer);
+    }
+
+    public boolean isDisableRequestMove() {
+        return disableRequestMove;
+    }
+
+    public void setDisableRequestMove(boolean disableRequestMove) {
+        this.disableRequestMove = disableRequestMove;
     }
 }

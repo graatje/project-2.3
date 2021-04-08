@@ -7,13 +7,8 @@ import gui.MainWindow;
 import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-
-import java.io.ObjectInputFilter;
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class GenericGameController extends Controller {
     @FXML
