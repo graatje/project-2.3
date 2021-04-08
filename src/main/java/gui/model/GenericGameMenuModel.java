@@ -12,6 +12,7 @@ import ttt.board.TTTBoard;
 
 import java.io.IOException;
 import java.io.ObjectInputFilter;
+import java.util.ArrayList;
 
 public class GenericGameMenuModel extends Model {
 
@@ -27,6 +28,10 @@ public class GenericGameMenuModel extends Model {
     }
 
     public void setGameManager() {
+        ArrayList<Integer> colorsOthello = new ArrayList<>();
+        colorsOthello.add(0);
+        colorsOthello.add(153);
+        colorsOthello.add(0);
         GameManager gameManager = null;
 
         String ip = ConfigData.getInstance().getServerIP();
@@ -37,15 +42,19 @@ public class GenericGameMenuModel extends Model {
             switch (ConfigData.getInstance().getGameType()) {
                 case TTT_LOCAL:
                     gameManager = new GameManager(TTTBoard::new);
+                    gameModel.setBackgroundColor(null);
                     break;
                 case OTHELLO_LOCAL:
                     gameManager = new GameManager(OthelloBoard::new);
+                    gameModel.setBackgroundColor(colorsOthello);
                     break;
                 case TTT_ONLINE:
-                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, 6, difficulty));
+                    gameModel.setBackgroundColor(null);
                     break;
                 case OTHELLO_ONLINE:
-                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, 6, difficulty));
+                    gameModel.setBackgroundColor(colorsOthello);
                     break;
             }
         } catch (IOException e) {
@@ -57,7 +66,7 @@ public class GenericGameMenuModel extends Model {
 
         if (!(gameManager instanceof ConnectedGameManager)){
             gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
+            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", 6, ConfigData.getInstance().getAIDifficulty()));
             gameManager.start(null);
         } else{
             ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
