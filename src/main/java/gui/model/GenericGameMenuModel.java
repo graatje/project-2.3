@@ -66,7 +66,7 @@ public class GenericGameMenuModel extends Model {
 
         if (!(gameManager instanceof ConnectedGameManager)){
             gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", 6, ConfigData.getInstance().getAIDifficulty()));
+            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
             gameManager.start(null);
         } else{
             ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
