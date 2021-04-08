@@ -1,53 +1,38 @@
 package framework.player;
 
 import framework.board.Board;
-import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 
-import java.util.*;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
-public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver {
-    private static final int THINK_TIMEOUT = 2500;
-    private static final int NUM_THREADS = 8;
-
+public abstract class MinimaxAIPlayer extends AIPlayer {
     private AIDifficulty difficulty;
 
-    // TODO: Make this a tree structure maybe?
-    // Note that Sets have an O(1) insertion and remove time, which is REALLY needed in this algorithm (lists of 4gb+ in memory)
-    private final Set<MoveOutcome> moveOutcomesSet = new HashSet<>();
-
-    private final SynchronousQueue<MoveOutcome> workerQueue = new SynchronousQueue<>();
-    private final List<Thread> workerThreads = new ArrayList<>();
-    private final AtomicInteger workerThreadsWorking = new AtomicInteger(0);
-    private boolean workerThreadsRunning = false;
-
-    private final Object currentSessionLock = new Object();
-    private UUID currentSession = null;
-
-    private final Object evaluateLock = new Object();
-    private float bestMoveValue;
-    private Move bestMove;
+    private UUID minimaxSession;
+    private BoardPiece bestMove;
+    private float bestValue;
+    private boolean anyEndedInNonGameOver;
     private int highestDepth;
+    private final Set<UUID> runningThreads = new HashSet<>();
 
     public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
         super(board, name);
 
         this.difficulty = difficulty;
-
-        // Register self as observer
-        board.registerObserver(this);
     }
 
     public MinimaxAIPlayer(Board board, AIDifficulty difficulty) {
         super(board);
 
         this.difficulty = difficulty;
-
-        // Register self as observer
-        board.registerObserver(this);
     }
+
+    protected abstract float evaluateBoard(Board board, int treeDepth);
+
+    public abstract int getStartDepth();
 
     @Override
     public void requestMove() {
@@ -90,259 +75,192 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         board.makeMove(this, randomMove);
     }
 
-    private void executeMinimaxMove() {
+    /**
+     * check all valid moves. return the best move of those.
+     *
+     * @return the boardpiece with the best move.
+     */
+    public void executeMinimaxMove() {
         UUID session = UUID.randomUUID();
-        synchronized (currentSessionLock) {
-            currentSession = session;
-        }
-
-        synchronized (evaluateLock) {
-            bestMoveValue = Float.MIN_VALUE;
+        synchronized (this) {
             bestMove = null;
+            bestValue = Float.MIN_VALUE;
+            minimaxSession = session;
             highestDepth = 0;
         }
 
-        synchronized (moveOutcomesSet) {
-            moveOutcomesSet.clear();
-        }
-
-        // Prime the moveOutcomes and doneMoveOutcomes maps.
-        for(BoardPiece validMove : board.getValidMoves()) {
-            Move move = new Move(validMove.getX(), validMove.getY());
-
-            MoveOutcome outcome = calculateFirstOutcome(board, move);
-            evaluateOutcome(outcome);
-        }
+        performAsyncMinimax(session, getStartDepth());
 
         new Thread(() -> {
-            while(true) {
-                boolean didAnything = calculateNextDepth(session);
-                if(!didAnything) {
-                    synchronized (workerThreadsWorking) {
-                        if(workerThreadsWorking.get() == 0) {
-                            break;
-                        }
-                    }
-                }
-            }
-
-            // Clear outcomes immediately to save RAM!
-            synchronized (moveOutcomesSet) {
-                moveOutcomesSet.clear();
-            }
-
-            float bestMoveValue;
-            Move bestMove;
-            int highestDepth;
-            synchronized (evaluateLock) {
-                bestMoveValue = this.bestMoveValue;
-                bestMove = this.bestMove;
-                highestDepth = this.highestDepth;
-            }
-
-            System.out.println("No more outcomes to check (we've either checked all outcomes, or the session expired), and all worker threads are idle!");
-            System.out.println("Done thinking of the next move :)");
-            System.out.println("bestMoveValue = " + bestMoveValue);
-            System.out.println("bestMove = " + bestMove);
-            System.out.println("highestDepth = " + highestDepth);
-
-            if(bestMove == null) {
-                board.makeMove(this, null);
-            }else{
-                board.makeMove(this, bestMove.x, bestMove.y);
-            }
-
-            // Make sure the session ended
-            synchronized (currentSessionLock) {
-                if(currentSession == session) {
-                    currentSession = null;
-                }
-            }
-        }, "AI-WorkerMaster").start();
-
-        // TODO: This check can be done at every place we're checking the currentSession!
-        new Thread(() -> {
-            try{
-                Thread.sleep(THINK_TIMEOUT);
-            }catch(InterruptedException ignored) {}
-
-            synchronized (currentSessionLock) {
-                if(currentSession == session) {
-                    System.out.println("After AI timeout, we're still working on the best move. Aborting early / making the session expire!");
-                    currentSession = null;
-                }
-            }
-        }, "AI-Supervisor").start();
-    }
-
-    private boolean calculateNextDepth(UUID session) {
-        synchronized (currentSessionLock) {
-            if(session != currentSession) {
-                return false;
-            }
-        }
-
-        Set<MoveOutcome> moveOutcomesSet_copy;
-        synchronized (moveOutcomesSet) {
-            moveOutcomesSet_copy = new HashSet<>(moveOutcomesSet);
-        }
-
-        for(MoveOutcome moveOutcome : moveOutcomesSet_copy) {
-            synchronized (currentSessionLock) {
-                if(session != currentSession) {
-                    return false;
-                }
-            }
-
-            synchronized (moveOutcomesSet) {
-                moveOutcomesSet.remove(moveOutcome);
-            }
-
             try {
-                workerQueue.put(moveOutcome);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
 
-        return !moveOutcomesSet_copy.isEmpty();
+            onMinimaxDone(session);
+        }).start();
     }
 
-    private void workerThread() {
-        System.out.println("AI worker thread started.");
-
-        while(workerThreadsRunning) {
-            MoveOutcome moveOutcome;
-            try{
-                moveOutcome = workerQueue.take();
-            }catch(InterruptedException e) {
-                // Continue, to check the while-loop condition again!
-                continue;
+    private void onMinimaxDone(UUID session) {
+        BoardPiece bestMove;
+        synchronized (this) {
+            if(minimaxSession != session) {
+                return;
             }
 
-            synchronized (workerThreadsWorking) {
-                workerThreadsWorking.incrementAndGet();
-            }
+            bestMove = this.bestMove;
 
-            for(BoardPiece validMove : moveOutcome.board.getValidMoves()) {
-                Move move = new Move(validMove.getX(), validMove.getY());
+            this.minimaxSession = null;
+        }
 
-                MoveOutcome nextOutcome = calculateNextOutcome(moveOutcome, move);
-                evaluateOutcome(nextOutcome);
-            }
-
-            synchronized (workerThreadsWorking) {
-                workerThreadsWorking.decrementAndGet();
+        if (bestMove == null) {
+            List<BoardPiece> validMoves = board.getValidMoves(this);
+            if (!validMoves.isEmpty()) {
+                System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
+                bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
         }
 
-        System.out.println("AI worker thread stopped.");
+        System.out.println("Figured out the best move at a depth of " + highestDepth);
+
+        board.makeMove(this, bestMove);
     }
 
-    private void startWorkerThreads() {
-        if(!workerThreads.isEmpty()) {
-            throw new IllegalStateException("Worker threads already started!");
+    private void performAsyncMinimax(UUID session, int depth) {
+        synchronized (this) {
+            if (minimaxSession != session) {
+                return;
+            }
+
+            if(depth > highestDepth) {
+                highestDepth = depth;
+            }
+
+            anyEndedInNonGameOver = false;
         }
 
-        workerThreadsRunning = true;
+        List<BoardPiece> validMoves = board.getValidMoves(this);
 
-        for (int i = 0; i < NUM_THREADS; i++) {
-            Thread thread = new Thread(this::workerThread, "AI-Worker-" + i);
-            thread.setDaemon(true);
+        for (BoardPiece boardPiece : validMoves) {
+            int x = boardPiece.getX();
+            int y = boardPiece.getY();
 
-            workerThreads.add(thread);
-            thread.start();
+            final UUID threadUuid = UUID.randomUUID();
+            synchronized (runningThreads) {
+                runningThreads.add(threadUuid);
+            }
+
+            new Thread(() -> {
+                synchronized (this) {
+                    if (minimaxSession != session) {
+                        return;
+                    }
+                }
+
+                float moveValue = miniMax(session, board, depth, this, x, y);
+
+                synchronized (this) {
+                    if (moveValue > bestValue) {
+                        bestMove = boardPiece;
+                        bestValue = moveValue;
+                    }
+                }
+
+                boolean isEmpty;
+                synchronized (runningThreads) {
+                    runningThreads.remove(threadUuid);
+                    isEmpty = runningThreads.isEmpty();
+                }
+
+                if (isEmpty) {
+                    // We're DONE!
+                    if (minimaxSession == session) {
+                        if(anyEndedInNonGameOver) {
+                            // We can still go higher!
+                            performAsyncMinimax(session, depth + 1);
+                        }else{
+                            System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
+                            onMinimaxDone(session);
+                        }
+                    }
+                }
+            }).start();
         }
     }
 
-    private void stopWorkerThreads() {
-        workerThreadsRunning = false;
-
-        for(Thread workerThread : workerThreads) {
-            workerThread.interrupt();
-        }
-
-        workerThreads.clear();
-    }
-
-    private void evaluateOutcome(MoveOutcome outcome) {
-        synchronized (evaluateLock) {
-            if(outcome.boardValue > bestMoveValue) {
-                bestMoveValue = outcome.boardValue;
-                bestMove = outcome.firstMove;
-            }
-
-            if(outcome.depth > highestDepth) {
-                highestDepth = outcome.depth;
+    /**
+     * returns the highest value move when the end is reached because either a lack of valid moves,
+     * the end of a node or the maximum search depth is reached.
+     *
+     * @param _board a playing board.
+     * @param depth depth of the nodes to look into.
+     * @return int value of the board.
+     */
+    private float miniMax(UUID session, Board _board, int depth, Player player, int moveX, int moveY) {
+        synchronized (this) {
+            if (minimaxSession != session) {
+                return 0;
             }
         }
 
-        if(!outcome.done) {
-            synchronized (moveOutcomesSet) {
-                moveOutcomesSet.add(outcome);
-            }
-        }
-    }
-
-    private MoveOutcome calculateNextOutcome(MoveOutcome previous, Move move) {
+        // Clone the board
         Board board;
-        try{
-            board = previous.board.clone();
-        }catch(CloneNotSupportedException e) {
-            e.printStackTrace();
-            System.exit(-1);
-            return null;
-        }
-        board.setDisableRequestMove(true);
-
-        board.makeMove(board.getCurrentPlayer(), move.x, move.y);
-
-        float value = evaluateBoard(board, previous.depth + 1);
-        boolean done = board.calculateIsGameOver();
-
-        return new MoveOutcome(previous.firstMove, board, value, done, previous.depth + 1);
-    }
-
-    private MoveOutcome calculateFirstOutcome(Board _board, Move move) {
-        Board board;
-        try{
+        try {
             board = _board.clone();
-        }catch(CloneNotSupportedException e) {
+        } catch (CloneNotSupportedException e) {
             e.printStackTrace();
-            System.exit(-1);
-            return null;
+            return 0;
         }
         board.setDisableRequestMove(true);
 
-        board.makeMove(board.getCurrentPlayer(), move.x, move.y);
-
-        float value = evaluateBoard(board, 1);
-        boolean done = board.calculateIsGameOver();
-
-        return new MoveOutcome(move, board, value, done, 1);
-    }
-
-    protected abstract float evaluateBoard(Board board, int treeDepth);
-
-    @Override
-    public void onPlayerMoved(Player who, BoardPiece where) {}
-
-    @Override
-    public void onPlayerMoveFinalized(Player previous, Player current) {}
-
-    @Override
-    public void onGameStart(Player startingPlayer) {
-        if(!workerThreads.isEmpty()) {
-            System.err.println("Received onGameStart observation, but we already have worker threads running. Ignoring.");
-            return;
+        // Execute the move
+        if(moveX == -1 && moveY == -1) {
+            board.makeMove(player, null);
+        }else{
+            board.makeMove(player, moveX, moveY);
         }
 
-        startWorkerThreads();
-    }
+        boolean gameOver = board.calculateIsGameOver();
+        if (depth == 0 || gameOver) {
+            // end reached.
+            if(!gameOver) {
+                synchronized (this) {
+                    anyEndedInNonGameOver = true;
+                }
+            }
 
-    @Override
-    public void onPlayerWon(Player who) {
-        stopWorkerThreads();
+            return evaluateBoard(board, depth);
+        }
+
+        Player playerToMove = board.getCurrentPlayer();
+        boolean lookForMax = playerToMove == this;
+        float extremeVal = lookForMax ? Float.MIN_VALUE : Float.MAX_VALUE;
+
+        List<BoardPiece> validMoves = board.getValidMoves(playerToMove);
+        if(validMoves.isEmpty()) { /* && board.canPass(playerToMove) */
+            validMoves.add(null);
+        }
+
+        for (BoardPiece _boardPiece : validMoves) {
+            int x, y;
+            if(_boardPiece != null) {
+                x = _boardPiece.getX();
+                y = _boardPiece.getY();
+            }else{
+                x = y = -1;
+            }
+
+            float val = miniMax(session, board, depth - 1, playerToMove, x, y);
+
+            if (lookForMax) {
+                if (val > extremeVal) extremeVal = val;
+            } else {
+                if (val < extremeVal) extremeVal = val;
+            }
+        }
+
+        return extremeVal;
     }
 
     public AIDifficulty getDifficulty() {
@@ -351,39 +269,6 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
     public void setDifficulty(AIDifficulty difficulty) {
         this.difficulty = difficulty;
-    }
-
-    private static class Move {
-        public final int x, y;
-
-        public Move(int x, int y) {
-            this.x = x;
-            this.y = y;
-        }
-
-        @Override
-        public String toString() {
-            return "Move{" +
-                    "x=" + x +
-                    ", y=" + y +
-                    '}';
-        }
-    }
-
-    private static class MoveOutcome {
-        public final Move firstMove;
-        public final Board board;
-        public final float boardValue;
-        public final boolean done;
-        public final int depth;
-
-        public MoveOutcome(Move firstMove, Board board, float boardValue, boolean done, int depth) {
-            this.firstMove = firstMove;
-            this.board = board;
-            this.boardValue = boardValue;
-            this.done = done;
-            this.depth = depth;
-        }
     }
 
     public enum AIDifficulty {
