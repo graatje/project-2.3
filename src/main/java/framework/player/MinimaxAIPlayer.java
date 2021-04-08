@@ -248,6 +248,8 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
         for (int i = 0; i < NUM_THREADS; i++) {
             Thread thread = new Thread(this::workerThread, "AI-Worker-" + i);
+            thread.setDaemon(true);
+
             workerThreads.add(thread);
             thread.start();
         }
