@@ -2,6 +2,7 @@ package gui.model;
 
 import framework.ConfigData;
 import framework.GameManager;
+import framework.GameType;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
@@ -12,7 +13,9 @@ import gui.view.View;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class GenericGameModel extends Model implements BoardObserver {
@@ -21,6 +24,7 @@ public class GenericGameModel extends Model implements BoardObserver {
     private GameManager gameManager;
     private double boardSize = 500; //TODO: opvragen van fxml?
     private ArrayList<Integer> colors;
+    private List<URL> playerIconFileURLs;
 
     /**
      * Sets gameManager and board variables, and registers this model as observer.
@@ -29,6 +33,29 @@ public class GenericGameModel extends Model implements BoardObserver {
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
+
+        // Load boardpiece images
+        GameType gameType = ConfigData.getInstance().getGameType();
+        switch (gameType) {
+            case TTT:
+            case TTT_LOCAL:
+            case TTT_ONLINE:
+                setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png")));
+                break;
+            case OTHELLO:
+            case OTHELLO_LOCAL:
+            case OTHELLO_ONLINE:
+                setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png")));
+                break;
+        }
+    }
+
+    public List<URL> getPlayerIconFileURLs() {
+        return playerIconFileURLs;
+    }
+
+    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
+        this.playerIconFileURLs = playerIconFileURLs;
     }
 
     public void clickTile(double x, double y) {

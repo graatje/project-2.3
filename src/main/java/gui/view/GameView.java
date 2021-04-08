@@ -23,15 +23,17 @@ public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
-    @FXML Text nameTextField;
-
+    @FXML private Text nameTextField;
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
 
-    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
+    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#Board");
+    }
+
+    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
@@ -40,6 +42,7 @@ public class GameView extends View<GenericGameModel> {
      * Draws board with tiles
      */
     public void update(GenericGameModel model) {
+        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
         setBackgroundColorBoard(model.getBackgroundColor());
         //show username on board
         showUsername(model.getPlayerNames(model.getGameManager().getPlayers()));
