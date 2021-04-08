@@ -26,13 +26,6 @@ public class GameManager {
     }
 
     /**
-     * See {@link Board#start(Player, boolean)}
-     */
-    public void start(Player startingPlayer, boolean requestFirstPlayerMove) {
-        board.start(startingPlayer, requestFirstPlayerMove);
-    }
-
-    /**
      * See {@link Board#start(Player)}
      */
     public void start(Player startingPlayer) {

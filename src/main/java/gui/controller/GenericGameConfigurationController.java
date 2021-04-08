@@ -28,6 +28,8 @@ public class GenericGameConfigurationController extends Controller {
 
     public void initialize() {
         comboBoxDifficulty.setItems(options);
+        ipAddressField.setText(ConfigData.getInstance().getServerIP());
+        portField.setText(ConfigData.getInstance().getServerPort() + "");
     }
 
     @FXML void pressOKip(ActionEvent event){
