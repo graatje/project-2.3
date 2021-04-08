@@ -1,9 +1,6 @@
 package framework.board;
 
-import framework.BoardState;
-import framework.ConfigData;
-import framework.ConnectedGameManager;
-import framework.GameManager;
+import framework.*;
 import framework.player.MoveRequestable;
 import framework.player.Player;
 import framework.player.ServerPlayer;
@@ -127,6 +124,10 @@ public abstract class Board implements Cloneable {
 
         for (BoardObserver o : observers) {
             o.onGameStart(startingPlayer);
+        }
+
+        if (ConfigData.getInstance().getGameType().isLocal){
+            requestPlayerMove();
         }
     }
 
