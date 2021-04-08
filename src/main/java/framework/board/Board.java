@@ -24,6 +24,8 @@ public abstract class Board implements Cloneable {
     private int currentPlayerId;
     private Player winner;
 
+    private boolean disableRequestMove = false;
+
     /**
      * Constructs a new Board
      *
@@ -244,6 +246,10 @@ public abstract class Board implements Cloneable {
      * Calls {@link MoveRequestable#requestMove()} on the current player, if the current player implements {@link MoveRequestable}
      */
     public void requestPlayerMove() {
+        if(disableRequestMove) {
+            return;
+        }
+
         Player currentPlayer = gameManager.getPlayer(currentPlayerId);
         if (currentPlayer instanceof MoveRequestable) {
             ((MoveRequestable) currentPlayer).requestMove();
@@ -415,5 +421,13 @@ public abstract class Board implements Cloneable {
      */
     public void unregisterObserver(BoardObserver observer) {
         observers.remove(observer);
+    }
+
+    public boolean isDisableRequestMove() {
+        return disableRequestMove;
+    }
+
+    public void setDisableRequestMove(boolean disableRequestMove) {
+        this.disableRequestMove = disableRequestMove;
     }
 }
