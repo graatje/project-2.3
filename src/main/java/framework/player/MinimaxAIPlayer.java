@@ -17,6 +17,7 @@ public class MinimaxAIPlayer extends AIPlayer {
     private BoardPiece bestMove;
     private int bestValue;
     private boolean anyEndedInNonGameOver;
+    private int highestDepth;
     private final Set<UUID> runningThreads = new HashSet<>();
 
     public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
@@ -83,6 +84,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             bestMove = null;
             bestValue = Integer.MIN_VALUE;
             minimaxSession = session;
+            highestDepth = 0;
         }
 
         performAsyncMinimax(session, START_DEPTH);
@@ -118,6 +120,8 @@ public class MinimaxAIPlayer extends AIPlayer {
             }
         }
 
+        System.out.println("Figured out the best move at a depth of " + highestDepth);
+
         board.makeMove(this, bestMove);
     }
 
@@ -125,6 +129,10 @@ public class MinimaxAIPlayer extends AIPlayer {
         synchronized (this) {
             if (minimaxSession != session) {
                 return;
+            }
+
+            if(depth > highestDepth) {
+                highestDepth = depth;
             }
 
             anyEndedInNonGameOver = false;
