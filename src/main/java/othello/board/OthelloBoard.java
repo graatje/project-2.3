@@ -6,7 +6,9 @@ import framework.board.BoardPiece;
 import framework.player.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class OthelloBoard extends Board {
 
@@ -199,6 +201,28 @@ public class OthelloBoard extends Board {
             }
         }
         return null; // no winner (draw)
+    }
+
+    public Map<Player, Integer> piecesCount(){
+        Map<Player,Integer> map=new HashMap<Player,Integer>();
+        int player1count = 0;
+        int player2count = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                BoardPiece tempBoardPiece = getBoardPiece(x, y);
+                if (!tempBoardPiece.hasOwner()) {
+                    continue;
+                }
+                if (tempBoardPiece.getOwner().getID() == 0) {
+                    player1count++;
+                } else {
+                    player2count++;
+                }
+            }
+        }
+        map.put(gameManager.getPlayer(0), player1count);
+        map.put(gameManager.getPlayer(1), player2count);
+        return map;
     }
 
 	@Override
