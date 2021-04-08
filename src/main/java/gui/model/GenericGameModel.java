@@ -13,6 +13,7 @@ import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class GenericGameModel extends Model implements BoardObserver {
 
@@ -114,5 +115,8 @@ public class GenericGameModel extends Model implements BoardObserver {
     public ArrayList<Integer> getBackgroundColor(){
         return colors;
     }
-}
 
+    public String getPlayerNames(List<Player> players){
+        return players.get(0).getName() + " VS. " + players.get(1).getName();
+    }
+}

@@ -1,5 +1,6 @@
 package gui.view;
 
+import framework.ConfigData;
 import framework.board.BoardPiece;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
@@ -26,6 +27,7 @@ public class GameView extends View<GenericGameModel> {
     private boolean displayingInfo = false;
     private List<URL> playerIconFileURLs;
     @FXML Text infoTextField;
+    @FXML Text nameTextField;
 
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
@@ -40,6 +42,9 @@ public class GameView extends View<GenericGameModel> {
      */
     public void update(GenericGameModel model) {
         setBackgroundColorBoard(model.getBackgroundColor());
+        //show username on board
+        showUsername(model.getPlayerNames(model.getGameManager().getPlayers()));
+
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);
 
@@ -130,6 +135,11 @@ public class GameView extends View<GenericGameModel> {
                 infoTextField.setText("");
             }).start();
         }
+    }
+
+    public void showUsername(String name){
+        nameTextField = (Text) lookup("#name");
+        nameTextField.setText(name);
     }
 
     public void setBackgroundColorBoard(ArrayList<Integer> colors){

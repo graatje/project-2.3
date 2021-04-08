@@ -36,13 +36,13 @@ public class GenericGameConfigurationController extends Controller {
 
         if(comboBoxDifficulty.getValue().equals("Easy")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.EASY);
-            System.out.println("EASY");
+            //System.out.println("EASY");
         }else if (comboBoxDifficulty.getValue().equals("Medium")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.MEDIUM);
-            System.out.println("MEDIUM");
+            //System.out.println("MEDIUM");
         }else if (comboBoxDifficulty.getValue().equals("Hard")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.HARD);
-            System.out.println("HARD");
+            //System.out.println("HARD");
         }
     }
 }
