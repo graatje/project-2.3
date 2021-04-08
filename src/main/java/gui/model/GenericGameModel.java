@@ -16,7 +16,6 @@ public class GenericGameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize = 500; //TODO: opvragen van fxml?
-    private String infoMessage;
 
     /**
      * Sets gameManager and board variables, and registers this model as observer.
@@ -28,12 +27,18 @@ public class GenericGameModel extends Model implements BoardObserver {
     }
 
     public void clickTile(double x, double y) {
+        String infoMessage = "";
         double cellSize = boardSize / board.getWidth();
         int xTile = (int) Math.floor(x / cellSize);
         int yTile = (int) Math.floor(y / cellSize);
 
         //TODO: meegeven met framework
         Player player = gameManager.getBoard().getCurrentPlayer();
+
+        if (player == null){
+            return;
+        }
+
         if (player instanceof LocalPlayer) {
             if (gameManager.getBoard().isValidMove(xTile, yTile)) {
                 ((LocalPlayer) player).executeMove(xTile, yTile);
@@ -43,9 +48,12 @@ public class GenericGameModel extends Model implements BoardObserver {
         } else {
             infoMessage = "Wait for your turn";
         }
-        for (View view : observers) {
-            ((GameView) view).setInfoText(infoMessage);
+        if(!infoMessage.isEmpty()) {
+            for (View view : observers) {
+                ((GameView) view).setInfoText(infoMessage);
+            }
         }
+
     }
 
     public Board getBoard() {
