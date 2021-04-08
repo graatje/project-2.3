@@ -36,8 +36,35 @@ public class Client extends Thread {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        if(CommunicationHandler.DEBUG) {
+            startConsolePassthroughThread();
+        }
     }
 
+    public void startConsolePassthroughThread() {
+        new Thread(this::consolePassthrough, "ConsoleServerPassthrough").start();
+    }
+
+    private void consolePassthrough() {
+        if(!CommunicationHandler.DEBUG) {
+            System.err.println("Warning! Starting console <> server command passthrough, but CommunicationHandler.DEBUG is set to false! You won't receive any feedback!");
+        }else{
+            System.out.println("Console <> server command passthrough started.");
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (running) {
+                String line = reader.readLine();
+                sendCommandToServer(line + '\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Console <> server command passthrough stopped.");
+    }
 
     /**
      * Send a command to the server
