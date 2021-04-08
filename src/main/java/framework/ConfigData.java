@@ -27,7 +27,7 @@ public class ConfigData {
         serverIP = "main-vps.woutergritter.me";
         serverPort = 7789;
         playerName = "Group C4";
-        difficulty = MinimaxAIPlayer.AIDifficulty.EASY;
+        difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
