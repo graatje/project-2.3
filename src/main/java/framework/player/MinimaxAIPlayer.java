@@ -16,6 +16,7 @@ public class MinimaxAIPlayer extends AIPlayer {
     private UUID minimaxSession;
     private BoardPiece bestMove;
     private int bestValue;
+    private boolean anyEndedInNonGameOver;
     private final Set<UUID> runningThreads = new HashSet<>();
 
     public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
@@ -125,6 +126,8 @@ public class MinimaxAIPlayer extends AIPlayer {
             if (minimaxSession != session) {
                 return;
             }
+
+            anyEndedInNonGameOver = false;
         }
 
         List<BoardPiece> validMoves = board.getValidMoves(this);
@@ -163,7 +166,13 @@ public class MinimaxAIPlayer extends AIPlayer {
                 if (isEmpty) {
                     // We're DONE!
                     if (minimaxSession == session) {
-                        performAsyncMinimax(session, depth + 1);
+                        if(anyEndedInNonGameOver) {
+                            // We can still go higher!
+                            performAsyncMinimax(session, depth + 1);
+                        }else{
+                            System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
+                            onMinimaxDone(session);
+                        }
                     }
                 }
             }).start();
@@ -202,10 +211,16 @@ public class MinimaxAIPlayer extends AIPlayer {
             board.makeMove(player, moveX, moveY);
         }
 
-        int boardVal = evaluateBoard(board, depth);
-        if (depth == 0 || board.calculateIsGameOver()) {
+        boolean gameOver = board.calculateIsGameOver();
+        if (depth == 0 || gameOver) {
             // end reached.
-            return boardVal;
+            if(!gameOver) {
+                synchronized (this) {
+                    anyEndedInNonGameOver = true;
+                }
+            }
+
+            return evaluateBoard(board, depth);
         }
 
         Player playerToMove = board.getCurrentPlayer();
@@ -250,15 +265,42 @@ public class MinimaxAIPlayer extends AIPlayer {
     private int evaluateBoard(Board board, int treeDepth) {
         // TODO: Maybe add a game-specific AI implementation for MinimaxAIPlayer#evaluateBoard?
         // Eg. for Othello give borders more points
+        if(board.calculateIsGameOver()) {
+            Player winner = board.calculateWinner();
+            if(winner == this) {
+                return 100;
+            }else if(winner != null) {
+                return -100;
+            }else{
+                return 0;
+            }
+        }
+
         int nSelf = 0;
         int nOther = 0;
         for(int y = 0; y < board.getHeight(); y++) {
             for(int x = 0; x < board.getWidth(); x++) {
                 BoardPiece piece = board.getBoardPiece(x, y);
+                if(!piece.hasOwner()) {
+                    continue;
+                }
+
+                boolean xBorder = (x == 0 || x == board.getWidth() - 1);
+                boolean yBorder = (y == 0 || y == board.getHeight() - 1);
+
+                int piecePoints;
+                if(xBorder && yBorder) {
+                    piecePoints = 20;
+                }else if(xBorder || yBorder) {
+                    piecePoints = 8;
+                }else{
+                    piecePoints = 1;
+                }
+
                 if(piece.getOwner() == this) {
-                    nSelf++;
-                }else if(piece.hasOwner()) {
-                    nOther++;
+                    nSelf += piecePoints;
+                }else {
+                    nOther += piecePoints;
                 }
             }
         }
