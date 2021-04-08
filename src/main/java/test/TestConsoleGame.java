@@ -8,7 +8,7 @@ import framework.board.BoardPiece;
 import framework.player.MinimaxAIPlayer;
 import framework.player.Player;
 import othello.board.OthelloBoard;
-import ttt.board.TTTBoard;
+import othello.player.OthelloMinimaxAIPlayer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -32,8 +32,8 @@ public class TestConsoleGame implements BoardObserver {
         final String SERVER_SELF_NAME = "TestConsoleGame-" + (int) (Math.random() * 100);
 
         final Function<GameManager, Board> boardProvider = OthelloBoard::new;
-        final Function<Board, Player> localPlayerProvider = b -> new MinimaxAIPlayer(b, MinimaxAIPlayer.AIDifficulty.HARD);
-        final Function<Board, Player> secondPlayerProvider = b -> new MinimaxAIPlayer(b, MinimaxAIPlayer.AIDifficulty.HARD);
+        final Function<Board, Player> localPlayerProvider = b -> new OthelloMinimaxAIPlayer(b, MinimaxAIPlayer.AIDifficulty.HARD);
+        final Function<Board, Player> secondPlayerProvider = b -> new OthelloMinimaxAIPlayer(b, MinimaxAIPlayer.AIDifficulty.HARD);
 
         if(CONNECT_TO_SERVER) {
             // -- SERVER GAME -- //

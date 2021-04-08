@@ -8,7 +8,9 @@ import framework.player.MinimaxAIPlayer;
 import framework.player.ServerPlayer;
 import gui.view.View;
 import othello.board.OthelloBoard;
+import othello.player.OthelloMinimaxAIPlayer;
 import ttt.board.TTTBoard;
+import ttt.player.TTTMinimaxAIPlayer;
 
 import java.io.IOException;
 import java.io.ObjectInputFilter;
@@ -49,11 +51,11 @@ public class GenericGameMenuModel extends Model {
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
                 case TTT_ONLINE:
-                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new MinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new TTTMinimaxAIPlayer(b, difficulty));
                     gameModel.setBackgroundColor(null);
                     break;
                 case OTHELLO_ONLINE:
-                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new MinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new OthelloMinimaxAIPlayer(b, difficulty));
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
             }
@@ -66,7 +68,17 @@ public class GenericGameMenuModel extends Model {
 
         if (!(gameManager instanceof ConnectedGameManager)){
             gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-            gameManager.addPlayer(new MinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
+
+            // TODO: Change this with a factory pattern (same for the switch case above ^)
+            switch(ConfigData.getInstance().getGameType()) {
+                case TTT_LOCAL:
+                    gameManager.addPlayer(new TTTMinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
+                    break;
+                case OTHELLO_LOCAL:
+                    gameManager.addPlayer(new OthelloMinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
+                    break;
+            }
+
             gameManager.start(null);
         } else{
             ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
