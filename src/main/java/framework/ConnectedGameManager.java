@@ -189,4 +189,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onGameStart(Player startingPlayer) {
     }
+
+    @Override
+    public void reset() {
+        super.reset();
+        subscribe(ConfigData.getInstance().getGameType().gameName);
+    }
 }
