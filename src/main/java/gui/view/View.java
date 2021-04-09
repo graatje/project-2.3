@@ -9,6 +9,7 @@ import gui.controller.Controller;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
 
 public abstract class View<T extends Model> extends Scene {
@@ -36,6 +37,9 @@ public abstract class View<T extends Model> extends Scene {
             dialog.setContentText(message);
             //add button to dialogpane
             dialog.getDialogPane().getButtonTypes().add(type);
+            dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+
             //show dialog
             dialog.show();
         }
