@@ -126,6 +126,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
+        players.clear();
         serverPlayerOpponent = new ServerPlayer(getBoard(), opponentName);
 
         Player self = selfPlayerSupplier.apply(board);

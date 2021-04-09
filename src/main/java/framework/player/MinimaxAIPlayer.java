@@ -93,7 +93,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
         new Thread(() -> {
             try {
-                Thread.sleep(2000);
+                Thread.sleep(7000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

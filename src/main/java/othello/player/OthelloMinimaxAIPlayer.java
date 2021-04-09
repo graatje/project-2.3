@@ -59,6 +59,6 @@ public class OthelloMinimaxAIPlayer extends MinimaxAIPlayer {
 
     @Override
     public int getStartDepth() {
-        return 5;
+        return 4;
     }
 }
