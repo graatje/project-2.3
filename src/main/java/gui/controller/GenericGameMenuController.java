@@ -61,7 +61,6 @@ public class GenericGameMenuController extends Controller {
     public void pressHelp(ActionEvent event){
         switch (ConfigData.getInstance().getGameType()) {
             case TTT:
-                System.out.println("DEBUG: In case TTT");
                 model.setDialogMessage("Rules Tic-Tac-Toe: \n"
                         + "1. The game is played on a grid that's 3 squares by 3 squares. \n"
                         + "2. You are X, your friend (or the computer in this case) is O. Players take turns putting their marks in empty squares. \n"
