@@ -14,7 +14,7 @@
     </HBox>
     <ComboBox fx:id = "comboBoxDifficulty"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Difficulty Computer"/>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="4">
-        <Button text="OK" onAction ="#pressOKip"/>
+        <Button text="OK" defaultButton="true" onAction ="#pressOKip"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="5">
         <Text fx:id="ipConfirmation"/>
