@@ -136,4 +136,8 @@ public class GameManager {
 
         return result;
     }
+
+    public void reset(){
+        players.clear();
+    }
 }

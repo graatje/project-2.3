@@ -24,10 +24,10 @@ public class ConfigData {
     }
 
     private ConfigData() {
-        serverIP = "main-vps.woutergritter.me";
+        serverIP = "145.33.225.170";
         serverPort = 7789;
-        playerName = "Group C4";
-        difficulty = MinimaxAIPlayer.AIDifficulty.EASY;
+        playerName = "GroupC4";
+        difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {

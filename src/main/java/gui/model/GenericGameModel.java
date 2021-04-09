@@ -1,6 +1,7 @@
 package gui.model;
 
 import framework.ConfigData;
+import framework.ConnectedGameManager;
 import framework.GameManager;
 import framework.GameType;
 import framework.board.Board;
@@ -115,6 +116,9 @@ public class GenericGameModel extends Model implements BoardObserver {
 
             setDialogMessage(message);
             updateView();
+
+            board.reset();
+            gameManager.reset();
         });
     }
 
@@ -126,6 +130,8 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onGameStart(Player startingPlayer) {
+
+
         Platform.runLater(this::updateView);
     }
 
