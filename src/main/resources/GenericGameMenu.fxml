@@ -10,7 +10,7 @@
 
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="1">
         <TextField id="Username" fx:id="usernameField"/>
-        <Button text="OK" onAction ="#pressOKUsername"/>
+        <Button text="OK" defaultButton="true" onAction ="#pressOKUsername"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <Text fx:id="usernameConfirmation"/>
