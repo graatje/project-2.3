@@ -47,7 +47,7 @@ public class GameView extends View<GenericGameModel> {
         //show username on board
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
         showDialog(model.getDialogMessage());
-        showInfoText(model.getInfoMessage(), "#message");
+        showInfoText(model.getInfoMessage(), "#messageField");
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);
 
