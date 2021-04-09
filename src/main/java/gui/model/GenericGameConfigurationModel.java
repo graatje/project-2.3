@@ -6,7 +6,6 @@ import gui.view.View;
 public class GenericGameConfigurationModel extends Model{
 
     public void setIPandPort(String ip, String port) {
-        System.err.println("DEBUG: IP will be set to: \""+ip+"\".");
         ConfigData.getInstance().setServerIP(ip);
         try {
             ConfigData.getInstance().setServerPort(port);

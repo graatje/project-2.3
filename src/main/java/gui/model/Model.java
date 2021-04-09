@@ -20,7 +20,6 @@ public abstract class Model {
     public void updateView() {
         for(View view : observers) {
             view.update(this);
-            System.err.println("DEBUG: updating.. "+view);
         }
     }
 

@@ -30,13 +30,30 @@ public class GenericGameConfigurationController extends Controller {
         comboBoxDifficulty.setItems(options);
         ipAddressField.setText(ConfigData.getInstance().getServerIP());
         portField.setText(ConfigData.getInstance().getServerPort() + "");
+        String value;
+
+        // Could be done with toString(), but this is not as hacky
+        switch (ConfigData.getInstance().getAIDifficulty()) {
+            case EASY:
+                value = "Easy";
+                break;
+            case MEDIUM:
+                value = "Medium";
+                break;
+            case HARD:
+                value = "Hard";
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + ConfigData.getInstance().getAIDifficulty());
+        }
+        comboBoxDifficulty.setValue(value);
+
     }
 
     @FXML void pressOKip(ActionEvent event){
         ((GenericGameConfigurationModel)model).setIPandPort(ipAddressField.getText(), portField.getText());
-        model.setInfoMessage("henlo!");
+        model.setInfoMessage("Updated"); // Regression: not showing "henlo" anymore
         model.updateView();
-        //ipConfirmation.setText("[TESTING] IP set to \""+ipAddressField.getText() +"\".");
 
         if(comboBoxDifficulty.getValue().equals("Easy")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.EASY);
