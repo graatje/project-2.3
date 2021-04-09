@@ -63,7 +63,6 @@ public class GameView extends View<GenericGameModel> {
         clearBoard();
 
         double boardSize = gameBoardPane.getPrefWidth();
-        System.out.println("DEBUG: board size: "+boardSize);
 
         // 3 gridboxes => 2 lines 1|2|3
         for(int i=0;i<gridSize-1;i++) {
