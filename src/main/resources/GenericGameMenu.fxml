@@ -15,7 +15,6 @@
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="3">
         <Text fx:id="usernameConfirmation"/>
     </HBox>
-
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="4">
         <Button text="Play against the computer" onAction="#pressPlayAgainstComputer"/>
     </HBox>
@@ -23,6 +22,10 @@
         <Button text="Play Online" onAction ="#pressPlayOnline"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
+        <Button text="Help" onAction ="#pressHelp"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="7">
         <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
     </HBox>
+
 </GridPane>
