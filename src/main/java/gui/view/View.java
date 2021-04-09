@@ -50,11 +50,14 @@ public abstract class View<T extends Model> extends Scene {
      * @param message, the message to display.
      */
     public void showInfoText(String message, String fieldName) {
-        if(!displayingInfo) {
+        //TODO: als er al bericht staat, kan het niet overschreven worden... Zo houden of niet?
+        if(!message.isBlank() && !displayingInfo) {
             new Thread(() -> {
                 displayingInfo = true;
                 infoTextField = (Text) lookup(fieldName);
                 //TODO: check of lookup wel gelukt is, anders error gooien?
+                // outofbounds error komt misschien doordat we ergens Platform.runlater zijn vergeten?
+                // zie https://stackoverflow.com/questions/54089609/array-index-out-of-bounds-exception-without-any-further-information-no-line-num
                 infoTextField.setText(message);
                 try {
                     Thread.sleep(MESSAGE_CLEARING_DELAY_MS);
