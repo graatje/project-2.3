@@ -28,11 +28,15 @@ public class GenericGameConfigurationController extends Controller {
 
     public void initialize() {
         comboBoxDifficulty.setItems(options);
+        ipAddressField.setText(ConfigData.getInstance().getServerIP());
+        portField.setText(ConfigData.getInstance().getServerPort() + "");
     }
 
     @FXML void pressOKip(ActionEvent event){
         ((GenericGameConfigurationModel)model).setIPandPort(ipAddressField.getText(), portField.getText());
-        ipConfirmation.setText("[TESTING] IP set to \""+ipAddressField.getText() +"\".");
+        model.setInfoMessage("henlo!");
+        model.updateView();
+        //ipConfirmation.setText("[TESTING] IP set to \""+ipAddressField.getText() +"\".");
 
         if(comboBoxDifficulty.getValue().equals("Easy")){
             ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.EASY);

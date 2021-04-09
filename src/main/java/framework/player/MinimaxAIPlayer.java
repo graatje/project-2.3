@@ -8,9 +8,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-public class MinimaxAIPlayer extends AIPlayer {
-    private static final int START_DEPTH = 1;
-
+public abstract class MinimaxAIPlayer extends AIPlayer {
     private AIDifficulty difficulty;
 
     private UUID minimaxSession;
@@ -31,6 +29,10 @@ public class MinimaxAIPlayer extends AIPlayer {
 
         this.difficulty = difficulty;
     }
+
+    protected abstract float evaluateBoard(Board board, int treeDepth);
+
+    public abstract int getStartDepth();
 
     @Override
     public void requestMove() {
@@ -87,7 +89,7 @@ public class MinimaxAIPlayer extends AIPlayer {
             highestDepth = 0;
         }
 
-        performAsyncMinimax(session, START_DEPTH);
+        performAsyncMinimax(session, getStartDepth());
 
         new Thread(() -> {
             try {
@@ -259,112 +261,6 @@ public class MinimaxAIPlayer extends AIPlayer {
         }
 
         return extremeVal;
-    }
-
-    /**
-     * Evaluate the given board from the perspective of the current player, return 10 if a
-     * winning board configuration is found, -10 for a losing one and 0 for a draw,
-     * weight the value of a win/loss/draw according to how many moves it would take
-     * to realise it using the depth of the game tree the board configuration is at.
-     *
-     * @param treeDepth depth of the game tree the board configuration is at
-     * @return value of the board
-     */
-    private float evaluateBoard(Board board, int treeDepth) {
-        // TODO: Maybe add a game-specific AI implementation for MinimaxAIPlayer#evaluateBoard?
-        // Eg. for Othello give borders more points
-
-        int[][] board_value = {
-            {20, -3, 11, 8,  8, 11, -3, 20},
-            {-3, -7, -4, 1,  1, -4, -7, -3},
-            {11, -4, 2,  2,  2,  2, -4, 11},
-            { 8,  1, 2, -3, -3,  2,  1,  8},
-            { 8,  1, 2, -3, -3,  2,  1,  8},
-            {11, -4, 2,  2,  2,  2, -4, 11},
-            {-3, -7, -4, 1,  1, -4, -7, -3},
-            {20, -3, 11, 8,  8, 11, -3, 20}
-        };
-
-        int b = 0, w = 0;
-        for(int x = 0; x < 8; x++) {
-            for(int y = 0; y < 8; y++) {
-                Player owner = board.getBoardPiece(x, y).getOwner();
-                if(owner == this) {
-                    b += board_value[x][y];
-                }else if(owner != null) {
-                    w += board_value[x][y];
-                }
-            }
-        }
-
-        float value = 0;
-        if(b + w != 0) {
-            value = (float) (b - w) / (b + w);
-        }
-
-        b += board.getValidMoves(this).size();
-        w += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
-
-        if(b + w != 0) {
-            value += (float) (b - w) / (b + w);
-        }
-
-        return value;
-
-
-//        if(board.calculateIsGameOver()) {
-//            Player winner = board.calculateWinner();
-//            if(winner == this) {
-//                return 100;
-//            }else if(winner != null) {
-//                return -100;
-//            }else{
-//                return 0;
-//            }
-//        }
-//
-//        int nSelf = 0;
-//        int nOther = 0;
-//        for(int y = 0; y < board.getHeight(); y++) {
-//            for(int x = 0; x < board.getWidth(); x++) {
-//                BoardPiece piece = board.getBoardPiece(x, y);
-//                if(!piece.hasOwner()) {
-//                    continue;
-//                }
-//
-//                boolean xBorder = (x == 0 || x == board.getWidth() - 1);
-//                boolean yBorder = (y == 0 || y == board.getHeight() - 1);
-//
-//                int piecePoints;
-//                if(xBorder && yBorder) {
-//                    piecePoints = 20;
-//                }else if(xBorder || yBorder) {
-//                    piecePoints = 8;
-//                }else{
-//                    piecePoints = 1;
-//                }
-//
-//                if(piece.getOwner() == this) {
-//                    nSelf += piecePoints;
-//                }else {
-//                    nOther += piecePoints;
-//                }
-//            }
-//        }
-//
-//        return nSelf - nOther;
-
-//        Player winner = board.calculateWinner();
-//        if (winner == this) {
-//            // Win for self
-//            return 10 + treeDepth;
-//        } else if (winner != null) {
-//            // Win for other
-//            return -10 - treeDepth;
-//        } else {
-//            // Draw or no win
-//            return 0;
-//        }
     }
 
     public AIDifficulty getDifficulty() {

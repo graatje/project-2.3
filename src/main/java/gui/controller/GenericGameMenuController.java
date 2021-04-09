@@ -35,7 +35,8 @@ public class GenericGameMenuController extends Controller {
     public void pressOKUsername(ActionEvent event) {
         ((GenericGameMenuModel) model).setPlayerName(usernameField.getText());
         //TODO: setText() via model aanroepen ipv hier. (Bv als er foutmelding komt!)
-        usernameConfirmation.setText("[TESTING] Username set to \"" + usernameField.getText() + "\".");
+        model.setInfoMessage("Username set to \"" + usernameField.getText() + "\".");
+        model.updateView();
     }
 
     public void pressPlayOnline(ActionEvent event) {

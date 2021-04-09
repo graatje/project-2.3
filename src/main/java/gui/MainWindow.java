@@ -62,11 +62,7 @@ public class MainWindow extends Stage {
                 getFXMLParent("GenericGame.fxml", ggController),
                 ggController,
                 WINDOW_WIDTH,
-                WINDOW_HEIGHT,
-                Arrays.asList(
-                        getClass().getResource("/boardPieces/x.png"),
-                        getClass().getResource("/boardPieces/o.png")
-                )
+                WINDOW_HEIGHT
         );
         ggModel.registerView(ggView);
 
