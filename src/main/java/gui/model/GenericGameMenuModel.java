@@ -85,5 +85,6 @@ public class GenericGameMenuModel extends Model {
             ((ConnectedGameManager) gameManager).login();
             ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
         }
+        gameModel.updateView();
     }
 }
