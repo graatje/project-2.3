@@ -1,5 +1,6 @@
 package gui.view;
 
+import framework.BoardState;
 import framework.board.BoardPiece;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
@@ -24,6 +25,7 @@ public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
+    private Text waitingText;
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
@@ -31,6 +33,7 @@ public class GameView extends View<GenericGameModel> {
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#Board");
+        this.waitingText = new Text("Please wait for the game to start.");
     }
 
     public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
@@ -42,8 +45,18 @@ public class GameView extends View<GenericGameModel> {
      * Draws board with tiles
      */
     public void update(GenericGameModel model) {
-        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+        // Show waiting message when game hasn't started
+        System.out.println("Boardstate: "+model.getBoard().getBoardState());
+        if(model.getBoard().getBoardState() == BoardState.WAITING) {
+            setBackgroundColorBoard(null);
+            clearBoard();
+            gameBoardPane.getChildren().add(waitingText);
+            return;
+        }
+
         setBackgroundColorBoard(model.getBackgroundColor());
+        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+
         //show username on board
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
         showDialog(model.getDialogMessage());

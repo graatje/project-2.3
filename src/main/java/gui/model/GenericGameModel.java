@@ -105,20 +105,18 @@ public class GenericGameModel extends Model implements BoardObserver {
     @Override
     public void onPlayerWon(Player who) {
         Platform.runLater(() -> {
-
             String message = null;
-
             if (who == null) {
                 message = "It's a draw";
             } else {
                 message = who.getName() + " has won!";
             }
-
             setDialogMessage(message);
-            updateView();
 
             board.reset();
             gameManager.reset();
+
+            updateView();
         });
     }
 
