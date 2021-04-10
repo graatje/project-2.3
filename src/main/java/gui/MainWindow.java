@@ -26,7 +26,7 @@ public class MainWindow extends Stage {
     private GenericGameModel ggModel;
     //private Stack<viewEnum> viewStack = new Stack();
 
-    public static final int WINDOW_WIDTH = 750;
+    public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
     public enum viewEnum {

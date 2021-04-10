@@ -1,30 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+
 <?import javafx.scene.text.Text?>
-
-<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="1">
-        <Text>IP:</Text><TextField id="IP" fx:id="ipAddressField"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="2">
-        <Text>Port:</Text><TextField id="port" fx:id="portField"/>
-    </HBox>
-    <ComboBox fx:id = "comboBoxDifficulty"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Difficulty Computer"/>
-
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="4">
-        <Text>AI thinking time:</Text><TextField id="AIThinkingTime" fx:id="thinkingTimeField"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="5">
-        <Button text="OK" defaultButton="true" onAction ="#pressOKip"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="6">
-        <Text fx:id="ipConfirmation"/>
-    </HBox>
-    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="0">
-        <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
-    </HBox>
-
-</GridPane>
+<BorderPane id="background" stylesheets="@/style.css">
+    <center>
+        <AnchorPane xmlns:fx="http://javafx.com/fxml" maxHeight="275.0" maxWidth="325.0" prefHeight="325.0" prefWidth="325.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button id="button" layoutX="171.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="SAVE" defaultButton="true" onAction ="#pressOKip"/>
+                <Text fx:id="ipConfirmation"/>
+                <TextField fx:id="ipAddressField" layoutX="131.0" layoutY="14.0" prefHeight="40.0" prefWidth="180.0"/>
+                <Button id="button" layoutX="14.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="MENU" onAction ="#pressBackToMainMenu"/>
+                <TextField fx:id="thinkingTimeField" layoutX="131.0" layoutY="169.0" prefHeight="40.0" prefWidth="180.0"/>
+                <TextField fx:id="portField" layoutX="131.0" layoutY="67.0" prefHeight="40.0" prefWidth="180.0"/>
+                <ComboBox fx:id = "comboBoxDifficulty" id="comboBox" layoutX="131.0" layoutY="118.0" prefHeight="40.0" prefWidth="179.0"/>
+                <Label id="label" layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="100.0" text="  IP Address:" />
+                <Label id="label" layoutX="14.0" layoutY="67.0" prefHeight="40.0" prefWidth="100.0" text="  Port:" />
+                <Label id="label" layoutX="14.0" layoutY="118.0" prefHeight="40.0" prefWidth="100.0" text="  AI Difficulty" />
+                <Label id="label" layoutX="14.0" layoutY="169.0" prefHeight="40.0" prefWidth="100.0" text="  AI Move Time:" />
+            </children>
+        </AnchorPane>
+    </center>
+</BorderPane>
