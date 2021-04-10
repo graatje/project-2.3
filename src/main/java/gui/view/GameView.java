@@ -1,7 +1,10 @@
 package gui.view;
 
 import framework.BoardState;
+import framework.ConfigData;
+import framework.GameType;
 import framework.board.BoardPiece;
+import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.fxml.FXML;
@@ -13,7 +16,9 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -68,6 +73,27 @@ public class GameView extends View<GenericGameModel> {
             for(int y=0;y<gridSize;y++) {
                 drawPiece(model.getBoard().getBoardPiece(x, y), gridSize);
             }
+        }
+
+        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getGameType().toString().toLowerCase().contains("othello")) {
+            drawValidMoves(model.getBoard().getValidMoves(), gridSize);
+        }
+    }
+
+    private void drawValidMoves(List<BoardPiece> validMoves, int gridSize) {
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
+
+        for(BoardPiece piece : validMoves) {
+            double boardX = piece.getX()*cellSize+cellSize/2;
+            double boardY = piece.getY()*cellSize+cellSize/2;
+
+            Circle boardHighlight = new Circle(boardX, boardY, cellSize/2*(1-MARGIN));
+
+            boardHighlight.setFill(null);
+            boardHighlight.setStroke(Color.rgb(200, 200, 200, 0.5));
+            boardHighlight.setStrokeWidth(1.0);
+
+            gameBoardPane.getChildren().add(boardHighlight);
         }
     }
 
