@@ -14,4 +14,14 @@ public class GenericGameConfigurationModel extends Model{
             updateView();
         }
     }
+    public void setAIThinkingTime(String aiThinkingTime){
+        try {
+            int thinkingTime = Integer.parseInt(aiThinkingTime);
+            ConfigData.getInstance().setMinimaxThinkingTime(thinkingTime);
+        }
+        catch(NumberFormatException e) {
+            setDialogMessage("AI thinking time must be a number!");
+            updateView();
+        }
+    }
 }

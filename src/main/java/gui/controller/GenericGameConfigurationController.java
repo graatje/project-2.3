@@ -18,6 +18,7 @@ public class GenericGameConfigurationController extends Controller {
     @FXML TextField ipAddressField;
     @FXML TextField portField;
     @FXML ComboBox<String> comboBoxDifficulty;
+    @FXML TextField thinkingTimeField;
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
@@ -47,11 +48,12 @@ public class GenericGameConfigurationController extends Controller {
                 throw new IllegalStateException("Unexpected value: " + ConfigData.getInstance().getAIDifficulty());
         }
         comboBoxDifficulty.setValue(value);
-
+        thinkingTimeField.setText(String.valueOf(ConfigData.getInstance().getMinimaxThinkingTime()));
     }
 
     @FXML void pressOKip(ActionEvent event){
         ((GenericGameConfigurationModel)model).setIPandPort(ipAddressField.getText(), portField.getText());
+        ((GenericGameConfigurationModel)model).setAIThinkingTime(thinkingTimeField.getText());
         model.setInfoMessage("Updated"); // Regression: not showing "henlo" anymore
         model.updateView();
 

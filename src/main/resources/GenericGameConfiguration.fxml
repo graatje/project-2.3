@@ -13,10 +13,14 @@
         <Text>Port:</Text><TextField id="port" fx:id="portField"/>
     </HBox>
     <ComboBox fx:id = "comboBoxDifficulty"  GridPane.columnIndex="1" GridPane.rowIndex="3" promptText="Difficulty Computer"/>
+
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="4">
-        <Button text="OK" defaultButton="true" onAction ="#pressOKip"/>
+        <Text>AI thinking time:</Text><TextField id="AIThinkingTime" fx:id="thinkingTimeField"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="5">
+        <Button text="OK" defaultButton="true" onAction ="#pressOKip"/>
+    </HBox>
+    <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="6">
         <Text fx:id="ipConfirmation"/>
     </HBox>
     <HBox spacing="10" alignment="center" GridPane.columnIndex="1" GridPane.rowIndex="0">
