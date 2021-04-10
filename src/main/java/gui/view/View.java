@@ -19,7 +19,6 @@ public abstract class View<T extends Model> extends Scene {
     protected Controller controller;
     public static final int MESSAGE_CLEARING_DELAY_MS = 2000;
     private long expireTimeMessage = 0;
-    private String currentMessage = "";
     @FXML private Text infoTextField;
 
     public View(Parent parent, Controller controller, int windowWidth, int windowHeight) {
@@ -52,7 +51,7 @@ public abstract class View<T extends Model> extends Scene {
      * @param message, the message to display.
      */
     public void showInfoText(String message, String fieldName) {
-        if(!currentMessage.equals(message)) {
+        if(!message.equals("")) {
             this.expireTimeMessage = currentTimeMillis() + MESSAGE_CLEARING_DELAY_MS;
 
             try {
