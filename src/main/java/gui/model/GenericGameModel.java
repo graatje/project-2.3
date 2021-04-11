@@ -159,6 +159,7 @@ public class GenericGameModel extends Model implements BoardObserver {
             switch(ConfigData.getInstance().getGameType()){
                 case TTT:
                 case TTT_LOCAL:
+                case TTT_LOCAL_ONLINE:
                 case TTT_ONLINE:
                     p1 = "Noughts (O)";
                     p2 = "Crosses (X)";
@@ -167,6 +168,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
                 case OTHELLO:
                 case OTHELLO_LOCAL:
+                case OTHELLO_LOCAL_ONLINE:
                 case OTHELLO_ONLINE:
                     p1 = "Black";
                     p2 = "White";
