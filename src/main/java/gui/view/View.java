@@ -19,7 +19,6 @@ public abstract class View<T extends Model> extends Scene {
     protected Controller controller;
     public static final int MESSAGE_CLEARING_DELAY_MS = 2000;
     private long expireTimeMessage = 0;
-    @FXML private Text infoTextField;
 
     public View(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, windowWidth, windowHeight);
@@ -50,28 +49,19 @@ public abstract class View<T extends Model> extends Scene {
      * if not displaying a message show a message when this method gets called.
      * @param message, the message to display.
      */
-    public void showInfoText(String message, String fieldName) {
-        if(!message.equals("")) {
+    public void showInfoText(String message, Text node) {
+        if(!message.isBlank()) {
             this.expireTimeMessage = currentTimeMillis() + MESSAGE_CLEARING_DELAY_MS;
 
-            try {
-                //moving out of the thread might be a possible fix.
-                infoTextField = (Text) lookup(fieldName);
-            }
-            catch(IndexOutOfBoundsException e){
-                System.err.println("pls send message this still shows. (in showInfoText)");
-                // bij error: zie https://stackoverflow.com/questions/54089609/array-index-out-of-bounds-exception-without-any-further-information-no-line-num
-            }
-
             new Thread(() -> {
-                infoTextField.setText(message);
+                node.setText(message);
                 try {
                     Thread.sleep(MESSAGE_CLEARING_DELAY_MS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if(currentTimeMillis() >= expireTimeMessage) {
-                    infoTextField.setText("");
+                    node.setText("");
                 }
             }).start();
         }

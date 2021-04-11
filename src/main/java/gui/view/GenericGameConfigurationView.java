@@ -13,6 +13,6 @@ public class GenericGameConfigurationView extends View<GenericGameConfigurationM
     @Override
     public void update(GenericGameConfigurationModel model) {
         showDialog(model.getDialogMessage());
-        showInfoText(model.getInfoMessage(), "#ipConfirmation");
+        showInfoText(model.getInfoMessage(), model.getTextNode());
     }
 }
