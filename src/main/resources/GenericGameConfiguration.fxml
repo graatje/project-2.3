@@ -19,10 +19,10 @@
                 <TextField fx:id="thinkingTimeField" layoutX="131.0" layoutY="169.0" prefHeight="40.0" prefWidth="180.0"/>
                 <TextField fx:id="portField" layoutX="131.0" layoutY="67.0" prefHeight="40.0" prefWidth="180.0"/>
                 <ComboBox fx:id = "comboBoxDifficulty" id="comboBox" layoutX="131.0" layoutY="118.0" prefHeight="40.0" prefWidth="179.0"/>
-                <Label id="label" layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="100.0" text="  IP Address:" />
-                <Label id="label" layoutX="14.0" layoutY="67.0" prefHeight="40.0" prefWidth="100.0" text="  Port:" />
+                <Label id="label" layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="100.0" text="  IP Address" />
+                <Label id="label" layoutX="14.0" layoutY="67.0" prefHeight="40.0" prefWidth="100.0" text="  Port" />
                 <Label id="label" layoutX="14.0" layoutY="118.0" prefHeight="40.0" prefWidth="100.0" text="  AI Difficulty" />
-                <Label id="label" layoutX="14.0" layoutY="169.0" prefHeight="40.0" prefWidth="100.0" text="  AI Move Time:" />
+                <Label id="label" layoutX="14.0" layoutY="169.0" prefHeight="40.0" prefWidth="100.0" text="  AI Move Time" />
             </children>
         </AnchorPane>
     </center>

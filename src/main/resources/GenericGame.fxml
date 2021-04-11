@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.text.Text?>
-<?import javafx.scene.layout.BorderPane?>
 
-
-<BorderPane>
-    <top>
-    <HBox fx:id = "playerInformationHBox" xmlns:fx="http://javafx.com/fxml" spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="8"/>
-    </top>
-
+<BorderPane id="background" stylesheets="@/style.css" xmlns:fx="http://javafx.com/fxml" prefHeight="200.0" prefWidth="0.0" BorderPane.alignment="CENTER">
     <center>
-    <GridPane xmlns:fx="http://javafx.com/fxml" alignment="center">
-        <HBox alignment="CENTER">
-            <Pane fx:id="Board" prefHeight="500.0" prefWidth="500.0" onMouseReleased="#onMouseReleased"/>
-        </HBox>
-        <HBox spacing="10" alignment="center" GridPane.columnIndex="2" GridPane.rowIndex="6">
-            <Button text="Main Menu" onAction ="#pressBackToMainMenu"/>
-        </HBox>
-        <HBox spacing="10" alignment="center" GridPane.columnIndex="0" GridPane.rowIndex="6">
-            <Text fx:id="messageField"/>
-        </HBox>
-    </GridPane>
+        <Pane fx:id="Board" maxHeight="575.0" maxWidth="575.0" minHeight="575.0" minWidth="575.0" prefHeight="575.0" prefWidth="575.0" BorderPane.alignment="CENTER" onMouseReleased="#onMouseReleased"/>
     </center>
+    <top>
+        <Pane maxHeight="125.0" maxWidth="650.0" minHeight="125.0" minWidth="650.0" prefHeight="125.0" prefWidth="650.0" BorderPane.alignment="CENTER">
+            <children>
+                <Button id="button" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="MENU" onAction ="#pressBackToMainMenu"/>
+                <Button id="button" layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="RETRY" />
+                <HBox id="HBox" layoutX="350.0" prefHeight="125.0" prefWidth="300.0" fx:id ="playerInformationHBox"/>
+            </children>
+        </Pane>
+    </top>
+    <bottom>
+        <Pane maxHeight="25.0" maxWidth="650.0" minHeight="25.0" minWidth="650.0" prefHeight="25.0" prefWidth="650.0" BorderPane.alignment="CENTER">
+            <children>
+                <Label fx:id="messageField" layoutX="171.0" layoutY="4.0" prefHeight="17.0" prefWidth="309.0"/>
+            </children>
+        </Pane>
+    </bottom>
 </BorderPane>
