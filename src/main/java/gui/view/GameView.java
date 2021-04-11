@@ -37,7 +37,7 @@ public class GameView extends View<GenericGameModel> {
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
-        gameBoardPane = (Pane) lookup("#Board");
+        gameBoardPane = (Pane) lookup("#board");
         this.waitingText = new Text("Please wait for the game to start.");
     }
 

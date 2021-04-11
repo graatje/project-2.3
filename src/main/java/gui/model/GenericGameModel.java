@@ -24,7 +24,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     private Board board;
     private GameManager gameManager;
-    private double boardSize = 500; //TODO: opvragen van fxml?
+    private double boardSize;
     private ArrayList<Integer> colors;
     private List<URL> playerIconFileURLs;
 
@@ -67,7 +67,7 @@ public class GenericGameModel extends Model implements BoardObserver {
         int xTile = (int) Math.floor(x / cellSize);
         int yTile = (int) Math.floor(y / cellSize);
 
-        //TODO: meegeven met framework
+        //TODO: meegeven met framework (update: wat betekent dit? al gedaan?!)
         Player player = gameManager.getBoard().getCurrentPlayer();
 
         if (player == null){
@@ -185,5 +185,9 @@ public class GenericGameModel extends Model implements BoardObserver {
             playerInformation.add(playerinfo);
         }
         return playerInformation;
+    }
+
+    public void setBoardSize(double boardSize) {
+        this.boardSize = boardSize;
     }
 }

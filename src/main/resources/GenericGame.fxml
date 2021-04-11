@@ -8,7 +8,7 @@
 
 <BorderPane id="background" stylesheets="@/style.css" xmlns:fx="http://javafx.com/fxml" prefHeight="200.0" prefWidth="0.0" BorderPane.alignment="CENTER">
     <center>
-        <Pane fx:id="Board" maxHeight="575.0" maxWidth="575.0" minHeight="575.0" minWidth="575.0" prefHeight="575.0" prefWidth="575.0" BorderPane.alignment="CENTER" onMouseReleased="#onMouseReleased"/>
+        <Pane fx:id="board" maxHeight="575.0" maxWidth="575.0" minHeight="575.0" minWidth="575.0" prefHeight="575.0" prefWidth="575.0" BorderPane.alignment="CENTER" onMouseReleased="#onMouseReleased"/>
     </center>
     <top>
         <Pane maxHeight="125.0" maxWidth="650.0" minHeight="125.0" minWidth="650.0" prefHeight="125.0" prefWidth="650.0" BorderPane.alignment="CENTER">
