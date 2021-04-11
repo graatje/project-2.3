@@ -59,8 +59,16 @@ public class GenericGameMenuModel extends Model {
                     gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new TTTMinimaxAIPlayer(b, difficulty));
                     gameModel.setBackgroundColor(colorsTTT);
                     break;
+                case TTT_LOCAL_ONLINE:
+                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new LocalPlayer(b));
+                    gameModel.setBackgroundColor(colorsTTT);
+                    break;
                 case OTHELLO_ONLINE:
                     gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new OthelloMinimaxAIPlayer(b, difficulty));
+                    gameModel.setBackgroundColor(colorsOthello);
+                    break;
+                case OTHELLO_LOCAL_ONLINE:
+                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new LocalPlayer(b));
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
             }

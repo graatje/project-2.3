@@ -41,11 +41,13 @@ public class GenericGameModel extends Model implements BoardObserver {
         switch (gameType) {
             case TTT:
             case TTT_LOCAL:
+            case TTT_LOCAL_ONLINE:
             case TTT_ONLINE:
                 setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png")));
                 break;
             case OTHELLO:
             case OTHELLO_LOCAL:
+            case OTHELLO_LOCAL_ONLINE:
             case OTHELLO_ONLINE:
                 setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png")));
                 break;

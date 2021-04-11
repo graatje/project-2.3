@@ -47,6 +47,20 @@ public class GenericGameMenuController extends Controller implements Initializab
         model.updateView();
     }
 
+    @FXML
+    public void pressPlayLocalOnline(ActionEvent event){
+        switch (ConfigData.getInstance().getGameType()) {
+            case TTT:
+                ConfigData.getInstance().setGameType(GameType.TTT_LOCAL_ONLINE);
+                break;
+            case OTHELLO:
+                ConfigData.getInstance().setGameType(GameType.OTHELLO_LOCAL_ONLINE);
+                break;
+        }
+        ((GenericGameMenuModel) model).setGameManager();
+        mainWindow.switchView(MainWindow.viewEnum.GAME);
+    }
+
     public void pressPlayOnline(ActionEvent event) {
         switch (ConfigData.getInstance().getGameType()) {
             case TTT:
