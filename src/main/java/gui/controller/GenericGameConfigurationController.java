@@ -8,17 +8,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class GenericGameConfigurationController extends Controller {
+import java.net.URL;
+import java.util.ResourceBundle;
 
-    @FXML Text ipConfirmation;
-    @FXML TextField ipAddressField;
-    @FXML TextField portField;
-    @FXML ComboBox<String> comboBoxDifficulty;
-    @FXML TextField thinkingTimeField;
+public class GenericGameConfigurationController extends Controller implements Initializable {
+
+    @FXML private Text ipConfirmation;
+    @FXML private TextField ipAddressField;
+    @FXML private TextField portField;
+    @FXML private ComboBox<String> comboBoxDifficulty;
+    @FXML private TextField thinkingTimeField;
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
@@ -27,7 +31,9 @@ public class GenericGameConfigurationController extends Controller {
     ObservableList<String> options =
             FXCollections.observableArrayList("Easy","Medium", "Hard");
 
-    public void initialize() {
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        model.setTextNode(ipConfirmation);
         comboBoxDifficulty.setItems(options);
         ipAddressField.setText(ConfigData.getInstance().getServerIP());
         portField.setText(ConfigData.getInstance().getServerPort() + "");
