@@ -7,12 +7,25 @@ import gui.MainWindow;
 import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
+import javafx.scene.text.Text;
 
-public class GenericGameController extends Controller {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GenericGameController extends Controller implements Initializable {
     @FXML
-    private Pane TTTBoard;
+    private Pane board;
+    @FXML
+    private Text messageField;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        model.setTextNode(messageField);
+        ((GenericGameModel)model).setBoardSize(board.getPrefWidth());
+    }
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);

@@ -1,5 +1,6 @@
 package framework.player;
 
+import framework.ConfigData;
 import framework.board.Board;
 import framework.board.BoardPiece;
 
@@ -93,7 +94,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
         new Thread(() -> {
             try {
-                Thread.sleep(7000);
+                Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

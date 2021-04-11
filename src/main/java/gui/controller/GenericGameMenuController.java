@@ -6,15 +6,24 @@ import gui.MainWindow;
 import gui.model.GenericGameMenuModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class GenericGameMenuController extends Controller {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GenericGameMenuController extends Controller implements Initializable {
 
     @FXML
     Text usernameConfirmation;
     @FXML
     TextField usernameField;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        model.setTextNode(usernameConfirmation);
+    }
 
     @FXML
     public void pressPlayAgainstComputer(ActionEvent event) {
@@ -34,9 +43,22 @@ public class GenericGameMenuController extends Controller {
     @FXML
     public void pressOKUsername(ActionEvent event) {
         ((GenericGameMenuModel) model).setPlayerName(usernameField.getText());
-        //TODO: setText() via model aanroepen ipv hier. (Bv als er foutmelding komt!)
         model.setInfoMessage("Username set to \"" + usernameField.getText() + "\".");
         model.updateView();
+    }
+
+    @FXML
+    public void pressPlayLocalOnline(ActionEvent event){
+        switch (ConfigData.getInstance().getGameType()) {
+            case TTT:
+                ConfigData.getInstance().setGameType(GameType.TTT_LOCAL_ONLINE);
+                break;
+            case OTHELLO:
+                ConfigData.getInstance().setGameType(GameType.OTHELLO_LOCAL_ONLINE);
+                break;
+        }
+        ((GenericGameMenuModel) model).setGameManager();
+        mainWindow.switchView(MainWindow.viewEnum.GAME);
     }
 
     public void pressPlayOnline(ActionEvent event) {

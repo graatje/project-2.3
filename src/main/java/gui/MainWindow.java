@@ -11,22 +11,21 @@ import gui.view.GenericGameMenuView;
 import gui.view.MainMenuView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.util.Arrays;
 
 public class MainWindow extends Stage {
-    private Stage stage;
     private GenericGameConfigurationView ggcView;
     private GameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
 
     private GenericGameModel ggModel;
-    //private Stack<viewEnum> viewStack = new Stack();
 
-    public static final int WINDOW_WIDTH = 750;
+    public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
     public enum viewEnum {
@@ -37,9 +36,12 @@ public class MainWindow extends Stage {
     }
 
     public MainWindow(Stage primaryStage) throws IOException {
+        // primaryStage word niet gebruikt?!
         setupMVC();
 
-        this.stage = primaryStage;
+        //stage = primaryStage;
+        this.getIcons().add(new Image(getClass().getResource("/icon.png").toExternalForm()));
+        this.setTitle("C4Games");
         switchView(viewEnum.MAINMENU);
     }
 
@@ -119,10 +121,4 @@ public class MainWindow extends Stage {
         }
         show();
     }
-//    public void goBackView(){
-//        if(!viewStack.isEmpty()){
-//            switchView(viewStack.pop());
-//        }
-//    }
-
 }

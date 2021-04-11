@@ -1,6 +1,10 @@
 package gui.view;
 
+import framework.BoardState;
+import framework.ConfigData;
+import framework.GameType;
 import framework.board.BoardPiece;
+import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.fxml.FXML;
@@ -12,7 +16,9 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -24,13 +30,15 @@ public class GameView extends View<GenericGameModel> {
 
     private Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
+    private Text waitingText;
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
-        gameBoardPane = (Pane) lookup("#Board");
+        gameBoardPane = (Pane) lookup("#board");
+        this.waitingText = new Text("Please wait for the game to start.");
     }
 
     public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
@@ -42,12 +50,22 @@ public class GameView extends View<GenericGameModel> {
      * Draws board with tiles
      */
     public void update(GenericGameModel model) {
-        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+        // Show waiting message when game hasn't started
+        System.out.println("Boardstate: "+model.getBoard().getBoardState());
+        if(model.getBoard().getBoardState() == BoardState.WAITING) {
+            setBackgroundColorBoard(null);
+            clearBoard();
+            gameBoardPane.getChildren().add(waitingText);
+            return;
+        }
+
         setBackgroundColorBoard(model.getBackgroundColor());
+        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+
         //show username on board
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
-        showDialog(model.getDialogMessage());
-        showInfoText(model.getInfoMessage(), "#messageField");
+        showDialog(model.getDialogMessage(), "Info");
+        showInfoText(model.getInfoMessage(), model.getTextNode());
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);
 
@@ -56,6 +74,27 @@ public class GameView extends View<GenericGameModel> {
                 drawPiece(model.getBoard().getBoardPiece(x, y), gridSize);
             }
         }
+
+        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getGameType().toString().toLowerCase().contains("othello")) {
+            drawValidMoves(model.getBoard().getValidMoves(), gridSize);
+        }
+    }
+
+    private void drawValidMoves(List<BoardPiece> validMoves, int gridSize) {
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
+
+        for(BoardPiece piece : validMoves) {
+            double boardX = piece.getX()*cellSize+cellSize/2;
+            double boardY = piece.getY()*cellSize+cellSize/2;
+
+            Circle boardHighlight = new Circle(boardX, boardY, cellSize/2*(1-MARGIN));
+
+            boardHighlight.setFill(null);
+            boardHighlight.setStroke(Color.rgb(200, 200, 200, 0.5));
+            boardHighlight.setStrokeWidth(1.0);
+
+            gameBoardPane.getChildren().add(boardHighlight);
+        }
     }
 
     public void drawBoard(int gridSize) {
@@ -63,7 +102,6 @@ public class GameView extends View<GenericGameModel> {
         clearBoard();
 
         double boardSize = gameBoardPane.getPrefWidth();
-        System.out.println("DEBUG: board size: "+boardSize);
 
         // 3 gridboxes => 2 lines 1|2|3
         for(int i=0;i<gridSize-1;i++) {

@@ -1,6 +1,7 @@
 package gui.model;
 
 import gui.view.View;
+import javafx.scene.text.Text;
 
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ public abstract class Model {
     private ArrayList<View> observers;
     private String dialogMessage = ""; // pop-up dialog
     private String infoMessage = ""; // small text, no pop-up
+    private Text textNode;
 
     public Model() {
         this.observers = new ArrayList<>();
@@ -20,7 +22,6 @@ public abstract class Model {
     public void updateView() {
         for(View view : observers) {
             view.update(this);
-            System.err.println("DEBUG: updating.. "+view);
         }
     }
 
@@ -51,5 +52,13 @@ public abstract class Model {
         String infoMessageTmp = infoMessage;
         infoMessage = "";
         return infoMessageTmp;
+    }
+
+    public void setTextNode(Text textNode) {
+        this.textNode = textNode;
+    }
+
+    public Text getTextNode() {
+        return textNode;
     }
 }

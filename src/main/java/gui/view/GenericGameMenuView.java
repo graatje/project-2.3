@@ -15,7 +15,7 @@ public class GenericGameMenuView extends View<GenericGameMenuModel> {
 
     @Override
     public void update(GenericGameMenuModel model) {
-        showInfoText(model.getInfoMessage(), "#usernameConfirmation");
-        showDialog(model.getDialogMessage());
+        showInfoText(model.getInfoMessage(), model.getTextNode());
+        showDialog(model.getDialogMessage(), "Help");
     }
 }

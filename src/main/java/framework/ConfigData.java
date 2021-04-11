@@ -15,6 +15,8 @@ public class ConfigData {
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
+    private int minimaxThinkingTime;
+
     public static ConfigData getInstance() {
         if (instance == null) {
             instance = new ConfigData();
@@ -28,6 +30,7 @@ public class ConfigData {
         serverPort = 7789;
         playerName = "GroupC4";
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
+        minimaxThinkingTime = 6000;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
@@ -78,5 +81,9 @@ public class ConfigData {
     public void setGameType(GameType gameType) {
         this.gameType = gameType;
     }
+
+    public int getMinimaxThinkingTime(){ return minimaxThinkingTime; }
+
+    public void setMinimaxThinkingTime(int newThinkingTime){ this.minimaxThinkingTime = newThinkingTime; }
 }
 

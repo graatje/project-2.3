@@ -34,6 +34,11 @@ public class GenericGameMenuModel extends Model {
         colorsOthello.add(0);
         colorsOthello.add(153);
         colorsOthello.add(0);
+        ArrayList<Integer> colorsTTT = new ArrayList<>();
+        colorsTTT.add(245);
+        colorsTTT.add(245);
+        colorsTTT.add(245);
+
         GameManager gameManager = null;
 
         String ip = ConfigData.getInstance().getServerIP();
@@ -44,7 +49,7 @@ public class GenericGameMenuModel extends Model {
             switch (ConfigData.getInstance().getGameType()) {
                 case TTT_LOCAL:
                     gameManager = new GameManager(TTTBoard::new);
-                    gameModel.setBackgroundColor(null);
+                    gameModel.setBackgroundColor(colorsTTT);
                     break;
                 case OTHELLO_LOCAL:
                     gameManager = new GameManager(OthelloBoard::new);
@@ -52,10 +57,18 @@ public class GenericGameMenuModel extends Model {
                     break;
                 case TTT_ONLINE:
                     gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new TTTMinimaxAIPlayer(b, difficulty));
-                    gameModel.setBackgroundColor(null);
+                    gameModel.setBackgroundColor(colorsTTT);
+                    break;
+                case TTT_LOCAL_ONLINE:
+                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new LocalPlayer(b));
+                    gameModel.setBackgroundColor(colorsTTT);
                     break;
                 case OTHELLO_ONLINE:
                     gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new OthelloMinimaxAIPlayer(b, difficulty));
+                    gameModel.setBackgroundColor(colorsOthello);
+                    break;
+                case OTHELLO_LOCAL_ONLINE:
+                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new LocalPlayer(b));
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
             }
@@ -85,5 +98,6 @@ public class GenericGameMenuModel extends Model {
             ((ConnectedGameManager) gameManager).login();
             ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
         }
+        gameModel.updateView();
     }
 }
