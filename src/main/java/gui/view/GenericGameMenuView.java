@@ -16,6 +16,6 @@ public class GenericGameMenuView extends View<GenericGameMenuModel> {
     @Override
     public void update(GenericGameMenuModel model) {
         showInfoText(model.getInfoMessage(), model.getTextNode());
-        showDialog(model.getDialogMessage());
+        showDialog(model.getDialogMessage(), "Help");
     }
 }
