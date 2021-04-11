@@ -13,8 +13,8 @@
     <top>
         <Pane maxHeight="125.0" maxWidth="650.0" minHeight="125.0" minWidth="650.0" prefHeight="125.0" prefWidth="650.0" BorderPane.alignment="CENTER">
             <children>
-                <Button id="button" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="MENU" onAction ="#pressBackToMainMenu"/>
-                <Button id="button" layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="RETRY" />
+                <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="MENU" onAction ="#pressBackToMainMenu"/>
+                <Button layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="RETRY" />
                 <HBox layoutX="350.0" prefHeight="125.0" prefWidth="300.0" fx:id ="playerInformationHBox"/>
             </children>
         </Pane>

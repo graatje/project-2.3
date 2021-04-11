@@ -39,6 +39,8 @@ public abstract class View<T extends Model> extends Scene {
             dialog.getDialogPane().getButtonTypes().add(type);
             dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/dialogStyle.css").toExternalForm());
+            //dialog.getDialogPane().getStyleClass().add("myDialog");
 
             //show dialog
             dialog.show();
