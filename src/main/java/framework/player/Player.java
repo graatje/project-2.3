@@ -30,6 +30,14 @@ public abstract class Player {
         this(board, "UNNAMED");
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     /**
      * getter for the board
      *
