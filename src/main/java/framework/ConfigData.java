@@ -1,6 +1,8 @@
 package framework;
 
 import framework.player.MinimaxAIPlayer;
+import othello.OthelloGame;
+import ttt.TTTGame;
 
 public class ConfigData {
     private static ConfigData instance;
@@ -12,6 +14,8 @@ public class ConfigData {
 
     private String playerName;
     private GameType gameType;
+
+    private Game[] games;
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
@@ -31,6 +35,17 @@ public class ConfigData {
         playerName = "GroupC4";
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
         minimaxThinkingTime = 6000;
+
+        games[0] = new TTTGame();
+        games[1] = new OthelloGame();
+    }
+
+    public Game getCurrentGame() {
+        return game;
+    }
+
+    public Game setCurrentGame() {
+        //TODO
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
