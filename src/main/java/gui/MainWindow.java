@@ -1,34 +1,28 @@
 package gui;
 
 import gui.controller.*;
-import gui.model.GenericGameConfigurationModel;
-import gui.model.GenericGameMenuModel;
-import gui.model.GenericGameModel;
-import gui.model.MainMenuModel;
-import gui.view.GameView;
-import gui.view.GenericGameConfigurationView;
-import gui.view.GenericGameMenuView;
-import gui.view.MainMenuView;
+import gui.model.*;
+import gui.view.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class MainWindow extends Stage {
     private GenericGameConfigurationView ggcView;
     private GameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
-
-    private GenericGameModel ggModel;
+    private GameLobbyView glView;
 
     public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
     public enum viewEnum {
+        GAME_LOBBY,
         MAINMENU,
         GAME_MENU,
         GAME_CONFIGURATION,
@@ -40,7 +34,7 @@ public class MainWindow extends Stage {
         setupMVC();
 
         //stage = primaryStage;
-        this.getIcons().add(new Image(getClass().getResource("/icon.png").toExternalForm()));
+        this.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
         this.setTitle("C4Games");
         switchView(viewEnum.MAINMENU);
     }
@@ -56,7 +50,7 @@ public class MainWindow extends Stage {
         ggcModel.registerView(ggcView);
 
         // Gameboard
-        ggModel = new GenericGameModel();
+        GenericGameModel ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
@@ -78,11 +72,19 @@ public class MainWindow extends Stage {
         ggmModel.registerView(ggmView);
 
         // Main Menu
-        MainMenuModel mmModel = new MainMenuModel();
+        //MainMenuModel mmModel = new MainMenuModel();
         MainMenuController mmController = new MainMenuController();
         mmController.setMainWindow(this);
         mmView = new MainMenuView(
                 getFXMLParent("MainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        // Game lobby
+        GameLobbyModel glModel = new GameLobbyModel();
+        GameLobbyController glController = new GameLobbyController();
+        glController.setMainWindow(this);
+        glController.setModel(glModel);
+        glView = new GameLobbyView(
+                getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     /**
@@ -115,6 +117,9 @@ public class MainWindow extends Stage {
                 break;
             case GAME:
                 this.setScene(ggView);
+                break;
+            case GAME_LOBBY:
+                this.setScene(glView);
                 break;
             default:
                 throw new IllegalArgumentException();
