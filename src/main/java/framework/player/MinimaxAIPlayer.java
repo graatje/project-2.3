@@ -92,7 +92,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
         performAsyncMinimax(session, getStartDepth());
 
-        new Thread(() -> {
+        Thread watchdogThread = new Thread(() -> {
             try {
                 Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
             } catch (InterruptedException e) {
@@ -100,7 +100,9 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
             }
 
             onMinimaxDone(session);
-        }).start();
+        });
+        watchdogThread.setDaemon(true);
+        watchdogThread.start();
     }
 
     private void onMinimaxDone(UUID session) {
@@ -152,7 +154,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
                 runningThreads.add(threadUuid);
             }
 
-            new Thread(() -> {
+            Thread thread = new Thread(() -> {
                 synchronized (this) {
                     if (minimaxSession != session) {
                         return;
@@ -186,7 +188,9 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
                         }
                     }
                 }
-            }).start();
+            });
+            thread.setDaemon(true);
+            thread.start();
         }
     }
 
