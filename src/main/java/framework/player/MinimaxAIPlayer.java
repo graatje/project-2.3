@@ -8,15 +8,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public abstract class MinimaxAIPlayer extends AIPlayer {
     private AIDifficulty difficulty;
 
+    private final Object minimaxSessionLock = new Object();
     private UUID minimaxSession;
+
+    private final Object bestMoveLock = new Object();
     private BoardPiece bestMove;
-    private float bestValue;
-    private boolean anyEndedInNonGameOver;
-    private int highestDepth;
+    private float bestMoveValue;
+
+    private final AtomicBoolean anyEndedInNonGameOver = new AtomicBoolean();
+    private final AtomicInteger highestDepth = new AtomicInteger();
     private final Set<UUID> runningThreads = new HashSet<>();
 
     public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
@@ -83,11 +89,17 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
      */
     public void executeMinimaxMove() {
         UUID session = UUID.randomUUID();
-        synchronized (this) {
-            bestMove = null;
-            bestValue = Float.MIN_VALUE;
+        synchronized (minimaxSessionLock) {
             minimaxSession = session;
-            highestDepth = 0;
+        }
+
+        synchronized (bestMoveLock) {
+            bestMove = null;
+            bestMoveValue = Float.NEGATIVE_INFINITY;
+        }
+
+        synchronized (highestDepth) {
+            highestDepth.set(0);
         }
 
         performAsyncMinimax(session, getStartDepth());
@@ -106,41 +118,56 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
     }
 
     private void onMinimaxDone(UUID session) {
-        BoardPiece bestMove;
-        synchronized (this) {
+        synchronized (minimaxSessionLock) {
             if(minimaxSession != session) {
                 return;
             }
 
+            minimaxSession = null;
+        }
+
+        BoardPiece bestMove;
+        float bestMoveValue;
+        synchronized (bestMoveLock) {
             bestMove = this.bestMove;
-
-            this.minimaxSession = null;
+            bestMoveValue = this.bestMoveValue;
         }
 
-        if (bestMove == null) {
-            List<BoardPiece> validMoves = board.getValidMoves(this);
-            if (!validMoves.isEmpty()) {
-                System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
-                bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
-            }
+        List<BoardPiece> validMoves = board.getValidMoves(this);
+        if (bestMove == null && !validMoves.isEmpty()) {
+            System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
+            bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
         }
 
-        System.out.println("Figured out the best move at a depth of " + highestDepth);
+        if(!validMoves.contains(bestMove)) {
+            System.err.println("Minimax came up with a best move, but it isn't a valid move! Sending a random move..");
+            bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
+        }
+
+        int highestDepthValue;
+        synchronized (highestDepth) {
+            highestDepthValue = highestDepth.get();
+        }
+
+        System.out.println("Figured out the best move at a depth of " + highestDepthValue + ". The best move value is " + bestMoveValue);
 
         board.makeMove(this, bestMove);
     }
 
     private void performAsyncMinimax(UUID session, int depth) {
-        synchronized (this) {
-            if (minimaxSession != session) {
+        synchronized (minimaxSessionLock) {
+            if(minimaxSession != session) {
                 return;
             }
+        }
 
-            if(depth > highestDepth) {
-                highestDepth = depth;
-            }
+        synchronized (runningThreads) {
+            // Just to be sure!
+            runningThreads.clear();
+        }
 
-            anyEndedInNonGameOver = false;
+        synchronized (anyEndedInNonGameOver) {
+            anyEndedInNonGameOver.set(false);
         }
 
         List<BoardPiece> validMoves = board.getValidMoves(this);
@@ -155,7 +182,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
             }
 
             Thread thread = new Thread(() -> {
-                synchronized (this) {
+                synchronized (minimaxSessionLock) {
                     if (minimaxSession != session) {
                         return;
                     }
@@ -163,10 +190,10 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
                 float moveValue = miniMax(session, board, depth, this, x, y);
 
-                synchronized (this) {
-                    if (moveValue > bestValue) {
+                synchronized (bestMoveLock) {
+                    if (moveValue > bestMoveValue) {
                         bestMove = boardPiece;
-                        bestValue = moveValue;
+                        bestMoveValue = moveValue;
                     }
                 }
 
@@ -178,14 +205,30 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
                 if (isEmpty) {
                     // We're DONE!
-                    if (minimaxSession == session) {
-                        if(anyEndedInNonGameOver) {
-                            // We can still go higher!
-                            performAsyncMinimax(session, depth + 1);
-                        }else{
-                            System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
-                            onMinimaxDone(session);
+                    synchronized (minimaxSessionLock) {
+                        if(minimaxSession != session) {
+                            return;
                         }
+                    }
+
+                    synchronized (highestDepth) {
+                        if(depth > highestDepth.get()) {
+                            highestDepth.set(depth);
+                        }
+                    }
+
+                    boolean anyEndedInNonGameOverValue;
+                    synchronized (anyEndedInNonGameOver) {
+                        anyEndedInNonGameOverValue = anyEndedInNonGameOver.get();
+                    }
+
+                    if(anyEndedInNonGameOverValue) {
+                        // We can still go higher!
+                        System.out.println("Done with minimax at a depth of " + depth + ", but we still have time. Going deeper!");
+                        performAsyncMinimax(session, depth + 1);
+                    }else{
+                        System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
+                        onMinimaxDone(session);
                     }
                 }
             });
@@ -203,7 +246,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
      * @return int value of the board.
      */
     private float miniMax(UUID session, Board _board, int depth, Player player, int moveX, int moveY) {
-        synchronized (this) {
+        synchronized (minimaxSessionLock) {
             if (minimaxSession != session) {
                 return 0;
             }
@@ -230,8 +273,8 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
         if (depth == 0 || gameOver) {
             // end reached.
             if(!gameOver) {
-                synchronized (this) {
-                    anyEndedInNonGameOver = true;
+                synchronized (anyEndedInNonGameOver) {
+                    anyEndedInNonGameOver.set(true);
                 }
             }
 
@@ -240,7 +283,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
 
         Player playerToMove = board.getCurrentPlayer();
         boolean lookForMax = playerToMove == this;
-        float extremeVal = lookForMax ? Float.MIN_VALUE : Float.MAX_VALUE;
+        float extremeVal = lookForMax ? Float.NEGATIVE_INFINITY : Float.POSITIVE_INFINITY;
 
         List<BoardPiece> validMoves = board.getValidMoves(playerToMove);
         if(validMoves.isEmpty()) { /* && board.canPass(playerToMove) */
