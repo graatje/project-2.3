@@ -115,8 +115,21 @@ public class GenericGameModel extends Model implements BoardObserver {
             }
             setDialogMessage(message);
 
-            board.reset();
             gameManager.reset();
+
+            // TODO: Re-subscribe or restart the game! This should be done with the "retry" button later!
+            new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ignored) {
+                }
+
+                if(gameManager instanceof ConnectedGameManager) {
+                    ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
+                }else{
+                    gameManager.start(null);
+                }
+            }).start();
 
             updateView();
         });

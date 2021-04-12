@@ -3,7 +3,6 @@ package framework.board;
 import framework.*;
 import framework.player.MoveRequestable;
 import framework.player.Player;
-import framework.player.ServerPlayer;
 
 import java.util.*;
 
@@ -93,8 +92,10 @@ public abstract class Board implements Cloneable {
 
     /**
      * this method requests a playermove from the board if all players have been initialized.
+     *
+     * SHOULDN'T BE CALLED EXTERNALLY! Use GameManager#start!
      */
-    public void start(Player startingPlayer) {
+    public void _start(Player startingPlayer) {
         if (boardState != BoardState.WAITING) {
             throw new IllegalStateException("The game cannot start in this state! (Current state: " + boardState + ")");
         }

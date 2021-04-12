@@ -3,6 +3,11 @@
      -fx-background-size: 1000px;
 }
 
+#playerInformationHBox{
+    -fx-background-color: #2E8B57;
+    -fx-font-size: 16px;
+}
+
 .button{
     -fx-background-color: #2E8B57;
     -fx-border: none;
@@ -32,6 +37,14 @@
     -fx-background-image: url('TTT.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
+}
+
+#playerInformationHBox{
+
+}
+
+#playerInformationLabel{
+    -fx-background-color: #2E8B57;
 }
 
 .label{

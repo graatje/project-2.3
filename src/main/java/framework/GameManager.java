@@ -4,6 +4,7 @@ import framework.board.Board;
 import framework.player.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
@@ -12,24 +13,46 @@ import java.util.function.Function;
  * This class manages a game. Including connection, board and players.
  */
 public class GameManager {
-    protected Board board;
+    protected List<Function<Board, ? extends Player>> playerSuppliers;
 
+    protected Board board;
     protected final List<Player> players = new ArrayList<>();
+
+    private boolean isInitialized = false;
 
     /**
      * constructor, initializes connection, board and players.
      *
      * @param boardSupplier The board supplier
      */
-    public GameManager(Function<GameManager, Board> boardSupplier) {
+    public GameManager(Function<GameManager, ? extends Board> boardSupplier, Function<Board, ? extends Player>... playerSuppliers) {
         this.board = boardSupplier.apply(this);
+        this.playerSuppliers = Arrays.asList(playerSuppliers);
     }
 
-    /**
-     * See {@link Board#start(Player)}
-     */
+    public void initialize() {
+        if(isInitialized) {
+            throw new IllegalStateException("The GameManager is already initialized! Please reset it first.");
+        }
+
+        reset();
+
+        players.clear();
+        for (int i = 0; i < playerSuppliers.size(); i++) {
+            Player player = playerSuppliers.get(i).apply(board);
+            player.setID(i); // TODO: Pass the ID through the constructor, instead of setting it later!
+            players.add(player);
+        }
+
+        isInitialized = true;
+    }
+
     public void start(Player startingPlayer) {
-        board.start(startingPlayer);
+        if(!isInitialized) {
+            initialize();
+        }
+
+        board._start(startingPlayer);
     }
 
     /**
@@ -39,10 +62,6 @@ public class GameManager {
      */
     public Board getBoard() {
         return board;
-    }
-
-    public void setNewBoard(Function<GameManager, Board> boardSupplier) {
-        this.board = boardSupplier.apply(this);
     }
 
     /**
@@ -87,35 +106,6 @@ public class GameManager {
         return null;
     }
 
-    /**
-     * Adds a player to the game.
-     *
-     * @param player, the player you want to add.
-     * @return the ID of the added player.
-     */
-    public int addPlayer(Player player) {
-        players.add(player);
-
-        int id = players.size() - 1; // When adding an item on the end of the list, the index is n-1.
-        player.setID(id);
-
-        return id;
-    }
-
-    /**
-     * Removes a player from the game.
-     *
-     * @param player
-     */
-    public void removePlayer(Player player) {
-        players.remove(player);
-
-        // Recalculate ID's of all other players
-        for (int id = 0; id < players.size(); id++) {
-            players.get(id).setID(id);
-        }
-    }
-
     public Player getOtherPlayer(Player notThis) {
         if (players.size() > 2) {
             throw new IllegalStateException("There are more than 2 players, please use GameManager#getOtherPlayers instead!");
@@ -137,7 +127,13 @@ public class GameManager {
         return result;
     }
 
-    public void reset(){
+    public void reset() {
+        board.reset();
         players.clear();
+        isInitialized = false;
+    }
+
+    public boolean isInitialized() {
+        return isInitialized;
     }
 }

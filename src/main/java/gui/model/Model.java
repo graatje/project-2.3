@@ -1,6 +1,7 @@
 package gui.model;
 
 import gui.view.View;
+import javafx.scene.control.Label;
 import javafx.scene.text.Text;
 
 import java.util.ArrayList;
@@ -9,7 +10,7 @@ public abstract class Model {
     private ArrayList<View> observers;
     private String dialogMessage = ""; // pop-up dialog
     private String infoMessage = ""; // small text, no pop-up
-    private Text textNode;
+    private Label textNode;
 
     public Model() {
         this.observers = new ArrayList<>();
@@ -54,11 +55,11 @@ public abstract class Model {
         return infoMessageTmp;
     }
 
-    public void setTextNode(Text textNode) {
+    public void setLabelNode(Label textNode) {
         this.textNode = textNode;
     }
 
-    public Text getTextNode() {
+    public Label getLabelNode() {
         return textNode;
     }
 }

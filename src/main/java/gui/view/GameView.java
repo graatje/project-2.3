@@ -9,6 +9,7 @@ import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -47,7 +48,7 @@ public class GameView extends View<GenericGameModel> {
     @Override
     public void update(GenericGameModel model) {
         showDialog(model.getDialogMessage(), "Info");
-        showInfoText(model.getInfoMessage(), model.getTextNode());
+        showInfoText(model.getInfoMessage(), model.getLabelNode());
 
         // If online match is waiting, show "waiting for game"
         if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getGameType().isLocal) {
@@ -164,7 +165,9 @@ public class GameView extends View<GenericGameModel> {
         playerInformationHBox.getChildren().clear();
 
         for (String playerInformation : playerInformationList){
-            playerInformationHBox.getChildren().add(new Text(playerInformation));
+            Label playerInformationLabel = new Label(playerInformation);
+            playerInformationLabel.setId("playerInformationLabel");
+            playerInformationHBox.getChildren().add(playerInformationLabel);
         }
     }
 
