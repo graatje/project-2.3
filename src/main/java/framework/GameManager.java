@@ -132,4 +132,8 @@ public class GameManager {
         players.clear();
         isInitialized = false;
     }
+
+    public boolean isInitialized() {
+        return isInitialized;
+    }
 }

@@ -114,6 +114,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
+        if(isInitialized()) {
+            reset();
+        }
+
         initialize();
 
         serverPlayerOpponent = null;
