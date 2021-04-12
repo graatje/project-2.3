@@ -30,6 +30,6 @@ public class TTTMinimaxAIPlayer extends MinimaxAIPlayer {
 
     @Override
     public int getStartDepth() {
-        return 6;
+        return 7;
     }
 }
