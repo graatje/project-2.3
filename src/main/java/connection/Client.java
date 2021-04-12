@@ -43,7 +43,9 @@ public class Client extends Thread {
     }
 
     public void startConsolePassthroughThread() {
-        new Thread(this::consolePassthrough, "ConsoleServerPassthrough").start();
+        Thread thread = new Thread(this::consolePassthrough, "ConsoleServerPassthrough");
+        thread.setDaemon(true);
+        thread.start();
     }
 
     private void consolePassthrough() {
