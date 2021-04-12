@@ -101,30 +101,22 @@ public class Client extends Thread {
                         //TODO: handle this shiz
                     }
                 }
-
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        } catch (IOException ignored) {}
+
+        System.out.println("Closed connection to the server.");
     }
 
     /**
      * Cleans up the client before closing down the thread.
      */
     public void close() {
+        com.sendLogoutMessage();
+        running = false;
+
         try {
-            Thread.sleep(1000);
-            running = false;
-
-            com.sendLogoutMessage();
-
-            inputStream.close();
-            outputStream.close();
-
-            join();
-        } catch (InterruptedException | IOException ie) {
-            ie.printStackTrace();
-        }
+            clientSocket.close();
+        } catch (Exception ignored) {}
     }
 
     public CommunicationHandler getCommunicationHandler() {
