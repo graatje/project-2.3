@@ -48,6 +48,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     private void createClient(String serverIP, int serverPort) throws IOException {
         Socket clientSocket = new Socket(serverIP, serverPort);
         client = new Client(clientSocket, new CommunicationHandler());
+        client.setDaemon(true);
         client.start();
     }
 
