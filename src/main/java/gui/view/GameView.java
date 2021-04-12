@@ -2,12 +2,12 @@ package gui.view;
 
 import framework.BoardState;
 import framework.ConfigData;
+import framework.ConnectedGameManager;
 import framework.GameType;
 import framework.board.BoardPiece;
 import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
-import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -18,7 +18,6 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
 import java.io.IOException;
@@ -28,9 +27,9 @@ import java.util.List;
 
 public class GameView extends View<GenericGameModel> {
 
-    private Pane gameBoardPane;
+    private final Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
-    private Text waitingText;
+    private final Text waitingText;
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
@@ -46,28 +45,30 @@ public class GameView extends View<GenericGameModel> {
     }
 
     @Override
-    /**
-     * Draws board with tiles
-     */
     public void update(GenericGameModel model) {
-        // Show waiting message when game hasn't started
-        System.out.println("Boardstate: "+model.getBoard().getBoardState());
-        if(model.getBoard().getBoardState() == BoardState.WAITING) {
+        showDialog(model.getDialogMessage(), "Info");
+        showInfoText(model.getInfoMessage(), model.getTextNode());
+
+        // If online match is waiting, show "waiting for game"
+        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getGameType().isLocal) {
             setBackgroundColorBoard(null);
             clearBoard();
             gameBoardPane.getChildren().add(waitingText);
-            return;
+        } else {
+            drawBoard(model);
         }
+    }
 
+    private void drawBoard(GenericGameModel model) {
         setBackgroundColorBoard(model.getBackgroundColor());
         setPlayerIconFileURLs(model.getPlayerIconFileURLs());
 
-        //show username on board
+        // Player stats
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
-        showDialog(model.getDialogMessage(), "Info");
-        showInfoText(model.getInfoMessage(), model.getTextNode());
+
+        // Draw board, pieces and hints
         int gridSize = model.getBoard().getWidth();
-        drawBoard(gridSize);
+        drawLines(gridSize);
 
         for(int x=0;x<gridSize;x++) {
             for(int y=0;y<gridSize;y++) {
@@ -97,7 +98,7 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
-    public void drawBoard(int gridSize) {
+    public void drawLines(int gridSize) {
         // Clear board
         clearBoard();
 
