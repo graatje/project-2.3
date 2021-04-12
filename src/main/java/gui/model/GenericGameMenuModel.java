@@ -44,60 +44,83 @@ public class GenericGameMenuModel extends Model {
         String ip = ConfigData.getInstance().getServerIP();
         int port = ConfigData.getInstance().getServerPort();
         MinimaxAIPlayer.AIDifficulty difficulty = ConfigData.getInstance().getAIDifficulty();
+        String selfName = ConfigData.getInstance().getPlayerName();
 
         try {
             switch (ConfigData.getInstance().getGameType()) {
                 case TTT_LOCAL:
-                    gameManager = new GameManager(TTTBoard::new);
+                    gameManager = new GameManager(
+                            TTTBoard::new,
+                            b -> new LocalPlayer(b, selfName),
+                            b -> new TTTMinimaxAIPlayer(b, "Computer", difficulty)
+                    );
                     gameModel.setBackgroundColor(colorsTTT);
                     break;
-                case OTHELLO_LOCAL:
-                    gameManager = new GameManager(OthelloBoard::new);
-                    gameModel.setBackgroundColor(colorsOthello);
-                    break;
                 case TTT_ONLINE:
-                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new TTTMinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(
+                            TTTBoard::new,
+                            ip,
+                            port,
+                            b -> new TTTMinimaxAIPlayer(b, difficulty)
+                    );
                     gameModel.setBackgroundColor(colorsTTT);
                     break;
                 case TTT_LOCAL_ONLINE:
-                    gameManager = new ConnectedGameManager(TTTBoard::new, ip, port, b -> new LocalPlayer(b));
+                    gameManager = new ConnectedGameManager(
+                            TTTBoard::new,
+                            ip,
+                            port,
+                            LocalPlayer::new
+                    );
                     gameModel.setBackgroundColor(colorsTTT);
                     break;
+                case OTHELLO_LOCAL:
+                    gameManager = new GameManager(
+                            OthelloBoard::new,
+                            b -> new LocalPlayer(b, selfName),
+                            b -> new OthelloMinimaxAIPlayer(b, "Computer", difficulty)
+                    );
+                    gameModel.setBackgroundColor(colorsOthello);
+                    break;
                 case OTHELLO_ONLINE:
-                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new OthelloMinimaxAIPlayer(b, difficulty));
+                    gameManager = new ConnectedGameManager(
+                            OthelloBoard::new,
+                            ip,
+                            port,
+                            b -> new OthelloMinimaxAIPlayer(b, difficulty)
+                    );
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
                 case OTHELLO_LOCAL_ONLINE:
-                    gameManager = new ConnectedGameManager(OthelloBoard::new, ip, port, b -> new LocalPlayer(b));
+                    gameManager = new ConnectedGameManager(
+                            OthelloBoard::new,
+                            ip,
+                            port,
+                            LocalPlayer::new
+                    );
                     gameModel.setBackgroundColor(colorsOthello);
                     break;
+                default:
+                    throw new IllegalStateException("Unimplemented game-type '" + ConfigData.getInstance().getGameType() + "'!");
             }
         } catch (IOException e) {
             e.printStackTrace();
+            // TODO: Couldn't connect to the server, maybe display an error?
+            return;
         }
 
-        ConfigData.getInstance().setGameManager(gameManager);
-        gameModel.setupGameManager();
-
-        if (!(gameManager instanceof ConnectedGameManager)){
-            gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), ConfigData.getInstance().getPlayerName()));
-
-            // TODO: Change this with a factory pattern (same for the switch case above ^)
-            switch(ConfigData.getInstance().getGameType()) {
-                case TTT_LOCAL:
-                    gameManager.addPlayer(new TTTMinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
-                    break;
-                case OTHELLO_LOCAL:
-                    gameManager.addPlayer(new OthelloMinimaxAIPlayer(gameManager.getBoard(), "Computer", ConfigData.getInstance().getAIDifficulty()));
-                    break;
-            }
-
+        if (!(gameManager instanceof ConnectedGameManager)) {
             gameManager.start(null);
         } else{
             ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
             ((ConnectedGameManager) gameManager).login();
             ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
+            // TODO: Subscribing will happen later on, through user interaction
         }
+
+        ConfigData.getInstance().setGameManager(gameManager);
+        gameModel.setupGameManager();
+
         gameModel.updateView();
     }
 }

@@ -15,8 +15,6 @@ import java.util.*;
 import java.util.function.Function;
 
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
-    private Function<Board, Player> selfPlayerSupplier;
-
     private Client client;
 
     private final HashMap<Integer, Match> activeMatches = new HashMap<>();
@@ -35,9 +33,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
      * @throws IOException
      */
     public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, Function<Board, Player> selfPlayerSupplier) throws IOException {
-        super(boardSupplier);
-
-        this.selfPlayerSupplier = selfPlayerSupplier;
+        super(boardSupplier, selfPlayerSupplier, ServerPlayer::new);
 
         createClient(serverIP, serverPort);
         client.sendCommandToServer("get playerlist\n");
@@ -101,14 +97,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
-    public Function<Board, Player> getSelfPlayerSupplier() {
-        return selfPlayerSupplier;
-    }
-
-    public void setSelfPlayerSupplier(Function<Board, Player> selfPlayerSupplier) {
-        this.selfPlayerSupplier = selfPlayerSupplier;
-    }
-
     public void challengePlayer(String playerToChallenge, String gameType) {
         client.sendChallengeMessage(playerToChallenge, gameType);
     }
@@ -126,18 +114,27 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
-        players.clear();
-        serverPlayerOpponent = new ServerPlayer(getBoard(), opponentName);
+        initialize();
 
-        Player self = selfPlayerSupplier.apply(board);
-        self.setName(selfName);
+        serverPlayerOpponent = null;
+        for(Player player : players) {
+            if(player instanceof ServerPlayer) {
+                serverPlayerOpponent = (ServerPlayer) player;
+                break;
+            }
+        }
+
+        if(serverPlayerOpponent == null) {
+            // This should never happen!
+            throw new IllegalStateException("Could not find a server player.");
+        }
+
+        serverPlayerOpponent.setName(opponentName);
+        getOtherPlayer(serverPlayerOpponent).setName(this.selfName);
 
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
-        addPlayer(serverPlayerOpponent);
-        addPlayer(self);
-
-        board.start(getPlayer(playerToBegin));
+        start(getPlayer(playerToBegin));
     }
 
     @Override
