@@ -1,6 +1,7 @@
 package gui.view;
 
 import gui.model.Model;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -9,6 +10,7 @@ import gui.controller.Controller;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
@@ -55,19 +57,19 @@ public abstract class View<T extends Model> extends Scene {
      * if not displaying a message show a message when this method gets called.
      * @param message, the message to display.
      */
-    public void showInfoText(String message, Text node) {
+    public void showInfoText(String message, Label node) {
         if(!message.isBlank()) {
             this.expireTimeMessage = currentTimeMillis() + MESSAGE_CLEARING_DELAY_MS;
 
             new Thread(() -> {
-                node.setText(message);
+                Platform.runLater(() -> node.setText(message));
                 try {
                     Thread.sleep(MESSAGE_CLEARING_DELAY_MS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
                 if(currentTimeMillis() >= expireTimeMessage) {
-                    node.setText("");
+                    Platform.runLater(() -> node.setText(""));
                 }
             }).start();
         }

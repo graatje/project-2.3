@@ -13,6 +13,6 @@ public class GenericGameConfigurationView extends View<GenericGameConfigurationM
     @Override
     public void update(GenericGameConfigurationModel model) {
         showDialog(model.getDialogMessage(), "Error");
-        showInfoText(model.getInfoMessage(), model.getTextNode());
+        showInfoText(model.getInfoMessage(), model.getLabelNode());
     }
 }

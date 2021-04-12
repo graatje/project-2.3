@@ -13,7 +13,7 @@
         <AnchorPane xmlns:fx="http://javafx.com/fxml" maxHeight="275.0" maxWidth="325.0" prefHeight="325.0" prefWidth="325.0" BorderPane.alignment="CENTER">
             <children>
                 <Button layoutX="171.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="SAVE" defaultButton="true" onAction ="#pressOKip"/>
-                <Text fx:id="ipConfirmation"/>
+                <Label fx:id="ipConfirmation" id="ipConfirmation" layoutX="130.0" layoutY="277.0" prefHeight="17.0" prefWidth="65.0" />
                 <TextField  fx:id="ipAddressField" layoutX="131.0" layoutY="14.0" prefHeight="40.0" prefWidth="180.0"/>
                 <Button  layoutX="14.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="MENU" onAction ="#pressBackToMainMenu"/>
                 <TextField fx:id="thinkingTimeField" layoutX="131.0" layoutY="169.0" prefHeight="40.0" prefWidth="180.0"/>

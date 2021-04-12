@@ -7,6 +7,7 @@ import gui.model.GenericGameMenuModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
@@ -16,13 +17,13 @@ import java.util.ResourceBundle;
 public class GenericGameMenuController extends Controller implements Initializable {
 
     @FXML
-    Text usernameConfirmation;
+    Label usernameConfirmation;
     @FXML
     TextField usernameField;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        model.setTextNode(usernameConfirmation);
+        model.setLabelNode(usernameConfirmation);
     }
 
     @FXML
