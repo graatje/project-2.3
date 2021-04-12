@@ -139,5 +139,6 @@ public class GameManager {
 
     public void reset(){
         players.clear();
+        board.reset();
     }
 }

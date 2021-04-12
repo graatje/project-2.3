@@ -113,7 +113,6 @@ public class GenericGameModel extends Model implements BoardObserver {
             }
             setDialogMessage(message);
 
-            board.reset();
             gameManager.reset();
 
             updateView();
