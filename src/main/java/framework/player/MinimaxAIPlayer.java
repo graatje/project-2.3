@@ -151,7 +151,32 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
             highestDepthValue = highestDepth.get();
         }
 
-        System.out.println("Figured out the best move at a depth of " + highestDepthValue + ". The best move value is " + bestMoveValue);
+        boolean anyEndedInNonGameOverValue;
+        synchronized (anyEndedInNonGameOver) {
+            anyEndedInNonGameOverValue = anyEndedInNonGameOver.get();
+        }
+
+        System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepth + ".");
+
+        System.out.print("We are ");
+        if(anyEndedInNonGameOverValue) {
+            if(Math.abs(bestMoveValue) > 1.0f) {
+                System.out.print("most likely ");
+            }else{
+                System.out.print("probably ");
+            }
+        }
+        System.out.print("going to ");
+
+        if(bestMoveValue > 0) {
+            System.out.print("win ");
+        }else if(bestMoveValue == 0) {
+            System.out.print("tie ");
+        }else{
+            System.out.print("lose ");
+        }
+
+        System.out.println("if the opponent plays perfectly.");
 
         board.makeMove(this, bestMove);
     }
