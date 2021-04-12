@@ -31,9 +31,7 @@ public class GenericGameController extends Controller implements Initializable {
 
         GameManager gm = ConfigData.getInstance().getGameManager();
 
-        if (gm instanceof ConnectedGameManager){
-            ((ConnectedGameManager) gm).closeClient();
-        }
+        gm.destroy();
 
         ((GenericGameModel)model).clearBoard();
     }

@@ -109,14 +109,7 @@ public class GenericGameMenuModel extends Model {
             return;
         }
 
-        if (!(gameManager instanceof ConnectedGameManager)) {
-            gameManager.start(null);
-        } else{
-            ((ConnectedGameManager) gameManager).setSelfName(ConfigData.getInstance().getPlayerName());
-            ((ConnectedGameManager) gameManager).login();
-            ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
-            // TODO: Subscribing will happen later on, through user interaction
-        }
+        gameManager.requestStart();
 
         ConfigData.getInstance().setGameManager(gameManager);
         gameModel.setupGameManager();

@@ -20,6 +20,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     private final HashMap<Integer, Match> activeMatches = new HashMap<>();
     private final ArrayList<String> lobbyPlayers = new ArrayList<>();
 
+    private boolean loggedIn = false;
+
     private ServerPlayer serverPlayerOpponent;
     private String selfName = "unknown-" + (int) (Math.random() * 100);
 
@@ -67,7 +69,13 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     public void login() {
+        // We only have to log-in once!
+        if(loggedIn) {
+            return;
+        }
+
         client.sendLoginMessage(selfName);
+        loggedIn = true;
     }
 
     public void subscribe(String gameName) {
@@ -107,6 +115,27 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
+    public void requestStart() {
+        setSelfName(ConfigData.getInstance().getPlayerName());
+        login();
+        subscribe(ConfigData.getInstance().getGameType().gameName);
+    }
+
+    @Override
+    public void forfeit() {
+        getClient().sendForfeitMessage();
+
+        super.forfeit();
+    }
+
+    @Override
+    public void destroy() {
+        closeClient();
+
+        super.destroy();
+    }
+
+    @Override
     public void getMatchRequest(String opponent, String gametype, String challengeNR) {
         Match match = new Match(opponent, gametype, challengeNR);
 
@@ -135,7 +164,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
-        start(getPlayer(playerToBegin));
+        _start(getPlayer(playerToBegin));
     }
 
     @Override

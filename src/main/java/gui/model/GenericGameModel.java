@@ -124,11 +124,7 @@ public class GenericGameModel extends Model implements BoardObserver {
                 } catch (InterruptedException ignored) {
                 }
 
-                if(gameManager instanceof ConnectedGameManager) {
-                    ((ConnectedGameManager) gameManager).subscribe(ConfigData.getInstance().getGameType().gameName);
-                }else{
-                    gameManager.start(null);
-                }
+                gameManager.requestStart();
             }).start();
 
             updateView();

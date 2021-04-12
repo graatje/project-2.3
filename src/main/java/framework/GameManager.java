@@ -47,7 +47,20 @@ public class GameManager {
         isInitialized = true;
     }
 
-    public void start(Player startingPlayer) {
+    public void requestStart() {
+        _start(null);
+    }
+
+    public void forfeit() {
+        board.forceWin(null);
+    }
+
+    /**
+     * Destroy the internal objects, the GameManager will never be able to be used after this!
+     */
+    public void destroy() {}
+
+    protected void _start(Player startingPlayer) {
         if(!isInitialized) {
             initialize();
         }

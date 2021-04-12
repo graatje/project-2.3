@@ -131,12 +131,7 @@ public abstract class Board implements Cloneable {
 
     public void reset() {
         if (boardState == BoardState.PLAYING) {
-            if (gameManager instanceof ConnectedGameManager) {
-                // Let the server know we're done..
-                ((ConnectedGameManager) gameManager).getClient().sendForfeitMessage();
-            }
-
-            forceWin(null);
+            gameManager.forfeit();
         }
 
         // Reset pieces
