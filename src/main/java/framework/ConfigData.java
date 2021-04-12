@@ -36,16 +36,19 @@ public class ConfigData {
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
         minimaxThinkingTime = 6000;
 
-        games[0] = new TTTGame();
-        games[1] = new OthelloGame();
+        // TODO
+//        games[0] = new TTTGame();
+//        games[1] = new OthelloGame();
     }
 
     public Game getCurrentGame() {
-        return game;
+        // TODO
+        return null;
     }
 
     public Game setCurrentGame() {
         //TODO
+        return null;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
