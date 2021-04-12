@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.text.Text?>
+<?import javafx.scene.control.Label?>
 
 <BorderPane id="background" stylesheets="@/style.css" xmlns:fx="http://javafx.com/fxml" prefHeight="200.0" prefWidth="0.0" BorderPane.alignment="CENTER">
     <center>
@@ -15,15 +15,9 @@
             <children>
                 <Button layoutX="14.0" layoutY="14.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="MENU" onAction ="#pressBackToMainMenu"/>
                 <Button layoutX="14.0" layoutY="71.0" mnemonicParsing="false" prefHeight="40.0" prefWidth="150.0" text="RETRY" />
-                <HBox layoutX="350.0" prefHeight="125.0" prefWidth="300.0" fx:id ="playerInformationHBox"/>
+                <HBox id="playerInformationHBox" spacing="70" fx:id="playerInformationHBox" layoutX="416.0" layoutY="14.0" prefHeight="97.0" prefWidth="220.0" />
+                <Label id="messageField" fx:id="messageField" layoutX="184.0" layoutY="14.0" prefHeight="97.0" prefWidth="220.0" />
             </children>
         </Pane>
     </top>
-    <bottom>
-        <Pane maxHeight="25.0" maxWidth="650.0" minHeight="25.0" minWidth="650.0" prefHeight="25.0" prefWidth="650.0" BorderPane.alignment="CENTER">
-            <children>
-                <Text fx:id="messageField" layoutX="171.0" layoutY="4.0" textAlignment="CENTER"/>
-            </children>
-        </Pane>
-    </bottom>
 </BorderPane>

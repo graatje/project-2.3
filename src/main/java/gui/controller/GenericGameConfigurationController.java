@@ -10,15 +10,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.text.Text;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GenericGameConfigurationController extends Controller implements Initializable {
 
-    @FXML private Text ipConfirmation;
+    @FXML private Label ipConfirmation;
     @FXML private TextField ipAddressField;
     @FXML private TextField portField;
     @FXML private ComboBox<String> comboBoxDifficulty;
@@ -33,7 +32,7 @@ public class GenericGameConfigurationController extends Controller implements In
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        model.setTextNode(ipConfirmation);
+        model.setLabelNode(ipConfirmation);
         comboBoxDifficulty.setItems(options);
         ipAddressField.setText(ConfigData.getInstance().getServerIP());
         portField.setText(ConfigData.getInstance().getServerPort() + "");

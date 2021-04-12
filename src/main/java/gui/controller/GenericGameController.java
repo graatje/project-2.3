@@ -8,10 +8,9 @@ import gui.model.GenericGameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
-import javafx.scene.text.Text;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,11 +18,11 @@ public class GenericGameController extends Controller implements Initializable {
     @FXML
     private Pane board;
     @FXML
-    private Text messageField;
+    private Label messageField;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        model.setTextNode(messageField);
+        model.setLabelNode(messageField);
         ((GenericGameModel)model).setBoardSize(board.getPrefWidth());
     }
 
