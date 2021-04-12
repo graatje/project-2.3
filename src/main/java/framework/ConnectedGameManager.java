@@ -114,10 +114,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
-        if(isInitialized()) {
-            reset();
-        }
-
         initialize();
 
         serverPlayerOpponent = null;
@@ -195,6 +191,14 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void reset() {
         super.reset();
-        subscribe(ConfigData.getInstance().getGameType().gameName);
+
+        // TODO: REMOVE THIS CODE WHEN A "RETRY" BUTTON GETS ADDED!
+        new Thread(() -> {
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException ignored) {}
+
+            subscribe(ConfigData.getInstance().getGameType().gameName);
+        }).start();
     }
 }
