@@ -187,18 +187,4 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onGameStart(Player startingPlayer) {
     }
-
-    @Override
-    public void reset() {
-        super.reset();
-
-        // TODO: REMOVE THIS CODE WHEN A "RETRY" BUTTON GETS ADDED!
-        new Thread(() -> {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException ignored) {}
-
-            subscribe(ConfigData.getInstance().getGameType().gameName);
-        }).start();
-    }
 }
