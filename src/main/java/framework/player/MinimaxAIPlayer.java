@@ -165,7 +165,10 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
             }else{
                 System.out.print("probably ");
             }
+        }else{
+            System.out.print("definitely ");
         }
+
         System.out.print("going to ");
 
         if(bestMoveValue > 0) {
