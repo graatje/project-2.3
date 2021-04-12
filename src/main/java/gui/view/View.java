@@ -9,8 +9,10 @@ import gui.controller.Controller;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import static java.lang.System.currentTimeMillis;
 
@@ -27,7 +29,7 @@ public abstract class View<T extends Model> extends Scene {
 
     public abstract void update(T model);
 
-    public void showDialog(String message) {
+    public void showDialog(String message, String dialogTitle) {
         if(message != null && !message.isBlank()) {
             //creating dialog
             Dialog<String> dialog = new Dialog<>();
@@ -39,6 +41,10 @@ public abstract class View<T extends Model> extends Scene {
             dialog.getDialogPane().getButtonTypes().add(type);
             dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/dialogStyle.css").toExternalForm());
+            dialog.setTitle(dialogTitle);
+            Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
+            dialogStage.getIcons().add(new Image(getClass().getResource("/icon.png").toExternalForm()));
 
             //show dialog
             dialog.show();

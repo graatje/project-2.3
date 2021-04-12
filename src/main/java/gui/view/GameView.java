@@ -37,7 +37,7 @@ public class GameView extends View<GenericGameModel> {
 
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
-        gameBoardPane = (Pane) lookup("#Board");
+        gameBoardPane = (Pane) lookup("#board");
         this.waitingText = new Text("Please wait for the game to start.");
     }
 
@@ -64,7 +64,7 @@ public class GameView extends View<GenericGameModel> {
 
         //show username on board
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
-        showDialog(model.getDialogMessage());
+        showDialog(model.getDialogMessage(), "Info");
         showInfoText(model.getInfoMessage(), model.getTextNode());
         int gridSize = model.getBoard().getWidth();
         drawBoard(gridSize);

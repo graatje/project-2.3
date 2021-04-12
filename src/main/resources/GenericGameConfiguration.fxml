@@ -12,17 +12,17 @@
     <center>
         <AnchorPane xmlns:fx="http://javafx.com/fxml" maxHeight="275.0" maxWidth="325.0" prefHeight="325.0" prefWidth="325.0" BorderPane.alignment="CENTER">
             <children>
-                <Button id="button" layoutX="171.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="SAVE" defaultButton="true" onAction ="#pressOKip"/>
+                <Button layoutX="171.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="SAVE" defaultButton="true" onAction ="#pressOKip"/>
                 <Text fx:id="ipConfirmation"/>
-                <TextField fx:id="ipAddressField" layoutX="131.0" layoutY="14.0" prefHeight="40.0" prefWidth="180.0"/>
-                <Button id="button" layoutX="14.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="MENU" onAction ="#pressBackToMainMenu"/>
+                <TextField  fx:id="ipAddressField" layoutX="131.0" layoutY="14.0" prefHeight="40.0" prefWidth="180.0"/>
+                <Button  layoutX="14.0" layoutY="221.0" prefHeight="40.0" prefWidth="140.0" text="MENU" onAction ="#pressBackToMainMenu"/>
                 <TextField fx:id="thinkingTimeField" layoutX="131.0" layoutY="169.0" prefHeight="40.0" prefWidth="180.0"/>
                 <TextField fx:id="portField" layoutX="131.0" layoutY="67.0" prefHeight="40.0" prefWidth="180.0"/>
                 <ComboBox fx:id = "comboBoxDifficulty" id="comboBox" layoutX="131.0" layoutY="118.0" prefHeight="40.0" prefWidth="179.0"/>
-                <Label id="label" layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="100.0" text="  IP Address:" />
-                <Label id="label" layoutX="14.0" layoutY="67.0" prefHeight="40.0" prefWidth="100.0" text="  Port:" />
-                <Label id="label" layoutX="14.0" layoutY="118.0" prefHeight="40.0" prefWidth="100.0" text="  AI Difficulty" />
-                <Label id="label" layoutX="14.0" layoutY="169.0" prefHeight="40.0" prefWidth="100.0" text="  AI Move Time:" />
+                <Label layoutX="14.0" layoutY="14.0" prefHeight="40.0" prefWidth="100.0" text="  IP Address" />
+                <Label layoutX="14.0" layoutY="67.0" prefHeight="40.0" prefWidth="100.0" text="  Port" />
+                <Label layoutX="14.0" layoutY="118.0" prefHeight="40.0" prefWidth="100.0" text="  AI Difficulty" />
+                <Label layoutX="14.0" layoutY="169.0" prefHeight="40.0" prefWidth="100.0" text="  AI Move Time" />
             </children>
         </AnchorPane>
     </center>

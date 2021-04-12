@@ -24,7 +24,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     private Board board;
     private GameManager gameManager;
-    private double boardSize = 500; //TODO: opvragen van fxml?
+    private double boardSize;
     private ArrayList<Integer> colors;
     private List<URL> playerIconFileURLs;
 
@@ -41,11 +41,13 @@ public class GenericGameModel extends Model implements BoardObserver {
         switch (gameType) {
             case TTT:
             case TTT_LOCAL:
+            case TTT_LOCAL_ONLINE:
             case TTT_ONLINE:
                 setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png")));
                 break;
             case OTHELLO:
             case OTHELLO_LOCAL:
+            case OTHELLO_LOCAL_ONLINE:
             case OTHELLO_ONLINE:
                 setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png")));
                 break;
@@ -65,7 +67,7 @@ public class GenericGameModel extends Model implements BoardObserver {
         int xTile = (int) Math.floor(x / cellSize);
         int yTile = (int) Math.floor(y / cellSize);
 
-        //TODO: meegeven met framework
+        //TODO: meegeven met framework (update: wat betekent dit? al gedaan?!)
         Player player = gameManager.getBoard().getCurrentPlayer();
 
         if (player == null){
@@ -156,6 +158,7 @@ public class GenericGameModel extends Model implements BoardObserver {
             switch(ConfigData.getInstance().getGameType()){
                 case TTT:
                 case TTT_LOCAL:
+                case TTT_LOCAL_ONLINE:
                 case TTT_ONLINE:
                     p1 = "Noughts (O)";
                     p2 = "Crosses (X)";
@@ -164,6 +167,7 @@ public class GenericGameModel extends Model implements BoardObserver {
 
                 case OTHELLO:
                 case OTHELLO_LOCAL:
+                case OTHELLO_LOCAL_ONLINE:
                 case OTHELLO_ONLINE:
                     p1 = "Black";
                     p2 = "White";
@@ -182,5 +186,9 @@ public class GenericGameModel extends Model implements BoardObserver {
             playerInformation.add(playerinfo);
         }
         return playerInformation;
+    }
+
+    public void setBoardSize(double boardSize) {
+        this.boardSize = boardSize;
     }
 }

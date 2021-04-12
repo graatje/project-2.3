@@ -17,13 +17,14 @@ import java.util.ResourceBundle;
 
 public class GenericGameController extends Controller implements Initializable {
     @FXML
-    private Pane TTTBoard;
+    private Pane board;
     @FXML
     private Text messageField;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         model.setTextNode(messageField);
+        ((GenericGameModel)model).setBoardSize(board.getPrefWidth());
     }
 
     @FXML public void pressBackToMainMenu(ActionEvent event){

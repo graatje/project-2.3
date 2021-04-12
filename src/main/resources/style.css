@@ -3,7 +3,7 @@
      -fx-background-size: 1000px;
 }
 
-#button{
+.button{
     -fx-background-color: #2E8B57;
     -fx-border: none;
     -fx-text-fill: white;
@@ -13,7 +13,7 @@
     -fx-border-radius: 4px;
 }
 
-#button:hover{
+.button:hover{
      -fx-background-color: #555555;
 }
 
@@ -21,10 +21,9 @@
     -fx-background-image: url('Othello.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
-    -fx-border: none;
 }
 
-#buttonOthello:hover{
+#buttonOthello:hover,#buttonTTT:hover {
      -fx-border-color: #555555;
      -fx-border-width: 2px;
 }
@@ -33,23 +32,16 @@
     -fx-background-image: url('TTT.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
-    -fx-border: none;
 }
 
-#buttonTTT:hover{
-     -fx-border-color: #555555;
-     -fx-border-width: 2px;
-}
-
-#label{
+.label{
     -fx-background-color: #555555;
     -fx-text-fill: white;
     -fx-text-align: center;
     -fx-font-size: 14px;
-    -fx-border-radius: 4px;
 }
 
-#comboBox{
+.comboBox{
     -fx-background-color: #F5F5F5;
     -fx-text-align: center;
     -fx-font-size: 14px;
@@ -57,3 +49,17 @@
     -fx-border-radius: 4px;
 }
 
+.text-field:focused{
+   -fx-background-color : #2E8B57,#F5F5F5;
+   -fx-background-insets: 0,2px;
+}
+
+.combo-box .combo-box-popup .list-cell:hover {
+    -fx-text-fill: white ;
+    -fx-background-color: #555555;
+}
+
+.combo-box .combo-box-popup .list-cell:selected {
+    -fx-text-fill: white ;
+    -fx-background-color: #2E8B57;
+}
