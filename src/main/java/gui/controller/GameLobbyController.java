@@ -17,4 +17,8 @@ public class GameLobbyController extends Controller implements Initializable {
     public void pressBackToMainMenu(ActionEvent event) {
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
+
+    public void pressRefresh(ActionEvent event) {
+        model.updateView();
+    }
 }

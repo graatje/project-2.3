@@ -86,6 +86,8 @@ public class MainWindow extends Stage {
         glView = new GameLobbyView(
                 getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
         glModel.registerView(glView);
+        //TODO: moet dit hier? controller.initialize is te vroeg!! Moet na de register.
+        glModel.updateView();
     }
 
     /**
