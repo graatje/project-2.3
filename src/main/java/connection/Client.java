@@ -7,17 +7,17 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.ArrayList;
 
 public class Client extends Thread {
+    private static final long KEEP_ALIVE_INTERVAL = 30 * 1000;
+
     private Socket clientSocket;
     private BufferedReader inputStream;
     private int availableData;
     private CommunicationHandler com;
     private PrintWriter outputStream;
 
-    private Boolean running = true;
-    private ArrayList<String> commandBuffer = new ArrayList<>();
+    private boolean running = true;
 
 
     /**
@@ -40,6 +40,8 @@ public class Client extends Thread {
         if(CommunicationHandler.DEBUG) {
             startConsolePassthroughThread();
         }
+
+        startKeepAliveThread();
     }
 
     public void startConsolePassthroughThread() {
@@ -66,6 +68,31 @@ public class Client extends Thread {
         }
 
         System.out.println("Console <> server command passthrough stopped.");
+    }
+
+    public void startKeepAliveThread() {
+        Thread thread = new Thread(this::keepAlive, "ServerKeepAlive");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void keepAlive() {
+        System.out.println("Keep alive thread started.");
+
+        while(running) {
+            try {
+                Thread.sleep(KEEP_ALIVE_INTERVAL);
+            } catch (InterruptedException ignored) {}
+
+            sendKeepAlive();
+        }
+
+        System.out.println("Keep alive thread stopped.");
+    }
+
+    private void sendKeepAlive() {
+        System.out.println("Sending keep-alive message..");
+        sendGetPlayerlistMessage();
     }
 
     /**
@@ -149,6 +176,10 @@ public class Client extends Thread {
 
     public void sendChallengeMessage(String playerToChallenge, String gameType) {
         com.sendChallengeMessage(playerToChallenge, gameType);
+    }
+
+    public void sendGetPlayerlistMessage() {
+        com.sendGetPlayerlistMessage();
     }
 
     public void acceptChallenge(int challengeNr) {

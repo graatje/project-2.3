@@ -199,4 +199,7 @@ public class CommunicationHandler {
         client.sendCommandToServer("challenge \"" + playerToChallenge + "\"" + gameType + "\"\n");
     }
 
+    public void sendGetPlayerlistMessage() {
+        client.sendCommandToServer("get playerlist\n");
+    }
 }
