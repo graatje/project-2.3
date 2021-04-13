@@ -349,7 +349,6 @@ public abstract class Board implements Cloneable {
      */
     public Player getCurrentPlayer() {
         if (currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
-            System.err.println("Returning NULL for getCurrentPlayer! ID was: " + currentPlayerId);
             return null;
         }
 
