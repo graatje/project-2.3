@@ -118,7 +118,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     public void requestStart() {
         setSelfName(ConfigData.getInstance().getPlayerName());
         login();
-        subscribe(ConfigData.getInstance().getGameType().gameName);
+        subscribe(ConfigData.getInstance().getCurrentGameName());
     }
 
     @Override

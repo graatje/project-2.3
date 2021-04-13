@@ -2,8 +2,6 @@ package gui.view;
 
 import framework.BoardState;
 import framework.ConfigData;
-import framework.ConnectedGameManager;
-import framework.GameType;
 import framework.board.BoardPiece;
 import framework.player.LocalPlayer;
 import gui.controller.Controller;
@@ -51,7 +49,7 @@ public class GameView extends View<GenericGameModel> {
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
         // If online match is waiting, show "waiting for game"
-        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getGameType().isLocal) {
+        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getCurrentGame().isOnline()) {
             setBackgroundColorBoard(null);
             clearBoard();
             gameBoardPane.getChildren().add(waitingText);
@@ -77,7 +75,10 @@ public class GameView extends View<GenericGameModel> {
             }
         }
 
-        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getGameType().toString().toLowerCase().contains("othello")) {
+        // Voorbeelden
+        // AI tegen online moet weergeven in Othello
+        // Player vs AI moet weergeven in Othello
+        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getCurrentGame().isOnline()) {
             drawValidMoves(model.getBoard().getValidMoves(), gridSize);
         }
     }
@@ -171,11 +172,7 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
-    public void setBackgroundColorBoard(ArrayList<Integer> colors){
-        if (colors == null){
-            gameBoardPane.setBackground(new Background(new BackgroundFill(null, null, null)));
-        }else {
-            gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(colors.get(0), colors.get(1), colors.get(2)), null, null)));
-        }
+    public void setBackgroundColorBoard(Color color){
+        gameBoardPane.setBackground(new Background(new BackgroundFill(color, null, null)));
     }
 }

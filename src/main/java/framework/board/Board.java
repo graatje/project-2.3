@@ -124,7 +124,7 @@ public abstract class Board implements Cloneable {
             o.onGameStart(startingPlayer);
         }
 
-        if (ConfigData.getInstance().getGameType().isLocal){
+        if (!ConfigData.getInstance().getCurrentGame().isOnline()){
             requestPlayerMove();
         }
     }

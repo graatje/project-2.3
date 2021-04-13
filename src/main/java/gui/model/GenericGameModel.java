@@ -1,22 +1,17 @@
 package gui.model;
 
 import framework.ConfigData;
-import framework.ConnectedGameManager;
 import framework.GameManager;
-import framework.GameType;
 import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 import framework.player.LocalPlayer;
 import framework.player.Player;
-import gui.view.GameView;
-import gui.view.View;
 import javafx.application.Platform;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +20,7 @@ public class GenericGameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize;
-    private ArrayList<Integer> colors;
+    private Color color;
     private List<URL> playerIconFileURLs;
 
     /**
@@ -37,21 +32,7 @@ public class GenericGameModel extends Model implements BoardObserver {
         board.registerObserver(this);
 
         // Load boardpiece images
-        GameType gameType = ConfigData.getInstance().getGameType();
-        switch (gameType) {
-            case TTT:
-            case TTT_LOCAL:
-            case TTT_LOCAL_ONLINE:
-            case TTT_ONLINE:
-                setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png")));
-                break;
-            case OTHELLO:
-            case OTHELLO_LOCAL:
-            case OTHELLO_LOCAL_ONLINE:
-            case OTHELLO_ONLINE:
-                setPlayerIconFileURLs(Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png")));
-                break;
-        }
+        setPlayerIconFileURLs(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());
     }
 
     public List<URL> getPlayerIconFileURLs() {
@@ -139,17 +120,15 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onGameStart(Player startingPlayer) {
-
-
         Platform.runLater(this::updateView);
     }
 
-    public void setBackgroundColor(ArrayList<Integer> colors){
-        this.colors = colors;
+    public void setBackgroundColor(Color color){
+        this.color = color;
     }
 
-    public ArrayList<Integer> getBackgroundColor(){
-        return colors;
+    public Color getBackgroundColor(){
+        return color;
     }
 
     public String getPlayerNames(List<Player> players){
@@ -160,37 +139,12 @@ public class GenericGameModel extends Model implements BoardObserver {
         ArrayList<String> playerInformation = new ArrayList<>();
 
         for (Player player : playerInfo.keySet()){
-            String color = null;
-            String p1 = null;
-            String p2 = null;
-            boolean showPiecesCount = true;
+            boolean showPiecesCount = ConfigData.getInstance().getCurrentGame().showPiecesCount();
 
-            switch(ConfigData.getInstance().getGameType()){
-                case TTT:
-                case TTT_LOCAL:
-                case TTT_LOCAL_ONLINE:
-                case TTT_ONLINE:
-                    p1 = "Noughts (O)";
-                    p2 = "Crosses (X)";
-                    showPiecesCount = false;
-                    break;
+            String[] boardPieceNames = ConfigData.getInstance().getCurrentGame().getBoardPieceNames();
 
-                case OTHELLO:
-                case OTHELLO_LOCAL:
-                case OTHELLO_LOCAL_ONLINE:
-                case OTHELLO_ONLINE:
-                    p1 = "Black";
-                    p2 = "White";
-                    break;
-            }
-            if(player.getID() == 0){
-                color = p1;
-            }else if (player.getID() == 1){
-                color = p2;
-            }
-
-            String playerinfo = player.getName() + "\n" + color;
-            if(showPiecesCount == true){
+            String playerinfo = player.getName() + "\n" + boardPieceNames[player.getID()];
+            if(showPiecesCount){
                 playerinfo += "\n" + playerInfo.get(player);
             }
             playerInformation.add(playerinfo);
