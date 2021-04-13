@@ -50,6 +50,11 @@ public abstract class Board implements Cloneable {
     public abstract int getMaxPlayers();
 
     /**
+     * @return Whether this board type should show valid moves
+     */
+    public abstract boolean isShowValidMoves();
+
+    /**
      * An implementation-specific getter for calculating all valid moves.
      *
      * @return All valid moves.

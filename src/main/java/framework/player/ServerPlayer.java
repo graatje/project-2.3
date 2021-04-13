@@ -50,4 +50,9 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
             board.requestPlayerMove();
         }
     }
+
+    @Override
+    public boolean isShowValidMoves() {
+        return false;
+    }
 }

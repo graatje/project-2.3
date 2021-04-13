@@ -1,6 +1,7 @@
 package framework.player;
 
 import framework.ConfigData;
+import framework.ConnectedGameManager;
 import framework.board.Board;
 import framework.board.BoardPiece;
 
@@ -40,6 +41,11 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
     protected abstract float evaluateBoard(Board board, int treeDepth);
 
     public abstract int getStartDepth();
+
+    @Override
+    public boolean isShowValidMoves() {
+        return (board.getGameManager() instanceof ConnectedGameManager);
+    }
 
     @Override
     public void requestMove() {

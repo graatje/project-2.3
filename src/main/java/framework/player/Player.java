@@ -39,6 +39,11 @@ public abstract class Player {
     }
 
     /**
+     * @return Whether or not to show valid moves on the screen.
+     */
+    public abstract boolean isShowValidMoves();
+
+    /**
      * getter for the board
      *
      * @return Board board

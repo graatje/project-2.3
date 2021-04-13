@@ -24,6 +24,11 @@ public class TTTBoard extends Board {
     }
 
     @Override
+    public boolean isShowValidMoves() {
+        return false;
+    }
+
+    @Override
     public List<BoardPiece> getValidMoves(Player asWho) {
         List<BoardPiece> result = new ArrayList<>();
 
