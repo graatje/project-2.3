@@ -1,25 +1,23 @@
 package framework.board;
 
-import framework.GameManager;
+import framework.*;
 import framework.player.MoveRequestable;
 import framework.player.Player;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
-public abstract class Board {
+public abstract class Board implements Cloneable {
     protected final GameManager gameManager;
     protected final int width, height;
-    protected final BoardPiece[] pieces;
+    protected BoardPiece[] pieces;
 
-    private final Set<BoardObserver> observers = new HashSet<>();
+    private Set<BoardObserver> observers = new HashSet<>();
 
+    private BoardState boardState = BoardState.WAITING;
     private int currentPlayerId;
-
-    private boolean isGameOver = false;
     private Player winner;
+
+    private boolean disableRequestMove = false;
 
     /**
      * Constructs a new Board
@@ -56,23 +54,23 @@ public abstract class Board {
      *
      * @return All valid moves.
      */
-    public abstract List<BoardPiece> getValidMoves();
+    public abstract List<BoardPiece> getValidMoves(Player asWho);
 
     /**
      * An implementation-specific method for executing a move on the board.
      * No argument-checking needs to be done in this method, because it is protected and only gets called internally from the super-class Board.
      *
-     * @param player The player which executed the move.
-     * @param piece  The piece the player wants to affect.
+     * @param asWho The player which executed the move.
+     * @param piece The piece the player wants to affect.
      */
-    protected abstract void executeMove(Player player, BoardPiece piece);
+    public abstract void _executeMove(Player asWho, BoardPiece piece);
 
     /**
      * An implementation-specific method for calculating if the game is currently over.
      *
      * @return Whether the game is currently over or not.
      */
-    protected abstract boolean calculateIsGameOver();
+    public abstract boolean calculateIsGameOver();
 
     /**
      * An implementation-specific method for calculating the winner of the game.
@@ -82,17 +80,71 @@ public abstract class Board {
     public abstract Player calculateWinner();
 
     /**
-     * @return The width of the board in tiles
+     * Prepares the board.
+     *
+     * @param startPlayer The player who will start.
      */
-    public int getWidth() {
-        return width;
+    public abstract void prepareBoard(Player startPlayer);
+
+    public List<BoardPiece> getValidMoves() {
+        return getValidMoves(getCurrentPlayer());
     }
 
     /**
-     * @return The height of the board in tiles
+     * this method requests a playermove from the board if all players have been initialized.
+     *
+     * SHOULDN'T BE CALLED EXTERNALLY! Use GameManager#start!
      */
-    public int getHeight() {
-        return height;
+    public void _start(Player startingPlayer) {
+        if (boardState != BoardState.WAITING) {
+            throw new IllegalStateException("The game cannot start in this state! (Current state: " + boardState + ")");
+        }
+
+        if (gameManager.getNumPlayers() < getMinPlayers() || gameManager.getNumPlayers() > getMaxPlayers()) {
+            throw new IllegalStateException("The number of players must be between " + getMinPlayers() + " and " + getMaxPlayers() + ", and is currently " + gameManager.getNumPlayers() + "!");
+        }
+
+        // Reset pieces
+        for (BoardPiece piece : pieces) {
+            piece.clearOwner();
+        }
+
+        if (startingPlayer == null) {
+            startingPlayer = gameManager.getPlayer((int) (Math.random() * gameManager.getNumPlayers()));
+        }
+
+        currentPlayerId = startingPlayer.getID();
+
+
+        prepareBoard(startingPlayer);
+
+        boardState = BoardState.PLAYING;
+
+        for (BoardObserver o : observers) {
+            o.onGameStart(startingPlayer);
+        }
+
+        if (ConfigData.getInstance().getGameType().isLocal){
+            requestPlayerMove();
+        }
+    }
+
+    public void reset() {
+        if (boardState == BoardState.PLAYING) {
+            gameManager.forfeit();
+        }
+
+        // Reset pieces
+        for (BoardPiece piece : pieces) {
+            piece.clearOwner();
+        }
+
+        boardState = BoardState.WAITING;
+
+        // Doesn't really matter, because this will be overridden when the start method gets called..
+        currentPlayerId = 0;
+
+        winner = null;
     }
 
     /**
@@ -107,12 +159,12 @@ public abstract class Board {
             throw new IllegalArgumentException("It's not that player's turn yet!");
         }
 
-        if (!getValidMoves().contains(piece)) {
+        if (!getValidMoves(player).contains(piece)) {
             throw new IllegalArgumentException("That is not a valid move!");
         }
 
         // All good, now actually execute the move on the board!
-        executeMove(player, piece);
+        _executeMove(player, piece);
 
         // Make sure all observers know of this state-change!
         observers.forEach(o -> o.onPlayerMoved(player, piece));
@@ -132,7 +184,7 @@ public abstract class Board {
      * 3. Requesting a move from the new current player if the game is not over
      */
     public void finalizeRawMove() {
-        if (isGameOver) {
+        if (boardState != BoardState.PLAYING) {
             return;
         }
 
@@ -144,6 +196,9 @@ public abstract class Board {
             currentPlayerId = 0;
         }
 
+        // Make sure all observers know of this state-change!
+        observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
+
         // See if the game is over after this move
         if (calculateIsGameOver()) {
             // The game is over! Calculate a winner and set the flag!
@@ -152,10 +207,7 @@ public abstract class Board {
             forceWin(winner);
         }
 
-        // Make sure all observers know of this state-change!
-        observers.forEach(o -> o.onPlayerMoveFinalized(previousPlayer, getCurrentPlayer()));
-
-        if (!isGameOver) {
+        if (boardState == BoardState.PLAYING) {
             // The game is not yet over. Request the next move from the new current player.
             requestPlayerMove();
         }
@@ -171,7 +223,9 @@ public abstract class Board {
      */
     public void makeMove(Player player, BoardPiece piece) {
         // Make the raw turn, and finalize it immediately!
-        makeRawMove(player, piece);
+        if (piece != null) {
+            makeRawMove(player, piece);
+        }
         finalizeRawMove();
     }
 
@@ -186,6 +240,10 @@ public abstract class Board {
      * Calls {@link MoveRequestable#requestMove()} on the current player, if the current player implements {@link MoveRequestable}
      */
     public void requestPlayerMove() {
+        if(disableRequestMove) {
+            return;
+        }
+
         Player currentPlayer = gameManager.getPlayer(currentPlayerId);
         if (currentPlayer instanceof MoveRequestable) {
             ((MoveRequestable) currentPlayer).requestMove();
@@ -198,10 +256,31 @@ public abstract class Board {
      * @param winner The player who should be considered the winner, or <code>null</code> to indicate a draw.
      */
     public void forceWin(Player winner) {
-        this.isGameOver = true;
+
+        if (this.boardState != BoardState.PLAYING) {
+            return;
+        }
+
+        this.boardState = BoardState.GAME_OVER;
         this.winner = winner;
 
         new ArrayList<>(observers).forEach(o -> o.onPlayerWon(winner));
+    }
+
+    @Override
+    public Board clone() throws CloneNotSupportedException {
+        Board cloned = (Board) super.clone();
+
+        // Deep-clone pieces
+        cloned.pieces = new BoardPiece[this.pieces.length];
+        for (int i = 0; i < this.pieces.length; i++) {
+            cloned.pieces[i] = this.pieces[i].clone();
+        }
+
+        // Reset observers
+        cloned.observers = new HashSet<>();
+
+        return cloned;
     }
 
     /**
@@ -247,9 +326,28 @@ public abstract class Board {
     }
 
     /**
+     * @return The width of the board in tiles
+     */
+    public int getWidth() {
+        return width;
+    }
+
+    /**
+     * @return The height of the board in tiles
+     */
+    public int getHeight() {
+        return height;
+    }
+
+    /**
      * @return The player who is currently expected to make a move.
      */
     public Player getCurrentPlayer() {
+        if (currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
+            System.err.println("Returning NULL for getCurrentPlayer! ID was: " + currentPlayerId);
+            return null;
+        }
+
         return gameManager.getPlayer(currentPlayerId);
     }
 
@@ -260,11 +358,8 @@ public abstract class Board {
         currentPlayerId = currentPlayer.getID();
     }
 
-    /**
-     * @return Whether the game is over or not.
-     */
-    public boolean isGameOver() {
-        return isGameOver;
+    public BoardState getBoardState() {
+        return boardState;
     }
 
     /**
@@ -272,7 +367,7 @@ public abstract class Board {
      * @throws IllegalStateException when the game is not over yet.
      */
     public Player getWinner() {
-        if (!isGameOver) {
+        if (boardState != BoardState.GAME_OVER) {
             throw new IllegalStateException("The game isn't over yet!");
         }
 
@@ -283,8 +378,12 @@ public abstract class Board {
      * @param piece The piece to check
      * @return Whether the specified piece is a valid move or not.
      */
-    public boolean isValidMove(BoardPiece piece) {
-        return getValidMoves().contains(piece);
+    public boolean isValidMove(Player asWho, BoardPiece piece) {
+        return getValidMoves(asWho).contains(piece);
+    }
+
+    public boolean isValidMove(BoardPiece boardPiece) {
+        return isValidMove(getCurrentPlayer(), boardPiece);
     }
 
     /**
@@ -292,8 +391,12 @@ public abstract class Board {
      * @param y The Y-coordinate of the piece to check
      * @return Whether the specified piece is a valid move or not.
      */
+    public boolean isValidMove(Player asWho, int x, int y) {
+        return isValidMove(asWho, getBoardPiece(x, y));
+    }
+
     public boolean isValidMove(int x, int y) {
-        return isValidMove(getBoardPiece(x, y));
+        return isValidMove(getCurrentPlayer(), x, y);
     }
 
     /**
@@ -312,5 +415,29 @@ public abstract class Board {
      */
     public void unregisterObserver(BoardObserver observer) {
         observers.remove(observer);
+    }
+
+    public boolean isDisableRequestMove() {
+        return disableRequestMove;
+    }
+
+    public void setDisableRequestMove(boolean disableRequestMove) {
+        this.disableRequestMove = disableRequestMove;
+    }
+
+    public Map<Player, Integer> piecesCount() {
+        Map<Player, Integer> map = new HashMap<>();
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                BoardPiece tempBoardPiece = getBoardPiece(x, y);
+                if (tempBoardPiece.hasOwner()) {
+                    int count = map.getOrDefault(tempBoardPiece.getOwner(), 0);
+                    count++;
+                    map.put(tempBoardPiece.getOwner(), count);
+                }
+            }
+        }
+
+        return map;
     }
 }

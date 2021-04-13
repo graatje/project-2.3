@@ -4,7 +4,7 @@ import framework.player.Player;
 
 import java.util.Objects;
 
-public class BoardPiece {
+public class BoardPiece implements Cloneable {
     private final int x, y;
     private Player owner;
 
@@ -45,6 +45,20 @@ public class BoardPiece {
     @Override
     public int hashCode() {
         return Objects.hash(x, y);
+    }
+
+    @Override
+    public BoardPiece clone() throws CloneNotSupportedException {
+        return (BoardPiece) super.clone();
+    }
+
+    @Override
+    public String toString() {
+        return "BoardPiece{" +
+                "x=" + x +
+                ", y=" + y +
+                ", owner=" + owner +
+                '}';
     }
 
     /**

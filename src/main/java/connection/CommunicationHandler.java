@@ -10,6 +10,8 @@ import java.util.Locale;
 
 public class CommunicationHandler {
 
+    protected static final boolean DEBUG = true;
+
     private Client client;
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
@@ -44,9 +46,11 @@ public class CommunicationHandler {
      * @param input The message given by the server
      */
     public void handleServerInput(String input) throws JSONException {
-        if (input.equals("OK")) return;
+        if (DEBUG) {
+            System.out.println("DEBUG: from server = " + input);
+        }
 
-        //System.out.println("input = " + input);
+        if (input.equals("OK")) return;
 
         JSONObject json = extractJson(input);
 
@@ -77,7 +81,7 @@ public class CommunicationHandler {
                     case "WIN":
                     case "DRAW":
                     case "LOSS":
-                        handleGameEndServerMessage(split[3]);
+                        gameManagerCommunicationListener.endMatch(split[2]);
                 }
                 break;
 
@@ -90,6 +94,10 @@ public class CommunicationHandler {
                 }
 
                 gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
+                break;
+
+            case "ERR":
+                System.out.println(input);
                 break;
         }
     }
@@ -127,16 +135,6 @@ public class CommunicationHandler {
         }
 
         return null;
-    }
-
-    /**
-     * Handles the server message for finished games
-     *
-     * @param result The last part of a SVR CHALLENGE server command
-     */
-    private void handleGameEndServerMessage(String result) {
-        String sub = result.substring(0, 3).trim();
-        gameManagerCommunicationListener.endMatch(sub);
     }
 
     /**
@@ -190,5 +188,15 @@ public class CommunicationHandler {
         client.sendCommandToServer("forfeit \n");
     }
 
+
+    /**
+     * Challenges a player in the lobby
+     *
+     * @param playerToChallenge The other player to challenge
+     * @param gameType          The game to play
+     */
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {
+        client.sendCommandToServer("challenge \"" + playerToChallenge + "\"" + gameType + "\"\n");
+    }
 
 }

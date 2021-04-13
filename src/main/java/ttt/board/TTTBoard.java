@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TTTBoard extends Board {
-    public TTTBoard(GameManager gameManager, int width, int height) {
-        super(gameManager, width, height);
+    public TTTBoard(GameManager gameManager) {
+        super(gameManager, 3, 3);
     }
 
     @Override
@@ -24,7 +24,7 @@ public class TTTBoard extends Board {
     }
 
     @Override
-    public List<BoardPiece> getValidMoves() {
+    public List<BoardPiece> getValidMoves(Player asWho) {
         List<BoardPiece> result = new ArrayList<>();
 
         for (int y = 0; y < height; y++) {
@@ -41,12 +41,12 @@ public class TTTBoard extends Board {
     }
 
     @Override
-    protected void executeMove(Player player, BoardPiece piece) {
-        piece.setOwner(player);
+    public void _executeMove(Player asWho, BoardPiece piece) {
+        piece.setOwner(asWho);
     }
 
     @Override
-    protected boolean calculateIsGameOver() {
+    public boolean calculateIsGameOver() {
         return getValidMoves().isEmpty() || calculateWinner() != null;
     }
 
@@ -75,6 +75,9 @@ public class TTTBoard extends Board {
 
         return null;
     }
+
+    @Override
+    public void prepareBoard(Player startPlayer) { /* Start with an empty board */ }
 
     private Player getPlayerOwningLine(int sx, int sy, int dx, int dy) {
         if (dx == 0 && dy == 0) {

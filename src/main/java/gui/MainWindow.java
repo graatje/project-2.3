@@ -1,39 +1,28 @@
 package gui;
 
-import framework.ConnectedGameManager;
-import framework.GameManager;
-import framework.player.LocalPlayer;
 import gui.controller.*;
-import gui.model.GenericGameConfigurationModel;
-import gui.model.GenericGameMenuModel;
-import gui.model.GenericGameModel;
-import gui.model.MainMenuModel;
-import gui.view.GameView;
-import gui.view.GenericGameConfigurationView;
-import gui.view.GenericGameMenuView;
-import gui.view.MainMenuView;
+import gui.model.*;
+import gui.view.*;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import ttt.factory.TTTAIPlayerFactory;
-import ttt.factory.TTTBoardFactory;
-import ttt.player.TTTAIPlayer;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.Objects;
 
 public class MainWindow extends Stage {
-    private Stage stage;
     private GenericGameConfigurationView ggcView;
     private GameView ggView;
     private GenericGameMenuView ggmView;
     private MainMenuView mmView;
-    //private Stack<viewEnum> viewStack = new Stack();
+    private GameLobbyView glView;
 
-    public static final int WINDOW_WIDTH = 750;
+    public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
     public enum viewEnum {
+        GAME_LOBBY,
         MAINMENU,
         GAME_MENU,
         GAME_CONFIGURATION,
@@ -41,9 +30,12 @@ public class MainWindow extends Stage {
     }
 
     public MainWindow(Stage primaryStage) throws IOException {
+        // primaryStage word niet gebruikt?!
         setupMVC();
 
-        this.stage = primaryStage;
+        //stage = primaryStage;
+        this.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
+        this.setTitle("C4Games");
         switchView(viewEnum.MAINMENU);
     }
 
@@ -57,24 +49,8 @@ public class MainWindow extends Stage {
                 getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggcModel.registerView(ggcView);
 
-        // TTT Gameboard
-        //TODO: dit dynamisch doen als othello/ttt geselecteerd wordt
-//        ConnectedGameManager gameManager;
-//        try {
-//            gameManager = new ConnectedGameManager(new TTTBoardFactory(), "main-vps.woutergritter.me", 7789, new TTTAIPlayerFactory(3));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//
-//            System.exit(-1);
-//            return;
-//        }
-//        gameManager.setSelfName("2zqa");
-
-        GameManager gameManager = new GameManager(new TTTBoardFactory());
-        gameManager.addPlayer(new LocalPlayer(gameManager.getBoard(), "Kees"));
-        gameManager.addPlayer(new TTTAIPlayer(gameManager.getBoard(), "Robot1", 2));
-
-        GenericGameModel ggModel = new GenericGameModel(gameManager);
+        // Gameboard
+        GenericGameModel ggModel = new GenericGameModel();
         GenericGameController ggController = new GenericGameController();
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
@@ -82,20 +58,12 @@ public class MainWindow extends Stage {
                 getFXMLParent("GenericGame.fxml", ggController),
                 ggController,
                 WINDOW_WIDTH,
-                WINDOW_HEIGHT,
-                Arrays.asList(
-                        getClass().getResource("/boardPieces/x.png"),
-                        getClass().getResource("/boardPieces/o.png")
-                )
+                WINDOW_HEIGHT
         );
         ggModel.registerView(ggView);
 
-        gameManager.start(null);
-//        gameManager.login();
-//        gameManager.subscribe("Tic-tac-toe");
-
         // Game Menu
-        GenericGameMenuModel ggmModel = new GenericGameMenuModel();
+        GenericGameMenuModel ggmModel = new GenericGameMenuModel(ggModel);
         GenericGameMenuController ggmController = new GenericGameMenuController();
         ggmController.setMainWindow(this);
         ggmController.setModel(ggmModel);
@@ -104,11 +72,22 @@ public class MainWindow extends Stage {
         ggmModel.registerView(ggmView);
 
         // Main Menu
-        MainMenuModel mmModel = new MainMenuModel();
+        //MainMenuModel mmModel = new MainMenuModel();
         MainMenuController mmController = new MainMenuController();
         mmController.setMainWindow(this);
         mmView = new MainMenuView(
                 getFXMLParent("MainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+
+        // Game lobby
+        GameLobbyModel glModel = new GameLobbyModel();
+        GameLobbyController glController = new GameLobbyController();
+        glController.setMainWindow(this);
+        glController.setModel(glModel);
+        glView = new GameLobbyView(
+                getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        glModel.registerView(glView);
+        //TODO: moet dit hier? controller.initialize is te vroeg!! Moet na de register.
+        glModel.updateView();
     }
 
     /**
@@ -142,15 +121,12 @@ public class MainWindow extends Stage {
             case GAME:
                 this.setScene(ggView);
                 break;
+            case GAME_LOBBY:
+                this.setScene(glView);
+                break;
             default:
                 throw new IllegalArgumentException();
         }
         show();
     }
-//    public void goBackView(){
-//        if(!viewStack.isEmpty()){
-//            switchView(viewStack.pop());
-//        }
-//    }
-
 }

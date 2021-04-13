@@ -36,8 +36,37 @@ public class Client extends Thread {
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
+
+        if(CommunicationHandler.DEBUG) {
+            startConsolePassthroughThread();
+        }
     }
 
+    public void startConsolePassthroughThread() {
+        Thread thread = new Thread(this::consolePassthrough, "ConsoleServerPassthrough");
+        thread.setDaemon(true);
+        thread.start();
+    }
+
+    private void consolePassthrough() {
+        if(!CommunicationHandler.DEBUG) {
+            System.err.println("Warning! Starting console <> server command passthrough, but CommunicationHandler.DEBUG is set to false! You won't receive any feedback!");
+        }else{
+            System.out.println("Console <> server command passthrough started.");
+        }
+
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        try {
+            while (running) {
+                String line = reader.readLine();
+                sendCommandToServer(line + '\n');
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Console <> server command passthrough stopped.");
+    }
 
     /**
      * Send a command to the server
@@ -45,6 +74,10 @@ public class Client extends Thread {
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
+        if (CommunicationHandler.DEBUG) {
+            System.out.println("DEBUG: to server   = " + command.trim());
+        }
+
         outputStream.print(command);
         outputStream.flush();
     }
@@ -57,10 +90,9 @@ public class Client extends Thread {
     public void run() {
         running = true;
 
-        while (running) {
-            try {
-                String input = inputStream.readLine();
-
+        String input;
+        try {
+            while (running && (input = inputStream.readLine()) != null) {
                 //There was input, handle it
                 if (!input.equals("")) {
                     try {
@@ -69,26 +101,22 @@ public class Client extends Thread {
                         //TODO: handle this shiz
                     }
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
             }
-        }
-        dispose();
+        } catch (IOException ignored) {}
+
+        System.out.println("Closed connection to the server.");
     }
 
     /**
      * Cleans up the client before closing down the thread.
      */
-    public void dispose() {
-        try {
-            running = false;
-            inputStream.close();
-            outputStream.close();
+    public void close() {
+        com.sendLogoutMessage();
+        running = false;
 
-            join();
-        } catch (InterruptedException | IOException ie) {
-            ie.printStackTrace();
-        }
+        try {
+            clientSocket.close();
+        } catch (Exception ignored) {}
     }
 
     public CommunicationHandler getCommunicationHandler() {
@@ -117,5 +145,13 @@ public class Client extends Thread {
 
     public void sendLoginMessage(String playerName) {
         com.sendLoginMessage(playerName);
+    }
+
+    public void sendChallengeMessage(String playerToChallenge, String gameType) {
+        com.sendChallengeMessage(playerToChallenge, gameType);
+    }
+
+    public void acceptChallenge(int challengeNr) {
+        com.sendAcceptChallengeMessage("" + challengeNr);
     }
 }

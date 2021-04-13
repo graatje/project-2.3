@@ -3,24 +3,24 @@ package framework;
 import connection.Client;
 import connection.CommunicationHandler;
 import connection.GameManagerCommunicationListener;
+import framework.board.Board;
 import framework.board.BoardObserver;
 import framework.board.BoardPiece;
-import framework.factory.BoardFactory;
-import framework.factory.PlayerFactory;
 import framework.player.Player;
 import framework.player.ServerPlayer;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
+import java.util.function.Function;
 
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
-    private PlayerFactory selfPlayerFactory;
-
     private Client client;
 
     private final HashMap<Integer, Match> activeMatches = new HashMap<>();
     private final ArrayList<String> lobbyPlayers = new ArrayList<>();
+
+    private boolean loggedIn = false;
 
     private ServerPlayer serverPlayerOpponent;
     private String selfName = "unknown-" + (int) (Math.random() * 100);
@@ -28,15 +28,14 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     /**
      * constructor, initializes connection, board and players.
      *
+     * @param boardSupplier
      * @param serverIP
      * @param serverPort
-     * @param boardFactory
-     * @param selfPlayerFactory
+     * @param selfPlayerSupplier
+     * @throws IOException
      */
-    public ConnectedGameManager(BoardFactory boardFactory, String serverIP, int serverPort, PlayerFactory selfPlayerFactory) throws IOException {
-        super(boardFactory);
-
-        this.selfPlayerFactory = selfPlayerFactory;
+    public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, Function<Board, Player> selfPlayerSupplier) throws IOException {
+        super(boardSupplier, selfPlayerSupplier, ServerPlayer::new);
 
         createClient(serverIP, serverPort);
         client.sendCommandToServer("get playerlist\n");
@@ -51,11 +50,32 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     private void createClient(String serverIP, int serverPort) throws IOException {
         Socket clientSocket = new Socket(serverIP, serverPort);
         client = new Client(clientSocket, new CommunicationHandler());
+        client.setDaemon(true);
         client.start();
     }
 
+    /**
+     * Closes the previous connection, and starts a new one
+     *
+     * @param serverIP
+     * @param serverPort
+     * @throws IOException
+     */
+    public void resetClient(String serverIP, int serverPort) throws IOException {
+        client.sendLogoutMessage();
+        client.close();
+
+        createClient(serverIP, serverPort);
+    }
+
     public void login() {
+        // We only have to log-in once!
+        if(loggedIn) {
+            return;
+        }
+
         client.sendLoginMessage(selfName);
+        loggedIn = true;
     }
 
     public void subscribe(String gameName) {
@@ -64,6 +84,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     public Client getClient() {
         return client;
+    }
+
+    public void closeClient(){
+        client.close();
     }
 
     public Map<Integer, Match> getActiveMatches() {
@@ -82,12 +106,33 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
-    public void setSelfPlayerFactory(PlayerFactory selfPlayerFactory) {
-        this.selfPlayerFactory = selfPlayerFactory;
+    public void challengePlayer(String playerToChallenge, String gameType) {
+        client.sendChallengeMessage(playerToChallenge, gameType);
     }
 
-    public PlayerFactory getSelfPlayerFactory() {
-        return selfPlayerFactory;
+    public void acceptChallenge(int challengeNr) {
+        client.acceptChallenge(challengeNr);
+    }
+
+    @Override
+    public void requestStart() {
+        setSelfName(ConfigData.getInstance().getPlayerName());
+        login();
+        subscribe(ConfigData.getInstance().getGameType().gameName);
+    }
+
+    @Override
+    public void forfeit() {
+        getClient().sendForfeitMessage();
+
+        super.forfeit();
+    }
+
+    @Override
+    public void destroy() {
+        closeClient();
+
+        super.destroy();
     }
 
     @Override
@@ -99,15 +144,27 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
-        serverPlayerOpponent = new ServerPlayer(getBoard(), opponentName);
-        Player self = selfPlayerFactory.createPlayer(board, selfName);
+        initialize();
+
+        serverPlayerOpponent = null;
+        for(Player player : players) {
+            if(player instanceof ServerPlayer) {
+                serverPlayerOpponent = (ServerPlayer) player;
+                break;
+            }
+        }
+
+        if(serverPlayerOpponent == null) {
+            // This should never happen!
+            throw new IllegalStateException("Could not find a server player.");
+        }
+
+        serverPlayerOpponent.setName(opponentName);
+        getOtherPlayer(serverPlayerOpponent).setName(this.selfName);
 
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
-        addPlayer(serverPlayerOpponent);
-        addPlayer(self);
-
-        start(serverPlayerOpponent, false);
+        _start(getPlayer(playerToBegin));
     }
 
     @Override
@@ -135,6 +192,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
             case "DRAW": // Draw!
                 board.forceWin(null);
                 break;
+            default:
+                System.err.println("Received match end result '" + result + "' from the server, which is not a valid result!");
+                break;
         }
     }
 
@@ -152,5 +212,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onPlayerWon(Player who) {
+    }
+
+    @Override
+    public void onGameStart(Player startingPlayer) {
     }
 }

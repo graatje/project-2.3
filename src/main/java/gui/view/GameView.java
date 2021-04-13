@@ -1,47 +1,109 @@
 package gui.view;
 
+import framework.BoardState;
+import framework.ConfigData;
+import framework.ConnectedGameManager;
+import framework.GameType;
 import framework.board.BoardPiece;
+import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.scene.Parent;
+import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.text.Text;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameView extends View<GenericGameModel> {
 
-    private Pane gameBoardPane;
+    private final Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
+    private final Text waitingText;
 
-    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight, List<URL> playerIconFileURLs) {
+    // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
+    public static final double MARGIN = 0.2;
+
+    public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
-        gameBoardPane = (Pane) lookup("#Board");
+        gameBoardPane = (Pane) lookup("#board");
+        this.waitingText = new Text("Please wait for the game to start.");
+    }
+
+    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
     @Override
     public void update(GenericGameModel model) {
+        showDialog(model.getDialogMessage(), "Info");
+        showInfoText(model.getInfoMessage(), model.getLabelNode());
+
+        // If online match is waiting, show "waiting for game"
+        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getGameType().isLocal) {
+            setBackgroundColorBoard(null);
+            clearBoard();
+            gameBoardPane.getChildren().add(waitingText);
+        } else {
+            drawBoard(model);
+        }
+    }
+
+    private void drawBoard(GenericGameModel model) {
+        setBackgroundColorBoard(model.getBackgroundColor());
+        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+
+        // Player stats
+        showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
+
+        // Draw board, pieces and hints
         int gridSize = model.getBoard().getWidth();
-        drawBoard(gridSize);
+        drawLines(gridSize);
 
         for(int x=0;x<gridSize;x++) {
             for(int y=0;y<gridSize;y++) {
                 drawPiece(model.getBoard().getBoardPiece(x, y), gridSize);
             }
         }
+
+        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getGameType().toString().toLowerCase().contains("othello")) {
+            drawValidMoves(model.getBoard().getValidMoves(), gridSize);
+        }
     }
 
-    public void drawBoard(int gridSize) {
+    private void drawValidMoves(List<BoardPiece> validMoves, int gridSize) {
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
+
+        for(BoardPiece piece : validMoves) {
+            double boardX = piece.getX()*cellSize+cellSize/2;
+            double boardY = piece.getY()*cellSize+cellSize/2;
+
+            Circle boardHighlight = new Circle(boardX, boardY, cellSize/2*(1-MARGIN));
+
+            boardHighlight.setFill(null);
+            boardHighlight.setStroke(Color.rgb(200, 200, 200, 0.5));
+            boardHighlight.setStrokeWidth(1.0);
+
+            gameBoardPane.getChildren().add(boardHighlight);
+        }
+    }
+
+    public void drawLines(int gridSize) {
         // Clear board
-        gameBoardPane.getChildren().clear();
+        clearBoard();
 
         double boardSize = gameBoardPane.getPrefWidth();
-        System.out.println("DEBUG: board size: "+boardSize);
 
         // 3 gridboxes => 2 lines 1|2|3
         for(int i=0;i<gridSize-1;i++) {
@@ -64,6 +126,10 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
+    public void clearBoard() {
+        gameBoardPane.getChildren().clear();
+    }
+
     public void drawPiece(BoardPiece piece, int gridSize) {
         if(!piece.hasOwner()) {
             return;
@@ -71,7 +137,7 @@ public class GameView extends View<GenericGameModel> {
 
         int x = piece.getX();
         int y = piece.getY();
-        double cellSize = (double) gameBoardPane.getWidth()/gridSize;
+        double cellSize = gameBoardPane.getPrefWidth()/gridSize;
 
         // Hoop dat er geen outofbounds komt! lol
         URL pngURL = playerIconFileURLs.get(piece.getOwner().getID());
@@ -79,7 +145,7 @@ public class GameView extends View<GenericGameModel> {
         // Create image
         Image pieceImage;
         try {
-            pieceImage = new Image(pngURL.openStream(), cellSize, cellSize, true, true);
+            pieceImage = new Image(pngURL.openStream(), cellSize*(1-MARGIN), cellSize*(1-MARGIN), true, true);
         } catch(IOException e) {
             System.err.println("Image does not exist?");
             e.printStackTrace();
@@ -88,8 +154,28 @@ public class GameView extends View<GenericGameModel> {
 
         // Draw
         ImageView imageView = new ImageView(pieceImage);
-        imageView.setX(x*cellSize);
-        imageView.setY(y*cellSize);
+        imageView.setX(cellSize*(x+MARGIN/2));
+        imageView.setY(cellSize*(y+MARGIN/2));
         gameBoardPane.getChildren().add(imageView);
+    }
+
+    public void showPlayerInformation(ArrayList<String> playerInformationList){
+        HBox playerInformationHBox = (HBox) lookup("#playerInformationHBox");
+
+        playerInformationHBox.getChildren().clear();
+
+        for (String playerInformation : playerInformationList){
+            Label playerInformationLabel = new Label(playerInformation);
+            playerInformationLabel.setId("playerInformationLabel");
+            playerInformationHBox.getChildren().add(playerInformationLabel);
+        }
+    }
+
+    public void setBackgroundColorBoard(ArrayList<Integer> colors){
+        if (colors == null){
+            gameBoardPane.setBackground(new Background(new BackgroundFill(null, null, null)));
+        }else {
+            gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(colors.get(0), colors.get(1), colors.get(2)), null, null)));
+        }
     }
 }

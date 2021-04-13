@@ -17,4 +17,9 @@ public interface BoardObserver {
      * A handler for when a player wins
      */
     void onPlayerWon(Player who);
+
+    /**
+     * A handler for when the game starts
+     */
+    void onGameStart(Player startingPlayer);
 }
