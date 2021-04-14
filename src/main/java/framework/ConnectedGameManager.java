@@ -42,7 +42,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         updateSelfPlayerSupplier(selfPlayerSupplier);
 
         createClient(serverIP, serverPort);
-        login();
         client.sendGetPlayerlistMessage();
 
         client.getCommunicationHandler().setGameManagerCommunicationListener(this);
