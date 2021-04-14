@@ -52,6 +52,15 @@ public class BoardPiece implements Cloneable {
         return (BoardPiece) super.clone();
     }
 
+    @Override
+    public String toString() {
+        return "BoardPiece{" +
+                "x=" + x +
+                ", y=" + y +
+                ", owner=" + owner +
+                '}';
+    }
+
     /**
      * @return The X-coordinate of this piece.
      */

@@ -2,8 +2,8 @@ package gui.view;
 
 import framework.BoardState;
 import framework.ConfigData;
+import framework.board.Board;
 import framework.board.BoardPiece;
-import framework.player.LocalPlayer;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.scene.Parent;
@@ -61,25 +61,24 @@ public class GameView extends View<GenericGameModel> {
     private void drawBoard(GenericGameModel model) {
         setBackgroundColorBoard(ConfigData.getInstance().getCurrentGame().getBoardBackgroundColor());
         setBoardPieceIcons(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());
+        Board board = model.getBoard();
+
 
         // Player stats
-        showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));
+        showPlayerInformation(model.getPlayerInfo(board.piecesCount()));
 
         // Draw board, pieces and hints
-        int gridSize = model.getBoard().getWidth();
+        int gridSize = board.getWidth();
         drawLines(gridSize);
 
         for(int x=0;x<gridSize;x++) {
             for(int y=0;y<gridSize;y++) {
-                drawPiece(model.getBoard().getBoardPiece(x, y), gridSize);
+                drawPiece(board.getBoardPiece(x, y), gridSize);
             }
         }
 
-        // Voorbeelden
-        // AI tegen online moet weergeven in Othello
-        // Player vs AI moet weergeven in Othello
-        if(model.getBoard().getCurrentPlayer() instanceof LocalPlayer && ConfigData.getInstance().getCurrentGame().isOnline()) {
-            drawValidMoves(model.getBoard().getValidMoves(), gridSize);
+        if(board.isShowValidMoves() && board.getCurrentPlayer().isShowValidMoves()) {
+            drawValidMoves(board.getValidMoves(), gridSize);
         }
     }
 

@@ -30,6 +30,19 @@ public abstract class Player {
         this(board, "UNNAMED");
     }
 
+    @Override
+    public String toString() {
+        return "Player{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
+    /**
+     * @return Whether or not to show valid moves on the screen.
+     */
+    public abstract boolean isShowValidMoves();
+
     /**
      * getter for the board
      *

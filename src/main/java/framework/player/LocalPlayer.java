@@ -35,4 +35,9 @@ public class LocalPlayer extends Player implements MoveRequestable {
             board.makeMove(this, null);
         }
     }
+
+    @Override
+    public boolean isShowValidMoves() {
+        return true;
+    }
 }

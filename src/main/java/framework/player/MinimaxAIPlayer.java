@@ -1,7 +1,9 @@
 package framework.player;
 
 import framework.ConfigData;
+import framework.ConnectedGameManager;
 import framework.board.Board;
+import framework.board.BoardObserver;
 import framework.board.BoardPiece;
 
 import java.util.HashSet;
@@ -11,7 +13,7 @@ import java.util.UUID;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public abstract class MinimaxAIPlayer extends AIPlayer {
+public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver {
     private AIDifficulty difficulty;
 
     private final Object minimaxSessionLock = new Object();
@@ -29,17 +31,24 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
         super(board, name);
 
         this.difficulty = difficulty;
+        board.registerObserver(this);
     }
 
     public MinimaxAIPlayer(Board board, AIDifficulty difficulty) {
         super(board);
 
         this.difficulty = difficulty;
+        board.registerObserver(this);
     }
 
     protected abstract float evaluateBoard(Board board, int treeDepth);
 
     public abstract int getStartDepth();
+
+    @Override
+    public boolean isShowValidMoves() {
+        return (board.getGameManager() instanceof ConnectedGameManager);
+    }
 
     @Override
     public void requestMove() {
@@ -348,6 +357,23 @@ public abstract class MinimaxAIPlayer extends AIPlayer {
     public void setDifficulty(AIDifficulty difficulty) {
         this.difficulty = difficulty;
     }
+
+    @Override
+    public void onPlayerMoved(Player who, BoardPiece where) {}
+
+    @Override
+    public void onPlayerMoveFinalized(Player previous, Player current) {}
+
+    @Override
+    public void onPlayerWon(Player who) {
+        synchronized (minimaxSessionLock) {
+            minimaxSession = null;
+        }
+    }
+
+    @Override
+    public void onGameStart(Player startingPlayer) {}
+
 
     public enum AIDifficulty {
         EASY,

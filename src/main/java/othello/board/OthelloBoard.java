@@ -26,6 +26,11 @@ public class OthelloBoard extends Board {
         return 2;
     }
 
+    @Override
+    public boolean isShowValidMoves() {
+        return true;
+    }
+
     /**
      * get a list of valid moves.
      *

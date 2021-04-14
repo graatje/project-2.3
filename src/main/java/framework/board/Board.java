@@ -50,6 +50,11 @@ public abstract class Board implements Cloneable {
     public abstract int getMaxPlayers();
 
     /**
+     * @return Whether this board type should show valid moves
+     */
+    public abstract boolean isShowValidMoves();
+
+    /**
      * An implementation-specific getter for calculating all valid moves.
      *
      * @return All valid moves.
@@ -344,7 +349,6 @@ public abstract class Board implements Cloneable {
      */
     public Player getCurrentPlayer() {
         if (currentPlayerId < 0 || currentPlayerId >= gameManager.getNumPlayers()) {
-            System.err.println("Returning NULL for getCurrentPlayer! ID was: " + currentPlayerId);
             return null;
         }
 
