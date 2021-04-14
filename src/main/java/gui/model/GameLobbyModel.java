@@ -91,7 +91,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onPostGameStart() {
-        Platform.runLater(() -> mainWindow.switchView(MainWindow.viewEnum.GAME));
+        Platform.runLater(() -> mainWindow.switchView(MainWindow.ViewEnum.GAME));
     }
 
     /**

@@ -20,7 +20,7 @@ public class GameLobbyController extends Controller implements Initializable {
 
     public void pressBackToMainMenu(ActionEvent event) {
         ((GameLobbyModel)model).logout();
-        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+        mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
     public void pressRefresh(ActionEvent event) {
@@ -36,7 +36,7 @@ public class GameLobbyController extends Controller implements Initializable {
      */
     public void pressSubscribe() {
         ((GameLobbyModel)model).prepareOnlineGame();
-        mainWindow.switchView(MainWindow.viewEnum.GAME);
+        mainWindow.switchView(MainWindow.ViewEnum.GAME);
     }
 
     @Override

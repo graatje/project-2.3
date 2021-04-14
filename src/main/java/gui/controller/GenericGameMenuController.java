@@ -2,7 +2,6 @@ package gui.controller;
 
 import framework.ConfigData;
 import gui.MainWindow;
-import gui.model.GameLobbyModel;
 import gui.model.GenericGameMenuModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,7 +38,7 @@ public class GenericGameMenuController extends Controller implements Initializab
     @FXML
     public void pressPlayAgainstComputer(ActionEvent event) {
         ((GenericGameMenuModel) model).prepareOfflineGame();
-        mainWindow.switchView(MainWindow.viewEnum.GAME);
+        mainWindow.switchView(MainWindow.ViewEnum.GAME);
     }
 
     /**
@@ -48,12 +47,12 @@ public class GenericGameMenuController extends Controller implements Initializab
      */
     public void pressGoToLobby(ActionEvent event) {
         ((GenericGameMenuModel) model).prepareLobby();
-        mainWindow.switchView(MainWindow.viewEnum.GAME_LOBBY);
+        mainWindow.switchView(MainWindow.ViewEnum.GAME_LOBBY);
     }
 
     @FXML
     public void pressBackToMainMenu(ActionEvent event) {
-        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+        mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
     @FXML

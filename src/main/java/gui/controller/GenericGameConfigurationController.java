@@ -24,7 +24,7 @@ public class GenericGameConfigurationController extends Controller implements In
     @FXML private TextField thinkingTimeField;
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
-        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
+        mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
     ObservableList<String> options =
