@@ -17,13 +17,15 @@ import java.util.function.Function;
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
     private Client client;
 
-    private final HashMap<Integer, Match> activeMatches = new HashMap<>();
-    private final ArrayList<String> lobbyPlayers = new ArrayList<>();
+    private final List<Match> activeMatches = new ArrayList<>();
+    private final List<String> lobbyPlayers = new ArrayList<>();
 
     private boolean loggedIn = false;
 
     private ServerPlayer serverPlayerOpponent;
     private String selfName = "unknown-" + (int) (Math.random() * 100);
+
+    private final Set<ConnectedGameManagerObserver> observers = new HashSet<>();
 
     /**
      * constructor, initializes connection, board and players.
@@ -90,8 +92,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.close();
     }
 
-    public Map<Integer, Match> getActiveMatches() {
-        return Collections.unmodifiableMap(activeMatches);
+    public List<Match> getActiveMatches() {
+        return Collections.unmodifiableList(activeMatches);
     }
 
     public List<String> getLobbyPlayers() {
@@ -110,8 +112,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.sendChallengeMessage(playerToChallenge, gameType);
     }
 
-    public void acceptChallenge(int challengeNr) {
-        client.acceptChallenge(challengeNr);
+    public void acceptChallenge(Match match) {
+        client.acceptChallenge(match.getChallengeNr());
     }
 
     @Override
@@ -136,10 +138,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
-    public void getMatchRequest(String opponent, String gametype, String challengeNR) {
-        Match match = new Match(opponent, gametype, challengeNR);
+    public void getMatchRequest(String opponent, String gametype, int challengeNr) {
+        Match match = new Match(opponent, gametype, challengeNr);
+        activeMatches.add(match);
 
-        activeMatches.put(match.getChallengeNR(), match);
+        observers.forEach(o -> o.onChallengeReceive(match));
     }
 
     @Override
@@ -168,14 +171,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
-    public void matchCancelled(String challengeNR) {
-        activeMatches.remove(Integer.parseInt(challengeNR));
+    public void matchCancelled(int challengeNr) {
+        activeMatches.remove(challengeNr);
     }
 
     @Override
     public void updateLobbyPlayers(List<String> lobbyPlayers) {
         this.lobbyPlayers.clear();
         this.lobbyPlayers.addAll(lobbyPlayers);
+
+        observers.forEach(o -> o.onPlayerListReceive(Collections.unmodifiableList(lobbyPlayers)));
     }
 
     @Override
@@ -199,6 +204,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
+    public void onServerError(String errorMessage) {
+        observers.forEach(o -> o.onServerError(errorMessage));
+    }
+
+    @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if (who != serverPlayerOpponent) {
             int move = where.getX() + board.getWidth() * where.getY();
@@ -216,5 +226,13 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onGameStart(Player startingPlayer) {
+    }
+
+    public void registerObserver(ConnectedGameManagerObserver observer) {
+        observers.add(observer);
+    }
+
+    public void unregisterObserver(ConnectedGameManagerObserver observer) {
+        observers.remove(observer);
     }
 }

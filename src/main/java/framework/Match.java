@@ -5,16 +5,9 @@ public class Match {
     private final String gameType;
     private final int challengeNr;
 
-    public Match(String opponentName, String gameType, String challengeNrStr) {
+    public Match(String opponentName, String gameType, int challengeNr) {
         this.opponentName = opponentName;
         this.gameType = gameType;
-
-        int challengeNr = -1;
-        try {
-            challengeNr = Integer.parseInt(challengeNrStr);
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        }
         this.challengeNr = challengeNr;
     }
 
@@ -26,7 +19,7 @@ public class Match {
         return gameType;
     }
 
-    public int getChallengeNR() {
+    public int getChallengeNr() {
         return challengeNr;
     }
 }

@@ -72,19 +72,21 @@ public class CommunicationHandler {
                         serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
                         break;
                     case "CHALLENGE":
+                        int challengeNumber = Integer.parseInt(json.getString("CHALLENGENUMBER"));
+
                         if (input.contains("CANCELLED")) {
-                            gameManagerCommunicationListener.matchCancelled(json.getString("CHALLENGENUMBER"));
+                            gameManagerCommunicationListener.matchCancelled(challengeNumber);
                         }
                         //There is new information regarding a challenge!
-                        gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), json.getString("CHALLENGENUMBER"));
+                        gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), challengeNumber);
                         break;
                     case "WIN":
                     case "DRAW":
                     case "LOSS":
                         gameManagerCommunicationListener.endMatch(split[2]);
+                        break;
                 }
                 break;
-
             case "PLAYERLIST":
                 JSONArray playerList = extractJsonPlayerlist(input);
 
@@ -95,9 +97,11 @@ public class CommunicationHandler {
 
                 gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
                 break;
-
             case "ERR":
-                System.out.println(input);
+                String message = input.substring("ERR ".length());
+                System.err.println("Received error from server: " + message);
+
+                gameManagerCommunicationListener.onServerError(message);
                 break;
         }
     }
