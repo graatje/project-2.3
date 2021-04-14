@@ -100,7 +100,6 @@ public class ConfigData {
         return playerName;
     }
 
-    // TODO: moeten geldige usernames (leeg, gekke tekens, lengte) hier of in framework getest worden?
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
