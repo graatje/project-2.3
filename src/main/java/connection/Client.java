@@ -1,7 +1,5 @@
 package connection;
 
-import org.json.JSONException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -11,10 +9,9 @@ import java.net.Socket;
 public class Client extends Thread {
     private static final long KEEP_ALIVE_INTERVAL = 30 * 1000;
 
-    private Socket clientSocket;
+    private final Socket clientSocket;
     private BufferedReader inputStream;
-    private int availableData;
-    private CommunicationHandler com;
+    private final CommunicationHandler communicationHandler;
     private PrintWriter outputStream;
 
     private boolean running = true;
@@ -22,13 +19,13 @@ public class Client extends Thread {
 
     /**
      * @param clientSocket The clientsocket
-     * @param com          Communication handler which handles the communicationprotocol.
+     * @param communicationHandler          Communication handler which handles the communicationprotocol.
      */
-    public Client(Socket clientSocket, CommunicationHandler com) {
+    public Client(Socket clientSocket, CommunicationHandler communicationHandler) {
         this.clientSocket = clientSocket;
-        this.com = com;
+        this.communicationHandler = communicationHandler;
 
-        com.setClient(this);
+        communicationHandler.setClient(this);
 
         try {
             this.inputStream = new BufferedReader(new InputStreamReader(this.clientSocket.getInputStream()));
@@ -123,7 +120,7 @@ public class Client extends Thread {
                 //There was input, handle it
                 if (!input.equals("")) {
                     try {
-                        com.handleServerInput(input);
+                        communicationHandler.handleServerInput(input);
                     } catch (Exception e) {
                         System.err.println("Could not handle server input '" + input + "': " + e.toString());
                     }
@@ -138,7 +135,7 @@ public class Client extends Thread {
      * Cleans up the client before closing down the thread.
      */
     public void close() {
-        com.sendLogoutMessage();
+        communicationHandler.sendLogoutMessage();
         running = false;
 
         try {
@@ -147,42 +144,42 @@ public class Client extends Thread {
     }
 
     public CommunicationHandler getCommunicationHandler() {
-        return com;
+        return communicationHandler;
     }
 
     public void sendForfeitMessage() {
-        com.sendForfeitMessage();
+        communicationHandler.sendForfeitMessage();
     }
 
     public void sendAcceptChallengeMessage(String challengeNumber) {
-        com.sendAcceptChallengeMessage(challengeNumber);
+        communicationHandler.sendAcceptChallengeMessage(challengeNumber);
     }
 
     public void sendMoveMessage(int move) {
-        com.sendMoveMessage(move);
+        communicationHandler.sendMoveMessage(move);
     }
 
     public void sendSubscribeMessage(String gameType) {
-        com.sendSubscribeMessage(gameType);
+        communicationHandler.sendSubscribeMessage(gameType);
     }
 
     public void sendLogoutMessage() {
-        com.sendLogoutMessage();
+        communicationHandler.sendLogoutMessage();
     }
 
     public void sendLoginMessage(String playerName) {
-        com.sendLoginMessage(playerName);
+        communicationHandler.sendLoginMessage(playerName);
     }
 
     public void sendChallengeMessage(String playerToChallenge, String gameType) {
-        com.sendChallengeMessage(playerToChallenge, gameType);
+        communicationHandler.sendChallengeMessage(playerToChallenge, gameType);
     }
 
     public void sendGetPlayerlistMessage() {
-        com.sendGetPlayerlistMessage();
+        communicationHandler.sendGetPlayerlistMessage();
     }
 
     public void acceptChallenge(int challengeNr) {
-        com.sendAcceptChallengeMessage("" + challengeNr);
+        communicationHandler.sendAcceptChallengeMessage("" + challengeNr);
     }
 }
