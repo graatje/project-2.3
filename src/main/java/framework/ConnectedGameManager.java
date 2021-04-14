@@ -182,6 +182,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     public void updateLobbyPlayers(List<String> lobbyPlayers) {
         this.lobbyPlayers.clear();
         this.lobbyPlayers.addAll(lobbyPlayers);
+        this.lobbyPlayers.remove(selfName);
 
         observers.forEach(ConnectedGameManagerObserver::onPlayerListReceive);
     }
