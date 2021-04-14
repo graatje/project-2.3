@@ -19,6 +19,7 @@ public class GameLobbyController extends Controller {
     private CheckBox isAIBox;
 
     public void pressBackToMainMenu(ActionEvent event) {
+        ((GameLobbyModel)model).logout();
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
     }
 

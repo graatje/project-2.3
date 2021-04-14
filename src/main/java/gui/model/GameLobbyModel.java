@@ -44,9 +44,13 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
         cgm.requestStart();
     }
 
+    public void logout() {
+        cgm.destroy();
+    }
 
     @Override
     public void onServerError(String errorMessage) {
+        System.err.println("ERror! "+errorMessage);
         //TODO: implement met platform.runlater
     }
 
