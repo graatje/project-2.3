@@ -5,6 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.layout.Region;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import project23.framework.ChallengeRequest;
 import project23.gui.controller.Controller;
@@ -49,6 +50,7 @@ public class GameLobbyView extends View<GameLobbyModel> {
         dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/CSS/dialogStyle.css").toExternalForm());
         dialog.setTitle("A new foe has appeared!");
+        dialog.initModality(Modality.NONE);
         Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
         dialogStage.getIcons().add(new Image(getClass().getResource("/images/icon.png").toExternalForm()));
 
