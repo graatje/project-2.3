@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * This class manages a game. Including connection, board and players.
  */
 public class GameManager {
-    protected final List<Function<Board, ? extends Player>> playerSuppliers = new ArrayList<>();
+    protected final List<BiFunction<Board, Integer, ? extends Player>> playerSuppliers = new ArrayList<>();
 
     protected Board board;
     protected final List<Player> players = new ArrayList<>();
@@ -25,7 +26,7 @@ public class GameManager {
      *
      * @param boardSupplier The board supplier
      */
-    public GameManager(Function<GameManager, ? extends Board> boardSupplier, Function<Board, ? extends Player>... playerSuppliers) {
+    public GameManager(Function<GameManager, ? extends Board> boardSupplier, BiFunction<Board, Integer, ? extends Player>... playerSuppliers) {
         this.board = boardSupplier.apply(this);
         this.playerSuppliers.addAll(Arrays.asList(playerSuppliers));
     }
@@ -39,8 +40,7 @@ public class GameManager {
 
         players.clear();
         for (int i = 0; i < playerSuppliers.size(); i++) {
-            Player player = playerSuppliers.get(i).apply(board);
-            player.setID(i); // TODO: Pass the ID through the constructor, instead of setting it later!
+            Player player = playerSuppliers.get(i).apply(board, i);
             players.add(player);
         }
 

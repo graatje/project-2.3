@@ -7,8 +7,8 @@ import framework.board.Board;
  */
 public abstract class Player {
     protected final Board board;
-    private int id;
-    private String name;
+    protected final int id;
+    protected String name;
 
     /**
      * constructor
@@ -16,8 +16,9 @@ public abstract class Player {
      * @param board the Board.
      * @param name  the player-name.
      */
-    public Player(Board board, String name) {
+    public Player(Board board, int id, String name) {
         this.name = name;
+        this.id = id;
         this.board = board;
     }
 
@@ -26,8 +27,8 @@ public abstract class Player {
      *
      * @param board the Board.
      */
-    public Player(Board board) {
-        this(board, "UNNAMED");
+    public Player(Board board, int id) {
+        this(board, id, "UNNAMED");
     }
 
     @Override
@@ -57,13 +58,6 @@ public abstract class Player {
      */
     public int getID() {
         return id;
-    }
-
-    /**
-     * @param id The new player ID
-     */
-    public void setID(int id) {
-        this.id = id;
     }
 
     /**

@@ -12,6 +12,7 @@ import othello.player.OthelloMinimaxAIPlayer;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class OthelloGame extends Game {
@@ -22,8 +23,8 @@ public class OthelloGame extends Game {
     private final String gameName = "Reversi";
 
     @Override
-    public Function<Board, Player> createAIPlayerFactory() {
-        return (b) -> new OthelloMinimaxAIPlayer(b, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
+    public BiFunction<Board, Integer, Player> createAIPlayerFactory() {
+        return (board, id) -> new OthelloMinimaxAIPlayer(board, id, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
     }
 
     @Override

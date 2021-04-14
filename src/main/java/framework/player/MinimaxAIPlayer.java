@@ -27,15 +27,15 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
     private final AtomicInteger highestDepth = new AtomicInteger();
     private final Set<UUID> runningThreads = new HashSet<>();
 
-    public MinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
-        super(board, name);
+    public MinimaxAIPlayer(Board board, int id, String name, AIDifficulty difficulty) {
+        super(board, id, name);
 
         this.difficulty = difficulty;
         board.registerObserver(this);
     }
 
-    public MinimaxAIPlayer(Board board, AIDifficulty difficulty) {
-        super(board);
+    public MinimaxAIPlayer(Board board, int id, AIDifficulty difficulty) {
+        super(board, id);
 
         this.difficulty = difficulty;
         board.registerObserver(this);

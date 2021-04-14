@@ -12,6 +12,7 @@ import framework.player.ServerPlayer;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.*;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
@@ -36,7 +37,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
      * @param selfPlayerSupplier
      * @throws IOException
      */
-    public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, Function<Board, Player> selfPlayerSupplier) throws IOException {
+    public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, BiFunction<Board, Integer, Player> selfPlayerSupplier) throws IOException {
         super(boardSupplier);
 
         updateSelfPlayerSupplier(selfPlayerSupplier);
@@ -48,7 +49,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         board.registerObserver(this);
     }
 
-    public void updateSelfPlayerSupplier(Function<Board, Player> selfPlayerSupplier) {
+    public void updateSelfPlayerSupplier(BiFunction<Board, Integer, Player> selfPlayerSupplier) {
         playerSuppliers.clear();
         playerSuppliers.add(ServerPlayer::new);
         playerSuppliers.add(selfPlayerSupplier);

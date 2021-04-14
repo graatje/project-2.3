@@ -7,12 +7,12 @@ import framework.board.Board;
  * This class is a subclass of Player and stores a ServerPlayer.
  */
 public class ServerPlayer extends Player implements ServerPlayerCommunicationListener {
-    public ServerPlayer(Board board, String name) {
-        super(board, name);
+    public ServerPlayer(Board board, int id, String name) {
+        super(board, id, name);
     }
 
-    public ServerPlayer(Board board) {
-        super(board);
+    public ServerPlayer(Board board, int id) {
+        super(board, id);
     }
 
     @Override

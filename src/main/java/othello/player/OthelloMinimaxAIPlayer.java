@@ -34,12 +34,12 @@ public class OthelloMinimaxAIPlayer extends MinimaxAIPlayer {
 //            { 4, -3,  2,  2,  2,  2, -3,  4}
 //    };
 
-    public OthelloMinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
-        super(board, name, difficulty);
+    public OthelloMinimaxAIPlayer(Board board, int id, String name, AIDifficulty difficulty) {
+        super(board, id, name, difficulty);
     }
 
-    public OthelloMinimaxAIPlayer(Board board, AIDifficulty difficulty) {
-        super(board, difficulty);
+    public OthelloMinimaxAIPlayer(Board board, int id, AIDifficulty difficulty) {
+        super(board, id, difficulty);
     }
 
     @Override

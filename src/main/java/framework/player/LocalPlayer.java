@@ -9,12 +9,12 @@ import java.util.List;
  * this class is a subclass of Player and stores a local player.
  */
 public class LocalPlayer extends Player implements MoveRequestable {
-    public LocalPlayer(Board board, String name) {
-        super(board, name);
+    public LocalPlayer(Board board, int id, String name) {
+        super(board, id, name);
     }
 
-    public LocalPlayer(Board board) {
-        super(board);
+    public LocalPlayer(Board board, int id) {
+        super(board, id);
     }
 
     /**

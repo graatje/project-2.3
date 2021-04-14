@@ -10,24 +10,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
  * Returns relevant Board-objects, Player-objects (and more?)
  */
 public abstract class Game {
-
-    private List<URL> boardPieceIcons;
-    private boolean online = false;
-
     public static final String AI_NAME  = "Computer";
 
-    public abstract Function<Board, Player> createAIPlayerFactory();
-    public Function<Board, Player> createLocalPlayerFactory() {
-        return (board -> new LocalPlayer(board, ConfigData.getInstance().getPlayerName()));
-    }
-    public abstract Function<GameManager, Board> createBoardFactory();
+    private boolean online = false;
     private String helpText;
+
+    public abstract Function<GameManager, Board> createBoardFactory();
+
+    public abstract BiFunction<Board, Integer, Player> createAIPlayerFactory();
+
+    public BiFunction<Board, Integer, Player> createLocalPlayerFactory() {
+        return ((board, id) -> new LocalPlayer(board, id, ConfigData.getInstance().getPlayerName()));
+    }
 
     /**
      * creates a GameManager.

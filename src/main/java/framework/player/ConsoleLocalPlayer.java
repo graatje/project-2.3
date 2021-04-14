@@ -12,12 +12,12 @@ import java.util.List;
  * A test class (intended to use in development) which implements a {@link LocalPlayer} through the command line.
  */
 public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
-    public ConsoleLocalPlayer(Board board, String name) {
-        super(board, name);
+    public ConsoleLocalPlayer(Board board, int id, String name) {
+        super(board, id, name);
     }
 
-    public ConsoleLocalPlayer(Board board) {
-        super(board);
+    public ConsoleLocalPlayer(Board board, int id) {
+        super(board, id);
     }
 
     @Override

@@ -13,6 +13,7 @@ import ttt.player.TTTMinimaxAIPlayer;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 public class TTTGame extends Game {
@@ -23,8 +24,8 @@ public class TTTGame extends Game {
     private final String gameName = "Tic-tac-toe";
 
     @Override
-    public Function<Board, Player> createAIPlayerFactory() {
-        return (b) -> new TTTMinimaxAIPlayer(b, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
+    public BiFunction<Board, Integer, Player> createAIPlayerFactory() {
+        return (board, id) -> new TTTMinimaxAIPlayer(board, id, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
     }
 
     @Override

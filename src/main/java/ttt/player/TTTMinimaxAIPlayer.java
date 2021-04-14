@@ -5,12 +5,12 @@ import framework.player.MinimaxAIPlayer;
 import framework.player.Player;
 
 public class TTTMinimaxAIPlayer extends MinimaxAIPlayer {
-    public TTTMinimaxAIPlayer(Board board, String name, AIDifficulty difficulty) {
-        super(board, name, difficulty);
+    public TTTMinimaxAIPlayer(Board board, int id, String name, AIDifficulty difficulty) {
+        super(board, id, name, difficulty);
     }
 
-    public TTTMinimaxAIPlayer(Board board, AIDifficulty difficulty) {
-        super(board, difficulty);
+    public TTTMinimaxAIPlayer(Board board, int id, AIDifficulty difficulty) {
+        super(board, id, difficulty);
     }
 
     @Override
