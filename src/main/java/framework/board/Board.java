@@ -431,6 +431,8 @@ public abstract class Board implements Cloneable {
 
     public Map<Player, Integer> piecesCount() {
         Map<Player, Integer> map = new HashMap<>();
+        gameManager.getPlayers().forEach(player -> map.put(player, 0));
+
         for (int y = 0; y < height; y++) {
             for (int x = 0; x < width; x++) {
                 BoardPiece tempBoardPiece = getBoardPiece(x, y);
