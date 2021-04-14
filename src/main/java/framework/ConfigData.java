@@ -51,8 +51,7 @@ public class ConfigData {
 
     public Game getCurrentGame() {
         if(!games.containsKey(currentGameName)) {
-            //TODO: runtime exception? Eigen exception maken? idk
-            throw new IllegalArgumentException("Game has not been set in the games list");
+            throw new IllegalStateException("Game has not been set in the games list");
         }
         return games.get(currentGameName);
     }
