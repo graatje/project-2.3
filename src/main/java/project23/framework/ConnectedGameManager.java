@@ -49,6 +49,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         board.registerObserver(this);
     }
 
+    /**
+     * Sets a new selfPlayerSupplier
+     */
     public void updateSelfPlayerSupplier(BiFunction<Board, Integer, Player> selfPlayerSupplier) {
         playerSuppliers.clear();
         playerSuppliers.add(ServerPlayer::new);
@@ -65,6 +68,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.start();
     }
 
+    /**
+     * Log in to the server
+     */
     public void login() {
         // We only have to log-in once!
         if (loggedIn) {

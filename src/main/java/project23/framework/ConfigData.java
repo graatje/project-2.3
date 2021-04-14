@@ -31,6 +31,9 @@ public class ConfigData {
         return instance;
     }
 
+    /**
+     * Constructor, sets default values
+     */
     private ConfigData() {
         // Config
         serverIP = "145.33.225.170";

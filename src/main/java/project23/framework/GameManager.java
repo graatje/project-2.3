@@ -31,6 +31,9 @@ public class GameManager {
         this.playerSuppliers.addAll(Arrays.asList(playerSuppliers));
     }
 
+    /**
+     * Initializes the GameManager
+     */
     public void initialize() {
         if (isInitialized) {
             throw new IllegalStateException("The GameManager is already initialized! Please reset it first.");
@@ -120,6 +123,11 @@ public class GameManager {
         return null;
     }
 
+    /**
+     * Get the other player
+     * @param notThis not this player, but the other one
+     * @return the other one
+     */
     public Player getOtherPlayer(Player notThis) {
         if (players.size() > 2) {
             throw new IllegalStateException("There are more than 2 players, please use GameManager#getOtherPlayers instead!");
@@ -141,6 +149,9 @@ public class GameManager {
         return result;
     }
 
+    /**
+     * Resets the board and players
+     */
     public void reset() {
         board.reset();
         players.clear();

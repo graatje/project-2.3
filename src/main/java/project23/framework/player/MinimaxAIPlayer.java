@@ -41,6 +41,12 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         board.registerObserver(this);
     }
 
+    /**
+     * evaluates the board
+     * @param board the current board situation
+     * @param treeDepth the current depth of the minimax tree
+     * @return a positive(we are winning) or negative(we are losing) float value
+     */
     protected abstract float evaluateBoard(Board board, int treeDepth);
 
     public abstract int getStartDepth();
@@ -50,6 +56,9 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         return (board.getGameManager() instanceof ConnectedGameManager);
     }
 
+    /**
+     * Request a move from the AI player
+     */
     @Override
     public void requestMove() {
         List<BoardPiece> validMoves = board.getValidMoves(this);
@@ -80,6 +89,9 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         }
     }
 
+    /**
+     * Executes the move to the board
+     */
     public void executeRandomMove() {
         List<BoardPiece> validMoves = board.getValidMoves(this);
 
@@ -126,6 +138,11 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         watchdogThread.start();
     }
 
+    /**
+     * Picks the best move out of the minimax tree.
+     * Chooses a random valid move if minimax could not come up with a best move.
+     * @param session current threading session
+     */
     private void onMinimaxDone(UUID session) {
         synchronized (minimaxSessionLock) {
             if (minimaxSession != session) {
@@ -193,6 +210,11 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         board.makeMove(this, bestMove);
     }
 
+    /**
+     * Executes minimax algorithm on async threads
+     * @param session current thread session
+     * @param depth minimax tree depth
+     */
     private void performAsyncMinimax(UUID session, int depth) {
         synchronized (minimaxSessionLock) {
             if (minimaxSession != session) {
@@ -375,6 +397,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
     @Override
     public void onGameStart(Player startingPlayer) {
+        //Not needed in this class
     }
 
 
