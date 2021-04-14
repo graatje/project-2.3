@@ -92,7 +92,7 @@ public class CommunicationHandler {
                 break;
             case "ERR":
                 String message = input.substring("ERR ".length());
-                System.err.println("Received error from server: " + message);
+                Logger.error("Received error from server: " + message);
 
                 gameManagerCommunicationListener.onServerError(message);
                 break;

@@ -167,12 +167,12 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         List<BoardPiece> validMoves = board.getValidMoves(this);
         if (!validMoves.isEmpty()) {
             if (bestMove == null) {
-                System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
+                Logger.error("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
                 bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
 
             if (!validMoves.contains(bestMove)) {
-                System.err.println("Minimax came up with a best move, but it isn't a valid move! Sending a random move..");
+                Logger.error("Minimax came up with a best move, but it isn't a valid move! Sending a random move..");
                 bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
         }

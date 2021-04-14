@@ -9,6 +9,7 @@ import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
 import project23.framework.player.LocalPlayer;
 import project23.framework.player.Player;
+import project23.util.Logger;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -73,7 +74,7 @@ public class GameModel extends Model implements BoardObserver {
         //TODO: show info message on skipping
         if (who.isShowValidMoves() && where == null) {
             setInfoMessage("Skipped a turn, no available moves");
-            System.err.println("DEBUG: skipping..! (hoera, dit werkt?)");
+            Logger.debug("skipping..! (hoera, dit werkt?)");
             updateView();
         }
     }

@@ -252,7 +252,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
                 board.forceWin(null);
                 break;
             default:
-                System.err.println("Received match end result '" + result + "' from the server, which is not a valid result!");
+                Logger.error("Received match end result '" + result + "' from the server, which is not a valid result!");
                 break;
         }
     }

@@ -19,6 +19,7 @@ import project23.framework.board.BoardPiece;
 import project23.framework.player.Player;
 import project23.gui.controller.Controller;
 import project23.gui.model.GameModel;
+import project23.util.Logger;
 
 import java.io.IOException;
 import java.net.URL;
@@ -159,7 +160,7 @@ public class GameView extends View<GameModel> {
         try {
             pieceImage = new Image(pngURL.openStream(), cellSize * (1 - MARGIN), cellSize * (1 - MARGIN), true, true);
         } catch (IOException e) {
-            System.err.println("Image does not exist?");
+            Logger.error("Image does not exist?");
             e.printStackTrace();
             return; // stop, image not found
         }

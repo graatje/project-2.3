@@ -138,7 +138,7 @@ public class Client extends Thread {
                     try {
                         communicationHandler.handleServerInput(input);
                     } catch (Exception e) {
-                        System.err.println("Could not handle server input '" + input + "': " + e.toString());
+                        Logger.error("Could not handle server input '" + input + "': " + e.toString());
                     }
                 }
             }
