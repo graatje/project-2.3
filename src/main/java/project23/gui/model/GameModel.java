@@ -1,18 +1,16 @@
 package project23.gui.model;
 
 import javafx.application.Platform;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Label;
 import project23.framework.ConfigData;
+import project23.framework.ConnectedGameManager;
 import project23.framework.GameManager;
 import project23.framework.board.Board;
 import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
 import project23.framework.player.LocalPlayer;
 import project23.framework.player.Player;
-
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class GameModel extends Model implements BoardObserver {
@@ -20,8 +18,9 @@ public class GameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize;
-    private Color color;
-    private List<URL> playerIconFileURLs;
+    private boolean resetClock;
+    private boolean shouldStopClock;
+    private Label clockLabel;
 
     /**
      * Sets gameManager and board variables, and registers this model as observer. This method does not start the match.
@@ -66,16 +65,14 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
+        resetClock = true;
 
-        //TODO klok in view aanzetten?
-        //setClockReset(true);
-
-        //TODO: show info message on skipping
-        if (who.isShowValidMoves() && where == null) {
-            setInfoMessage("Skipped a turn, no available moves");
-            System.err.println("DEBUG: skipping..! (hoera, dit werkt?)");
-            updateView();
-        }
+        //TODO: show message when skipping a move
+//        if (who.isShowValidMoves() && where == null) {
+//            setInfoMessage("Skipped a turn, no available moves");
+//            System.err.println("DEBUG: skipping..! (hoera, dit werkt?)");
+//            updateView();
+//        }
     }
 
     @Override
@@ -85,8 +82,9 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
+        shouldStopClock = true;
         Platform.runLater(() -> {
-            String message = null;
+            String message;
             if (who == null) {
                 message = "It's a draw";
             } else {
@@ -100,10 +98,6 @@ public class GameModel extends Model implements BoardObserver {
     @Override
     public void onGameStart(Player startingPlayer) {
         Platform.runLater(this::updateView);
-    }
-
-    public String getPlayerNames(List<Player> players) {
-        return players.get(0).getName() + " VS. " + players.get(1).getName();
     }
 
     public ArrayList<String> getPlayerInfo(Map<Player, Integer> playerInfo) {
@@ -130,5 +124,32 @@ public class GameModel extends Model implements BoardObserver {
     public void restartGame() {
         gameManager.reset();
         gameManager.requestStart();
+    }
+
+    /**
+     * Whether the clock should be set to 10 again.
+     * When this method is called, {@link #resetClock} is automatically set to false.
+     * @return whether the clock should be reset
+     */
+    public boolean resetClock() {
+        // clock should only work on multiplayer matches
+        if(resetClock && gameManager instanceof ConnectedGameManager) {
+            resetClock = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Label getClockLabel() {
+        return clockLabel;
+    }
+
+    public void setClockLabel(Label clockLabel) {
+        this.clockLabel = clockLabel;
+    }
+
+    public boolean stopClock() {
+        return shouldStopClock;
     }
 }

@@ -1,5 +1,10 @@
 package project23.gui.view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -12,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import project23.framework.BoardState;
 import project23.framework.ConfigData;
 import project23.framework.board.Board;
@@ -29,9 +35,14 @@ public class GameView extends View<GameModel> {
     private final Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
     private final Text waitingText;
+    private Label clock;
+    private int seconds;
+
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
+    //private Timeline animation = new Timeline(new KeyFrame(Duration.seconds(1), e -> countDown()));
+    private final Timeline animation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> countDown()) , new KeyFrame(Duration.seconds(1)));
 
     /**
      * Sets the game from the view/scene
@@ -46,6 +57,7 @@ public class GameView extends View<GameModel> {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#board");
         this.waitingText = new Text("Please wait for the game to start.");
+        animation.setCycleCount(10);
     }
 
     public void setBoardPieceIcons(List<URL> playerIconFileURLs) {
@@ -61,10 +73,15 @@ public class GameView extends View<GameModel> {
      */
     @Override
     public void update(GameModel model) {
-        // Clock
-//        if(model.resetClock()) {
-//            //do stuff
-//        }
+        if(clock==null) {
+            clock = model.getClockLabel();
+        }
+        if(model.resetClock()) {
+            resetClock();
+        }
+        if(model.stopClock()) {
+            stopClock();
+        }
 
         showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
@@ -75,6 +92,31 @@ public class GameView extends View<GameModel> {
             gameBoardPane.getChildren().add(waitingText);
         } else {
             drawBoard(model);
+        }
+    }
+
+    /**
+     * Resets the clock to 10 seconds and starts the countdown
+     */
+    private void resetClock() {
+        seconds = 10;
+        animation.playFromStart();
+    }
+
+    /**
+     * Stops the clock and removes the time
+     */
+    public void stopClock() {
+        Platform.runLater(() -> clock.setText(""));
+
+    }
+
+    private void countDown() {
+        if(seconds == 1) {
+            Platform.runLater(() -> clock.setText("Time's up!"));
+        } else {
+            Platform.runLater(() -> clock.setText(--seconds + " seconds remaining"));
+
         }
     }
 
