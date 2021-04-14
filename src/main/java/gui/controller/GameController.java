@@ -3,7 +3,7 @@ package gui.controller;
 import framework.ConfigData;
 import framework.GameManager;
 import gui.MainWindow;
-import gui.model.GenericGameModel;
+import gui.model.GameModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GenericGameController extends Controller<GenericGameModel> implements Initializable {
+public class GameController extends Controller<GameModel> implements Initializable {
     @FXML
     private Pane board;
     @FXML

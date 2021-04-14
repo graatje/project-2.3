@@ -14,12 +14,12 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     private Match match;
     private boolean isAI;
 
-    private GenericGameModel gameModel;
+    private GameModel gameModel;
 
     private MainWindow mainWindow;
     private ConnectedGameManager cgm;
 
-    public GameLobbyModel(GenericGameModel gameModel, MainWindow mainWindow){
+    public GameLobbyModel(GameModel gameModel, MainWindow mainWindow){
         this.gameModel = gameModel;
         this.mainWindow = mainWindow;
     }

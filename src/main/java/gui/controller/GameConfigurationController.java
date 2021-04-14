@@ -3,7 +3,7 @@ package gui.controller;
 import framework.ConfigData;
 import framework.player.MinimaxAIPlayer;
 import gui.MainWindow;
-import gui.model.GenericGameConfigurationModel;
+import gui.model.GameConfigurationModel;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class GenericGameConfigurationController extends Controller<GenericGameConfigurationModel> implements Initializable {
+public class GameConfigurationController extends Controller<GameConfigurationModel> implements Initializable {
 
     @FXML private Label ipConfirmation;
     @FXML private TextField ipAddressField;

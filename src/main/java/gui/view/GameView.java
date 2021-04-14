@@ -6,7 +6,7 @@ import framework.board.Board;
 import framework.board.BoardPiece;
 import framework.player.Player;
 import gui.controller.Controller;
-import gui.model.GenericGameModel;
+import gui.model.GameModel;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -25,7 +25,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GameView extends View<GenericGameModel> {
+public class GameView extends View<GameModel> {
 
     private final Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
@@ -45,7 +45,7 @@ public class GameView extends View<GenericGameModel> {
     }
 
     @Override
-    public void update(GenericGameModel model) {
+    public void update(GameModel model) {
         showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
@@ -59,7 +59,7 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
-    private void drawBoard(GenericGameModel model) {
+    private void drawBoard(GameModel model) {
         Board board = model.getBoard();
         if(board == null) {
             clearBoard();

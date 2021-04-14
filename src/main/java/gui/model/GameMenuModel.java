@@ -3,12 +3,12 @@ package gui.model;
 import framework.ConfigData;
 import framework.GameManager;
 
-public class GenericGameMenuModel extends Model {
+public class GameMenuModel extends Model {
 
-    private final GenericGameModel gameModel;
+    private final GameModel gameModel;
     private final GameLobbyModel gameLobbyModel;
 
-    public GenericGameMenuModel(GenericGameModel gameModel, GameLobbyModel gameLobbyModel){
+    public GameMenuModel(GameModel gameModel, GameLobbyModel gameLobbyModel){
         this.gameModel = gameModel;
         this.gameLobbyModel = gameLobbyModel;
     }

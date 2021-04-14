@@ -2,7 +2,7 @@ package gui.model;
 
 import framework.ConfigData;
 
-public class GenericGameConfigurationModel extends Model{
+public class GameConfigurationModel extends Model{
 
     public void setIPandPort(String ip, String port) {
         ConfigData.getInstance().setServerIP(ip);

@@ -14,9 +14,9 @@ import java.util.Objects;
 
 public class MainWindow {
     private Stage stage;
-    private GenericGameConfigurationView ggcView;
-    private GameView ggView;
-    private GenericGameMenuView ggmView;
+    private GameConfigurationView gcView;
+    private GameView gView;
+    private GameMenuView gmView;
     private MainMenuView mmView;
     private GameLobbyView glView;
 
@@ -51,29 +51,29 @@ public class MainWindow {
 
     private void setupMVC() throws IOException {
         // Game settings
-        GenericGameConfigurationModel ggcModel = new GenericGameConfigurationModel();
-        GenericGameConfigurationController ggcController = new GenericGameConfigurationController();
-        ggcController.setMainWindow(this);
-        ggcController.setModel(ggcModel);
-        ggcView = new GenericGameConfigurationView(
-                getFXMLParent("fxml/gameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ggcModel.registerView(ggcView);
+        GameConfigurationModel gcModel = new GameConfigurationModel();
+        GameConfigurationController gcController = new GameConfigurationController();
+        gcController.setMainWindow(this);
+        gcController.setModel(gcModel);
+        gcView = new GameConfigurationView(
+                getFXMLParent("fxml/gameConfiguration.fxml", gcController), gcController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        gcModel.registerView(gcView);
 
         // Gameboard
-        GenericGameModel ggModel = new GenericGameModel();
-        GenericGameController ggController = new GenericGameController();
-        ggController.setMainWindow(this);
-        ggController.setModel(ggModel);
-        ggView = new GameView(
-                getFXMLParent("fxml/game.fxml", ggController),
-                ggController,
+        GameModel gModel = new GameModel();
+        GameController gController = new GameController();
+        gController.setMainWindow(this);
+        gController.setModel(gModel);
+        gView = new GameView(
+                getFXMLParent("fxml/game.fxml", gController),
+                gController,
                 WINDOW_WIDTH,
                 WINDOW_HEIGHT
         );
-        ggModel.registerView(ggView);
+        gModel.registerView(gView);
 
         // Game lobby
-        GameLobbyModel glModel = new GameLobbyModel(ggModel, this);
+        GameLobbyModel glModel = new GameLobbyModel(gModel, this);
         GameLobbyController glController = new GameLobbyController();
         glController.setMainWindow(this);
         glController.setModel(glModel);
@@ -82,13 +82,13 @@ public class MainWindow {
         glModel.registerView(glView);
 
         // Game Menu
-        GenericGameMenuModel ggmModel = new GenericGameMenuModel(ggModel, glModel);
-        GenericGameMenuController ggmController = new GenericGameMenuController();
-        ggmController.setMainWindow(this);
-        ggmController.setModel(ggmModel);
-        ggmView = new GenericGameMenuView(
-                getFXMLParent("fxml/gameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
-        ggmModel.registerView(ggmView);
+        GameMenuModel gmModel = new GameMenuModel(gModel, glModel);
+        GameMenuController gmController = new GameMenuController();
+        gmController.setMainWindow(this);
+        gmController.setModel(gmModel);
+        gmView = new GameMenuView(
+                getFXMLParent("fxml/gameMenu.fxml", gmController), gmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        gmModel.registerView(gmView);
 
         // Main Menu
         //MainMenuModel mmModel = new MainMenuModel();
@@ -121,13 +121,13 @@ public class MainWindow {
                 stage.setScene(mmView);
                 break;
             case GAME_MENU:
-                stage.setScene(ggmView);
+                stage.setScene(gmView);
                 break;
             case GAME_CONFIGURATION:
-                stage.setScene(ggcView);
+                stage.setScene(gcView);
                 break;
             case GAME:
-                stage.setScene(ggView);
+                stage.setScene(gView);
                 break;
             case GAME_LOBBY:
                 stage.setScene(glView);

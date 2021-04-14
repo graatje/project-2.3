@@ -2,7 +2,7 @@ package gui.controller;
 
 import framework.ConfigData;
 import gui.MainWindow;
-import gui.model.GenericGameMenuModel;
+import gui.model.GameMenuModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GenericGameMenuController extends Controller<GenericGameMenuModel> implements Initializable {
+public class GameMenuController extends Controller<GameMenuModel> implements Initializable {
 
     @FXML
     Label usernameConfirmation;

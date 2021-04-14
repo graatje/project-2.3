@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class GenericGameModel extends Model implements BoardObserver {
+public class GameModel extends Model implements BoardObserver {
 
     private Board board;
     private GameManager gameManager;
