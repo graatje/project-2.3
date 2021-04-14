@@ -163,6 +163,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
         _start(getPlayer(playerToBegin));
+
+        observers.forEach(ConnectedGameManagerObserver::onGameStarted);
     }
 
     @Override
