@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="background" stylesheets="@/style.css">
+<BorderPane id="background" stylesheets="@/CSS/style.css">
     <center>
         <AnchorPane maxHeight="275.0" maxWidth="325.0" minHeight="275.0" minWidth="325.0" prefHeight="275.0" prefWidth="325.0" BorderPane.alignment="CENTER">
             <children>

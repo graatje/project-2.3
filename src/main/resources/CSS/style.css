@@ -1,5 +1,5 @@
 #background {
-     -fx-background-image: url("woodBackground.jpg");
+     -fx-background-image: url("/images/woodBackground.jpg");
      -fx-background-size: 1000px;
 }
 
@@ -23,7 +23,7 @@
 }
 
 #buttonOthello{
-    -fx-background-image: url('Othello.png');
+    -fx-background-image: url('/images/Othello.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
 }
@@ -34,7 +34,7 @@
 }
 
 #buttonTTT{
-    -fx-background-image: url('TTT.png');
+    -fx-background-image: url('/images/TTT.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
 }

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.BorderPane?>
 
 <?import javafx.scene.text.Text?>
-<BorderPane id="background" stylesheets="@/style.css">
+<BorderPane id="background" stylesheets="@/CSS/style.css">
     <center>
         <AnchorPane xmlns:fx="http://javafx.com/fxml" maxHeight="275.0" maxWidth="325.0" prefHeight="325.0" prefWidth="325.0" BorderPane.alignment="CENTER">
             <children>

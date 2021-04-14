@@ -38,7 +38,7 @@ public class MainWindow {
         stage.setOnCloseRequest(windowEvent -> this.quit());
 
         //stage = primaryStage;
-        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/images/icon.png")).toExternalForm()));
         stage.setTitle("C4Games");
         switchView(ViewEnum.MAINMENU);
     }
@@ -56,7 +56,7 @@ public class MainWindow {
         ggcController.setMainWindow(this);
         ggcController.setModel(ggcModel);
         ggcView = new GenericGameConfigurationView(
-                getFXMLParent("gameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("fxml/gameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggcModel.registerView(ggcView);
 
         // Gameboard
@@ -65,7 +65,7 @@ public class MainWindow {
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
         ggView = new GameView(
-                getFXMLParent("game.fxml", ggController),
+                getFXMLParent("fxml/game.fxml", ggController),
                 ggController,
                 WINDOW_WIDTH,
                 WINDOW_HEIGHT
@@ -78,7 +78,7 @@ public class MainWindow {
         glController.setMainWindow(this);
         glController.setModel(glModel);
         glView = new GameLobbyView(
-                getFXMLParent("gameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("fxml/gameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
         glModel.registerView(glView);
 
         // Game Menu
@@ -87,7 +87,7 @@ public class MainWindow {
         ggmController.setMainWindow(this);
         ggmController.setModel(ggmModel);
         ggmView = new GenericGameMenuView(
-                getFXMLParent("gameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("fxml/gameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggmModel.registerView(ggmView);
 
         // Main Menu
@@ -95,7 +95,7 @@ public class MainWindow {
         MainMenuController mmController = new MainMenuController();
         mmController.setMainWindow(this);
         mmView = new MainMenuView(
-                getFXMLParent("mainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("fxml/mainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     /**

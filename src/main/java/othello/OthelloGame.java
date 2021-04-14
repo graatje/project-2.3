@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 public class OthelloGame extends Game {
     private final String[] boardPieceNames = { "Black", "White" };
-    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png"));
+    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/images/boardPieces/othello_black.png"), getClass().getResource("/images/boardPieces/othello_white.png"));
     private final boolean showPiecesCount = true;
     private final Color colors = Color.rgb(0, 153, 0);
 

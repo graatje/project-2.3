@@ -2,7 +2,6 @@ package gui.view;
 
 import gui.controller.Controller;
 import gui.model.GameLobbyModel;
-import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -43,10 +42,10 @@ public class GameLobbyView extends View<GameLobbyModel> {
             dialog.getDialogPane().getButtonTypes().add(ignore);
             dialog.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
             dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
-            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/dialogStyle.css").toExternalForm());
+            dialog.getDialogPane().getStylesheets().add(getClass().getResource("/CSS/dialogStyle.css").toExternalForm());
             dialog.setTitle("A new foe has appeared!");
             Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
-            dialogStage.getIcons().add(new Image(getClass().getResource("/icon.png").toExternalForm()));
+            dialogStage.getIcons().add(new Image(getClass().getResource("/images/icon.png").toExternalForm()));
 
             // Listen for answer
             Button button1 = (Button) dialog.getDialogPane().lookupButton(accept);

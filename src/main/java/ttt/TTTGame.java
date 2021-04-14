@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 public class TTTGame extends Game {
     private final String[] boardPieceNames = { "Noughts (O)", "Crosses (X)" };
-    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png"));
+    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/images/boardPieces/ttt_o.png"), getClass().getResource("/images/boardPieces/ttt_x.png"));
     private final boolean showPiecesCount = false;
     private final Color colors = Color.rgb(245, 245, 245);
 
