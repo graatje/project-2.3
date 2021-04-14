@@ -43,6 +43,10 @@ public abstract class Model {
         return dialogMessageTmp;
     }
 
+    /**
+     * Gets the dialog title, and then clears it
+     * @return the title
+     */
     public String getDialogTitle() {
         String dialogTitleTmp = dialogTitle;
         dialogTitle = "";
@@ -62,10 +66,19 @@ public abstract class Model {
         return infoMessageTmp;
     }
 
+    /**
+     * Sets the label node, necessary for {@link View#showInfoText(String, Label)}
+     *
+     * @param textNode
+     */
     public void setLabelNode(Label textNode) {
         this.textNode = textNode;
     }
 
+    /**
+     * Used when setting infoText. See {@link View#showInfoText(String, Label)}
+     * @return
+     */
     public Label getLabelNode() {
         return textNode;
     }

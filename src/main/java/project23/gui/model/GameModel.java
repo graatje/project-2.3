@@ -24,7 +24,7 @@ public class GameModel extends Model implements BoardObserver {
     private List<URL> playerIconFileURLs;
 
     /**
-     * Sets gameManager and board variables, and registers this model as observer. Does not start the game yet.
+     * Sets gameManager and board variables, and registers this model as observer. This method does not start the match.
      */
     public void prepareNewGame() {
         gameManager = ConfigData.getInstance().getGameManager();
