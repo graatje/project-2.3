@@ -18,7 +18,7 @@ public class GameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize;
-    private boolean resetClock;
+    private boolean restartClock;
     private boolean stopClock;
     private Label clockLabel;
 
@@ -65,7 +65,7 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
-        resetClock = true;
+        restartClock = true;
 
         //TODO: show message when skipping a move
 //        if (who.isShowValidMoves() && where == null) {
@@ -128,13 +128,13 @@ public class GameModel extends Model implements BoardObserver {
 
     /**
      * Whether the clock should be set to 10 again.
-     * When this method is called, {@link #resetClock} is automatically set to false.
+     * When this method is called, {@link #restartClock} is automatically set to false.
      * @return whether the clock should be reset
      */
-    public boolean resetClock() {
+    public boolean restartClock() {
         // clock should only work on multiplayer matches
-        if(resetClock && gameManager instanceof ConnectedGameManager) {
-            resetClock = false;
+        if(restartClock && gameManager instanceof ConnectedGameManager) {
+            restartClock = false;
             return true;
         } else {
             return false;

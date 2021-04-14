@@ -76,7 +76,7 @@ public class GameView extends View<GameModel> {
         if(clock==null) {
             clock = model.getClockLabel();
         }
-        if(model.resetClock()) {
+        if(model.restartClock()) {
             resetClock();
         }
         if(model.stopClock()) {
@@ -107,6 +107,7 @@ public class GameView extends View<GameModel> {
      * Stops the clock and removes the time
      */
     public void stopClock() {
+        animation.stop();
         Platform.runLater(() -> clock.setText(""));
 
     }
