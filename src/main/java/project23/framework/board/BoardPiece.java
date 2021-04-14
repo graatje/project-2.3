@@ -32,6 +32,8 @@ public class BoardPiece implements Cloneable {
     }
 
     // Auto-generated equals method
+
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

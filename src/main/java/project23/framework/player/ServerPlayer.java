@@ -15,6 +15,11 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
         super(board, id);
     }
 
+    /**
+     * method for after receiving move from the server.
+     * @param whoPlayer the name of player whose turn it is.
+     * @param move the number of the move as string.
+     */
     @Override
     public void turnReceive(String whoPlayer, String move) {
         if (whoPlayer.equals(getName())) {
@@ -42,6 +47,9 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
         }
     }
 
+    /**
+     * calls board.finalizeRawMove if its our turn, requests a move from opponent otherwise.
+     */
     @Override
     public void finalizeTurn() {
         if (board.getCurrentPlayer() == this) {
@@ -51,6 +59,9 @@ public class ServerPlayer extends Player implements ServerPlayerCommunicationLis
         }
     }
 
+    /**
+     * @return if the valid moves should be displayed on the GUI.
+     */
     @Override
     public boolean isShowValidMoves() {
         return false;

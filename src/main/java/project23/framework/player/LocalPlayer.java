@@ -35,6 +35,9 @@ public class LocalPlayer extends Player implements MoveRequestable {
         }
     }
 
+    /**
+     * @return if valid moves should be displayed on the board or not.
+     */
     @Override
     public boolean isShowValidMoves() {
         return true;
