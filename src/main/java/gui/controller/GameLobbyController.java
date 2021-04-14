@@ -4,12 +4,8 @@ import gui.MainWindow;
 import gui.model.GameLobbyModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
-
-import java.net.URL;
-import java.util.ResourceBundle;
 
 public class GameLobbyController extends Controller {
 
@@ -24,7 +20,7 @@ public class GameLobbyController extends Controller {
     }
 
     public void pressRefresh(ActionEvent event) {
-        model.updateView();
+        ((GameLobbyModel)model).refreshPlayerList();
     }
 
     public void pressChallengePlayer() {

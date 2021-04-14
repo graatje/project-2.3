@@ -4,12 +4,14 @@ import framework.*;
 import gui.MainWindow;
 import javafx.application.Platform;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class GameLobbyModel extends Model implements ConnectedGameManagerObserver {
 
     private List<String> currentlyShowingPlayers;
+
+    private String challengeMessage;
+    private Match match;
 
     private GenericGameModel gameModel;
 
@@ -20,6 +22,10 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
         this.gameModel = gameModel;
         this.mainWindow = mainWindow;
 
+    }
+
+    public void refreshPlayerList() {
+        cgm.getClient().sendGetPlayerlistMessage();
     }
 
     public List<String> getLobbyPlayers() {
@@ -50,8 +56,12 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onServerError(String errorMessage) {
-        System.err.println("ERror! "+errorMessage);
-        //TODO: implement met platform.runlater
+        Platform.runLater(() -> {
+            setDialogMessage(errorMessage);
+            updateView();
+            logout();
+            mainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
+        });
     }
 
     @Override
@@ -61,9 +71,23 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onChallengeReceive(Match match) {
-        System.out.println("Challenged by "+match.getOpponentName());
-        //TODO accept/ignore challenge
-        // platform
+        setChallenge(match, match.getOpponentName()+" is challenging you to a game of "+match.getGameType()+"! Do you accept?");
+        Platform.runLater(this::updateView); // zodat melding wordt weergegeven
+    }
+
+    public String getChallengeMessage() {
+        String challengeMessageTmp = challengeMessage;
+        challengeMessage = null;
+        return challengeMessageTmp;
+    }
+
+    public void setChallenge(Match match, String challengeMessage) {
+        this.match = match;
+        this.challengeMessage = challengeMessage;
+    }
+
+    public void acceptMatch() {
+        cgm.acceptChallenge(match);
     }
 
     @Override
