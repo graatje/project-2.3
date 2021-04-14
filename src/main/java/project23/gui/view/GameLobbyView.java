@@ -16,7 +16,7 @@ import java.util.List;
 
 public class GameLobbyView extends View<GameLobbyModel> {
 
-    private ArrayList<Dialog> dialogs;
+    private final ArrayList<Dialog> dialogs;
 
     public GameLobbyView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
