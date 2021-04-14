@@ -3,11 +3,11 @@ package gui.controller;
 import gui.MainWindow;
 import gui.model.Model;
 
-public abstract class Controller {
-    protected Model model;
+public abstract class Controller<T extends Model> {
+    protected T model;
     protected MainWindow mainWindow;
 
-    public void setModel(Model model) {
+    public void setModel(T model) {
         this.model = model;
     }
 

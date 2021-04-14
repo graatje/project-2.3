@@ -13,7 +13,7 @@ import javafx.scene.layout.Pane;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GenericGameController extends Controller implements Initializable {
+public class GenericGameController extends Controller<GenericGameModel> implements Initializable {
     @FXML
     private Pane board;
     @FXML
@@ -22,7 +22,7 @@ public class GenericGameController extends Controller implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         model.setLabelNode(messageField);
-        ((GenericGameModel)model).setBoardSize(board.getPrefWidth());
+        model.setBoardSize(board.getPrefWidth());
     }
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
@@ -32,10 +32,10 @@ public class GenericGameController extends Controller implements Initializable {
     }
 
     @FXML public void onMouseReleased(MouseEvent event) {
-        ((GenericGameModel)model).clickTile(event.getX(), event.getY());
+        model.clickTile(event.getX(), event.getY());
     }
 
     public void pressRetry(ActionEvent event) {
-        ((GenericGameModel)model).restartGame();
+        model.restartGame();
     }
 }

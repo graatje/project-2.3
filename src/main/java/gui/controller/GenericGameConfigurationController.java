@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
-public class GenericGameConfigurationController extends Controller implements Initializable {
+public class GenericGameConfigurationController extends Controller<GenericGameConfigurationModel> implements Initializable {
 
     @FXML private Label ipConfirmation;
     @FXML private TextField ipAddressField;
@@ -46,8 +46,8 @@ public class GenericGameConfigurationController extends Controller implements In
     }
 
     @FXML void pressOKip(ActionEvent event){
-        ((GenericGameConfigurationModel)model).setIPandPort(ipAddressField.getText(), portField.getText());
-        ((GenericGameConfigurationModel)model).setAIThinkingTime(thinkingTimeField.getText());
+        model.setIPandPort(ipAddressField.getText(), portField.getText());
+        model.setAIThinkingTime(thinkingTimeField.getText());
         model.setInfoMessage("Updated"); // Regression: not showing "henlo" anymore
         model.updateView();
 

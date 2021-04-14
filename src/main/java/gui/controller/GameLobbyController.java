@@ -12,7 +12,7 @@ import javafx.scene.control.ListView;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GameLobbyController extends Controller implements Initializable {
+public class GameLobbyController extends Controller<GameLobbyModel> implements Initializable {
 
     @FXML
     private ListView challengerList;
@@ -22,35 +22,35 @@ public class GameLobbyController extends Controller implements Initializable {
     private Label messageLabel;
 
     public void pressBackToMainMenu(ActionEvent event) {
-        ((GameLobbyModel)model).logout();
+        model.logout();
         mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
     public void pressRefresh(ActionEvent event) {
-        ((GameLobbyModel)model).refreshPlayerList();
+        model.refreshPlayerList();
     }
 
     public void pressChallengePlayer() {
-        ((GameLobbyModel)model).challengePlayer((int) challengerList.getSelectionModel().getSelectedIndices().get(0));
+        model.challengePlayer((int) challengerList.getSelectionModel().getSelectedIndices().get(0));
     }
 
     /**
      * This is the functionality of the old "Play online" button
      */
     public void pressSubscribe() {
-        ((GameLobbyModel)model).prepareOnlineGame();
+        model.prepareOnlineGame();
         mainWindow.switchView(MainWindow.ViewEnum.GAME);
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set default value
-        ((GameLobbyModel)model).setAI(isAIBox.isSelected());
+        model.setAI(isAIBox.isSelected());
         model.setLabelNode(messageLabel);
 
         // Listen for changes
         isAIBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
-            ((GameLobbyModel)model).setAI(newValue);
+            model.setAI(newValue);
         });
     }
 }

@@ -12,7 +12,7 @@ import javafx.scene.control.TextField;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class GenericGameMenuController extends Controller implements Initializable {
+public class GenericGameMenuController extends Controller<GenericGameMenuModel> implements Initializable {
 
     @FXML
     Label usernameConfirmation;
@@ -26,27 +26,25 @@ public class GenericGameMenuController extends Controller implements Initializab
 
     @FXML
     public void pressOKUsername(ActionEvent event) {
-        ((GenericGameMenuModel) model).setPlayerName(usernameField.getText());
+        model.setPlayerName(usernameField.getText());
         model.setInfoMessage("Username set to \"" + usernameField.getText() + "\".");
         model.updateView();
     }
 
     /**
      * Start a local game against AI
-     * @param event
      */
     @FXML
     public void pressPlayAgainstComputer(ActionEvent event) {
-        ((GenericGameMenuModel) model).prepareOfflineGame();
+        model.prepareOfflineGame();
         mainWindow.switchView(MainWindow.ViewEnum.GAME);
     }
 
     /**
      * Go to lobby
-     * @param event
      */
     public void pressGoToLobby(ActionEvent event) {
-        ((GenericGameMenuModel) model).prepareLobby();
+        model.prepareLobby();
         mainWindow.switchView(MainWindow.ViewEnum.GAME_LOBBY);
     }
 
