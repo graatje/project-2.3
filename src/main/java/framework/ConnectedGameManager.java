@@ -40,7 +40,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         super(boardSupplier, selfPlayerSupplier, ServerPlayer::new);
 
         createClient(serverIP, serverPort);
-        client.sendCommandToServer("get playerlist\n");
+        login();
+        client.sendGetPlayerlistMessage();
 
         client.getCommunicationHandler().setGameManagerCommunicationListener(this);
         board.registerObserver(this);
@@ -54,20 +55,6 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client = new Client(clientSocket, new CommunicationHandler());
         client.setDaemon(true);
         client.start();
-    }
-
-    /**
-     * Closes the previous connection, and starts a new one
-     *
-     * @param serverIP
-     * @param serverPort
-     * @throws IOException
-     */
-    public void resetClient(String serverIP, int serverPort) throws IOException {
-        client.sendLogoutMessage();
-        client.close();
-
-        createClient(serverIP, serverPort);
     }
 
     public void login() {
