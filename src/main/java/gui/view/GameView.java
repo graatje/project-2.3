@@ -4,6 +4,7 @@ import framework.BoardState;
 import framework.ConfigData;
 import framework.board.Board;
 import framework.board.BoardPiece;
+import framework.player.Player;
 import gui.controller.Controller;
 import gui.model.GenericGameModel;
 import javafx.scene.Parent;
@@ -79,7 +80,8 @@ public class GameView extends View<GenericGameModel> {
             }
         }
 
-        if(board.isShowValidMoves() && board.getCurrentPlayer().isShowValidMoves()) {
+        Player player = board.getCurrentPlayer();
+        if(player != null && board.isShowValidMoves() && player.isShowValidMoves()) {
             drawValidMoves(board.getValidMoves(), gridSize);
         }
     }
