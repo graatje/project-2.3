@@ -18,20 +18,10 @@ public class CommunicationHandler {
     private ServerPlayerCommunicationListener serverPlayerCommunicationListener;
 
 
-    /**
-     * Sets the current server client
-     *
-     * @param client The current active Client
-     */
     public void setClient(Client client) {
         this.client = client;
     }
 
-    /**
-     * Sets the board listener
-     *
-     * @param comListener The current BoardListener
-     */
     public void setGameManagerCommunicationListener(GameManagerCommunicationListener comListener) {
         this.gameManagerCommunicationListener = comListener;
     }
@@ -210,6 +200,9 @@ public class CommunicationHandler {
         client.sendCommandToServer("challenge \"" + playerToChallenge + "\" \"" + gameType + "\"\n");
     }
 
+    /**
+     * Sends the get playerlist command to the server
+     */
     public void sendGetPlayerlistMessage() {
         client.sendCommandToServer("get playerlist\n");
     }

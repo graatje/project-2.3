@@ -41,12 +41,18 @@ public class Client extends Thread {
         startKeepAliveThread();
     }
 
+    /**
+     * Debug method, starts a consolepassthrough thread to read console input while application is running.
+     */
     public void startConsolePassthroughThread() {
         Thread thread = new Thread(this::consolePassthrough, "ConsoleServerPassthrough");
         thread.setDaemon(true);
         thread.start();
     }
 
+    /**
+     * Debug method, reads input from console while application is running, and sends it to the server.
+     */
     private void consolePassthrough() {
         if (!CommunicationHandler.DEBUG) {
             System.err.println("Warning! Starting console <> server command passthrough, but CommunicationHandler.DEBUG is set to false! You won't receive any feedback!");
@@ -67,12 +73,18 @@ public class Client extends Thread {
         System.out.println("Console <> server command passthrough stopped.");
     }
 
+    /**
+     * Starts a new thread calling Client#keepAlive
+     */
     public void startKeepAliveThread() {
         Thread thread = new Thread(this::keepAlive, "ServerKeepAlive");
         thread.setDaemon(true);
         thread.start();
     }
 
+    /**
+     * Periodically sends a message to the server to prevent SocketTimeout
+     */
     private void keepAlive() {
         System.out.println("Keep alive thread started.");
 
@@ -88,6 +100,9 @@ public class Client extends Thread {
         System.out.println("Keep alive thread stopped.");
     }
 
+    /**
+     * See Client#keepAlive
+     */
     private void sendKeepAlive() {
         System.out.println("Sending keep-alive message..");
         sendGetPlayerlistMessage();
@@ -150,38 +165,57 @@ public class Client extends Thread {
         return communicationHandler;
     }
 
+    /**
+     * Sends the server the forfeit command.
+     */
     public void sendForfeitMessage() {
         communicationHandler.sendForfeitMessage();
     }
 
-    public void sendAcceptChallengeMessage(String challengeNumber) {
-        communicationHandler.sendAcceptChallengeMessage(challengeNumber);
-    }
-
+    /**
+     * Passthrough method, calls communicationHandler#move
+     * @param move move chosen by the player or AI
+     */
     public void sendMoveMessage(int move) {
         communicationHandler.sendMoveMessage(move);
     }
 
+    /**
+     * Subscribe to random matches for the given game type
+     * @param gameType the game to for which to subscribe
+     */
     public void sendSubscribeMessage(String gameType) {
         communicationHandler.sendSubscribeMessage(gameType);
     }
 
-    public void sendLogoutMessage() {
-        communicationHandler.sendLogoutMessage();
-    }
-
+    /**
+     * Logs the player into the server
+     * @param playerName the player name
+     */
     public void sendLoginMessage(String playerName) {
         communicationHandler.sendLoginMessage(playerName);
     }
 
+    /**
+     * Sends a challenge to a player in the lobby
+     * @param playerToChallenge the player to challenge
+     * @param gameType the game to play
+     */
     public void sendChallengeMessage(String playerToChallenge, String gameType) {
         communicationHandler.sendChallengeMessage(playerToChallenge, gameType);
     }
 
+    /**
+     * Sends the get gamelist command to the server
+     */
     public void sendGetPlayerlistMessage() {
         communicationHandler.sendGetPlayerlistMessage();
     }
 
+    /**
+     * Accepts a challenge
+     * @param challengeNr the challenge number
+     */
     public void acceptChallenge(int challengeNr) {
         communicationHandler.sendAcceptChallengeMessage("" + challengeNr);
     }
