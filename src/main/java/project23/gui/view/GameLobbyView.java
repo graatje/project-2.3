@@ -11,12 +11,16 @@ import project23.framework.ChallengeRequest;
 import project23.gui.controller.Controller;
 import project23.gui.model.GameLobbyModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GameLobbyView extends View<GameLobbyModel> {
 
+    private ArrayList<Dialog> dialogs;
+
     public GameLobbyView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
+        this.dialogs = new ArrayList<>();
     }
 
     @Override
@@ -37,6 +41,7 @@ public class GameLobbyView extends View<GameLobbyModel> {
 
         //creating dialog
         Dialog<String> dialog = new Dialog<>();
+        dialogs.add(dialog);
         //add button
         ButtonType accept = new ButtonType("Accept", ButtonBar.ButtonData.OK_DONE);
         ButtonType ignore = new ButtonType("Ignore", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -50,16 +55,25 @@ public class GameLobbyView extends View<GameLobbyModel> {
         dialog.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
         dialog.getDialogPane().getStylesheets().add(getClass().getResource("/CSS/dialogStyle.css").toExternalForm());
         dialog.setTitle("A new foe has appeared!");
-        dialog.initModality(Modality.NONE);
+        dialog.initModality(Modality.NONE); // dont block other dialogs
         Stage dialogStage = (Stage) dialog.getDialogPane().getScene().getWindow();
         dialogStage.getIcons().add(new Image(getClass().getResource("/images/icon.png").toExternalForm()));
 
         // Listen for answer
         Button button1 = (Button) dialog.getDialogPane().lookupButton(accept);
-        button1.setOnAction(actionEvent -> model.acceptMatch(challengeRequest));
+        button1.setOnAction(actionEvent -> {
+            model.acceptMatch(challengeRequest);
+            closeAllDialogs();
+        });
 
         //show dialog
         dialog.show();
+    }
+
+    private void closeAllDialogs() {
+        for(Dialog dialog : dialogs) {
+            dialog.close();
+        }
     }
 
     private void updateGameChallengeList(List<String> playerNames) {
