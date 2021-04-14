@@ -9,6 +9,7 @@ import project23.framework.player.Player;
 
 import java.util.*;
 
+
 public abstract class Board implements Cloneable {
     protected final GameManager gameManager;
     protected final int width, height;
@@ -139,6 +140,9 @@ public abstract class Board implements Cloneable {
         }
     }
 
+    /**
+     * resets the gameboard to be able to start a new match after clearing.
+     */
     public void reset() {
         if (boardState == BoardState.PLAYING) {
             gameManager.forfeit();
@@ -277,6 +281,12 @@ public abstract class Board implements Cloneable {
         new ArrayList<>(observers).forEach(o -> o.onPlayerWon(winner));
     }
 
+    /**
+     * makes a clone of this board.
+     *
+     * @return Board clone of the board.
+     * @throws CloneNotSupportedException
+     */
     @Override
     public Board clone() throws CloneNotSupportedException {
         Board cloned = (Board) super.clone();
@@ -367,6 +377,11 @@ public abstract class Board implements Cloneable {
         currentPlayerId = currentPlayer.getID();
     }
 
+    /**
+     * returns the state of the board. WAITING, PLAYING or GAME_OVER
+     * from the enum BoardState.
+     * @return boardState
+     */
     public BoardState getBoardState() {
         return boardState;
     }
@@ -391,6 +406,11 @@ public abstract class Board implements Cloneable {
         return getValidMoves(asWho).contains(piece);
     }
 
+    /**
+     *
+     * @param boardPiece the boardpiece to check
+     * @see #isValidMove(Player asWho, int x, int y)
+     */
     public boolean isValidMove(BoardPiece boardPiece) {
         return isValidMove(getCurrentPlayer(), boardPiece);
     }
@@ -404,6 +424,12 @@ public abstract class Board implements Cloneable {
         return isValidMove(asWho, getBoardPiece(x, y));
     }
 
+    /**
+     *
+     * @param x The X-coordinate of the piece to check
+     * @param y The Y-coordinate of the piece to check
+     * @see #isValidMove(Player asWho, int x, int y)
+     */
     public boolean isValidMove(int x, int y) {
         return isValidMove(getCurrentPlayer(), x, y);
     }
@@ -426,14 +452,27 @@ public abstract class Board implements Cloneable {
         observers.remove(observer);
     }
 
+    /**
+     * getter for the boolean disableRequestMove, this is for previewing move,
+     * not actually executing a move and sending it if this boolean is true.
+     *
+     * @return boolean, getter for disableRequestMove
+     */
     public boolean isDisableRequestMove() {
         return disableRequestMove;
     }
 
+    /**
+     * @param disableRequestMove, setter for disableRequestMove
+     */
     public void setDisableRequestMove(boolean disableRequestMove) {
         this.disableRequestMove = disableRequestMove;
     }
 
+    /**
+     * counts the pieces on the board for the players.
+     * @return Map<Player, Integer> , key is player, value is the amount of pieces for that player.
+     */
     public Map<Player, Integer> piecesCount() {
         Map<Player, Integer> map = new HashMap<>();
         gameManager.getPlayers().forEach(player -> map.put(player, 0));
