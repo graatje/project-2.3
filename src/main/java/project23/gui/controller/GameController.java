@@ -25,7 +25,7 @@ public class GameController extends Controller<GameModel> implements Initializab
         model.setLabelNode(messageField);
         model.setBoardSize(board.getPrefWidth());
     }
-
+    
     @FXML
     public void pressBackToMainMenu(ActionEvent event) {
         mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);

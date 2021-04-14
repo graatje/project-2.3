@@ -5,8 +5,8 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-
 <?import javafx.scene.control.Label?>
+
 <BorderPane id="background" stylesheets="@/CSS/style.css" xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
     <center>
         <AnchorPane maxHeight="375.0" maxWidth="325.0" prefHeight="375.0" prefWidth="325.0" BorderPane.alignment="CENTER">
