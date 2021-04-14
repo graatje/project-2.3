@@ -168,7 +168,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void matchCancelled(int challengeNr) {
-        activeMatches.remove(challengeNr);
+        activeMatches.removeIf(match -> match.getChallengeNr() == challengeNr);
     }
 
     @Override
