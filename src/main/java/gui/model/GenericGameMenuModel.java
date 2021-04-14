@@ -1,6 +1,7 @@
 package gui.model;
 
 import framework.ConfigData;
+import framework.GameManager;
 
 public class GenericGameMenuModel extends Model {
 
@@ -35,7 +36,14 @@ public class GenericGameMenuModel extends Model {
 
     private void prepareGameManager() {
         // Create new game, and set it in the config. (This should always be done together)
-        ConfigData.getInstance().setGameManager(ConfigData.getInstance().getCurrentGame().createGameManager());
+        GameManager gm = ConfigData.getInstance().getCurrentGame().createGameManager();
+        if(gm==null) {
+            setDialogMessage("Could not connect to server.");
+            updateView();
+            return;
+        }
+        ConfigData.getInstance().setGameManager(gm);
+
         gameModel.prepareNewGame();
     }
 }

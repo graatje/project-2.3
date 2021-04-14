@@ -40,11 +40,12 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     public void challengePlayer(int playerListIndex) {
         String playername = currentlyShowingPlayers.get(playerListIndex);
         cgm.challengePlayer(playername, ConfigData.getInstance().getCurrentGameName());
+        setInfoMessage("Challenged "+playername);
+        updateView();
     }
 
     /**
      * Starts an online match, nothing to do with challenging
-     * @param isAI
      */
     public void prepareOnlineGame() {
         gameModel.prepareNewGame();
@@ -70,8 +71,10 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onChallengeReceive(Match match) {
-        setChallenge(match, match.getOpponentName()+" is challenging you to a game of "+match.getGameType()+"! Do you accept?");
-        Platform.runLater(this::updateView); // zodat melding wordt weergegeven
+        if(cgm.getBoard().getBoardState() != BoardState.PLAYING && match.getGameType().equalsIgnoreCase(ConfigData.getInstance().getCurrentGameName())) {
+            setChallenge(match, match.getOpponentName() + " is challenging you to a game of " + match.getGameType() + "! Do you accept?");
+            Platform.runLater(this::updateView); // zodat melding wordt weergegeven
+        }
     }
 
     public String getChallengeMessage() {

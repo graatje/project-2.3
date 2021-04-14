@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 
 import java.net.URL;
@@ -17,6 +18,8 @@ public class GameLobbyController extends Controller implements Initializable {
     private ListView challengerList;
     @FXML
     private CheckBox isAIBox;
+    @FXML
+    private Label messageLabel;
 
     public void pressBackToMainMenu(ActionEvent event) {
         ((GameLobbyModel)model).logout();
@@ -43,6 +46,7 @@ public class GameLobbyController extends Controller implements Initializable {
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set default value
         ((GameLobbyModel)model).setAI(isAIBox.isSelected());
+        model.setLabelNode(messageLabel);
 
         // Listen for changes
         isAIBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
