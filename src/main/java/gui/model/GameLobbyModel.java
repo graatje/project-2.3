@@ -40,11 +40,12 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     public void challengePlayer(int playerListIndex) {
         String playername = currentlyShowingPlayers.get(playerListIndex);
         cgm.challengePlayer(playername, ConfigData.getInstance().getCurrentGameName());
+        setInfoMessage("Challenged "+playername);
+        updateView();
     }
 
     /**
      * Starts an online match, nothing to do with challenging
-     * @param isAI
      */
     public void prepareOnlineGame() {
         gameModel.prepareNewGame();

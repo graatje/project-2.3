@@ -21,6 +21,7 @@ public class GameLobbyView extends View<GameLobbyModel> {
     public void update(GameLobbyModel model) {
         showDialog(model.getDialogMessage(), "Error");
         showChallengeDialog(model);
+        showInfoText(model.getInfoMessage(), model.getLabelNode());
 
         // Update lobby list
         updateGameChallengeList(model.getLobbyPlayers());
