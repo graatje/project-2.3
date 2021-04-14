@@ -2,6 +2,7 @@ package gui.controller;
 
 import gui.MainWindow;
 import gui.model.GameLobbyModel;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -31,7 +32,13 @@ public class GameLobbyController extends Controller<GameLobbyModel> implements I
     }
 
     public void pressChallengePlayer() {
-        model.challengePlayer((int) challengerList.getSelectionModel().getSelectedIndices().get(0));
+        ObservableList<Integer> indices = challengerList.getSelectionModel().getSelectedIndices();
+        if(!indices.isEmpty()) {
+            model.challengePlayer(indices.get(0));
+        } else {
+            model.setInfoMessage("Please select a player to challenge.");
+            model.updateView();
+        }
     }
 
     /**
