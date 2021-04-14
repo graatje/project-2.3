@@ -29,7 +29,6 @@ public class LocalPlayer extends Player implements MoveRequestable {
 
     @Override
     public void requestMove() {
-        // TODO: Maybe make this a button in the GUI?
         List<BoardPiece> validMoves = board.getValidMoves();
         if(validMoves.isEmpty()) {
             board.makeMove(this, null);
