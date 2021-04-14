@@ -56,7 +56,7 @@ public class MainWindow {
         ggcController.setMainWindow(this);
         ggcController.setModel(ggcModel);
         ggcView = new GenericGameConfigurationView(
-                getFXMLParent("GenericGameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("gameConfiguration.fxml", ggcController), ggcController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggcModel.registerView(ggcView);
 
         // Gameboard
@@ -65,7 +65,7 @@ public class MainWindow {
         ggController.setMainWindow(this);
         ggController.setModel(ggModel);
         ggView = new GameView(
-                getFXMLParent("GenericGame.fxml", ggController),
+                getFXMLParent("game.fxml", ggController),
                 ggController,
                 WINDOW_WIDTH,
                 WINDOW_HEIGHT
@@ -78,7 +78,7 @@ public class MainWindow {
         glController.setMainWindow(this);
         glController.setModel(glModel);
         glView = new GameLobbyView(
-                getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("gameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
         glModel.registerView(glView);
 
         // Game Menu
@@ -87,7 +87,7 @@ public class MainWindow {
         ggmController.setMainWindow(this);
         ggmController.setModel(ggmModel);
         ggmView = new GenericGameMenuView(
-                getFXMLParent("GenericGameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("gameMenu.fxml", ggmController), ggmController, WINDOW_WIDTH, WINDOW_HEIGHT);
         ggmModel.registerView(ggmView);
 
         // Main Menu
@@ -95,7 +95,7 @@ public class MainWindow {
         MainMenuController mmController = new MainMenuController();
         mmController.setMainWindow(this);
         mmView = new MainMenuView(
-                getFXMLParent("MainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
+                getFXMLParent("mainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
     }
 
     /**
