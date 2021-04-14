@@ -28,6 +28,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     private final Set<ConnectedGameManagerObserver> observers = new HashSet<>();
 
+    private long selfPlayerTurnStart;
+
     /**
      * constructor, initializes project23.connection, board and players.
      *
@@ -218,6 +220,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if (who != serverPlayerOpponent) {
+            long elapsed = System.currentTimeMillis() - selfPlayerTurnStart;
+            System.out.println("Self turn ended in " + elapsed + "ms!");
+
             int move = where.getX() + board.getWidth() * where.getY();
             client.sendMoveMessage(move);
         }
@@ -225,6 +230,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void onPlayerMoveFinalized(Player previous, Player current) {
+        if(current != serverPlayerOpponent) {
+            System.out.println("Self turn started");
+            selfPlayerTurnStart = System.currentTimeMillis();
+        }
     }
 
     @Override
