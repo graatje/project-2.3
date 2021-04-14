@@ -24,7 +24,6 @@ public abstract class Game {
 
     public abstract Function<Board, Player> createAIPlayerFactory();
     public Function<Board, Player> createLocalPlayerFactory() {
-        //TODO naam meegeven?
         return (board -> new LocalPlayer(board, ConfigData.getInstance().getPlayerName()));
     }
     public abstract Function<GameManager, Board> createBoardFactory();
