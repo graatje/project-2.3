@@ -11,14 +11,23 @@ public class ChallengeRequest {
         this.challengeNr = challengeNr;
     }
 
+    /**
+     * @return The opponent who made this challenge request.
+     */
     public String getOpponentName() {
         return opponentName;
     }
 
+    /**
+     * @return The game-type this challenge request refers to.
+     */
     public GameType getGameType() {
         return gameType;
     }
 
+    /**
+     * @return The challenge number this request is known by, on the server.
+     */
     public int getChallengeNr() {
         return challengeNr;
     }

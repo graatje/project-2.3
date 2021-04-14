@@ -47,6 +47,11 @@ public class ConfigData {
         registerGame(new OthelloGame());
     }
 
+    /**
+     * Registers a Game class internally.
+     *
+     * @param game The game to register.
+     */
     private void registerGame(Game game) {
         games.put(game.getGameType(), game);
     }
@@ -115,4 +120,3 @@ public class ConfigData {
         this.minimaxThinkingTime = newThinkingTime;
     }
 }
-
