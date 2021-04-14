@@ -15,9 +15,8 @@ public class ConfigData {
     private int serverPort;
 
     private String playerName;
-    private GameType gameType;
 
-    private HashMap<String, Game> games = new HashMap<>();
+    private final HashMap<String, Game> games = new HashMap<>();
     private String currentGameName;
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
