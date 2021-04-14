@@ -30,9 +30,6 @@ public class GenericGameMenuModel extends Model {
         ConfigData.getInstance().getCurrentGame().setOnline(true);
         prepareGameManager();
 
-        //TODO: Zorg dat gameManager lobbyspelers kan vinden vóór op de volgende regel updateView aangeroepen wordt
-        System.out.println("Game Lobby model updated vanaf hier (MenuModel)");
-        gameLobbyModel.updateView();
         gameLobbyModel.prepareGameManager();
     }
 
