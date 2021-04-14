@@ -19,7 +19,6 @@ import project23.framework.board.BoardPiece;
 import project23.framework.player.Player;
 import project23.gui.controller.Controller;
 import project23.gui.model.GameModel;
-
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -34,6 +33,15 @@ public class GameView extends View<GameModel> {
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
 
+    /**
+     * Sets the game from the view/scene
+     * Sets waitingtext
+     *
+     * @param parent, screen nodes (fxml)
+     * @param controller, controller of the nodes
+     * @param windowWidth, width of the window
+     * @param windowHeight, height of the window
+     */
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#board");
@@ -44,6 +52,13 @@ public class GameView extends View<GameModel> {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
+    /**
+     * Updates the clock
+     * If online match is waiting, show "waiting for game"
+     * Otherwise draws the board
+     *
+     * @param model
+     */
     @Override
     public void update(GameModel model) {
         // Clock
@@ -54,7 +69,6 @@ public class GameView extends View<GameModel> {
         showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
-        // If online match is waiting, show "waiting for game"
         if (model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getCurrentGame().isOnline()) {
             setBackgroundColorBoard(null);
             clearBoard();
@@ -64,6 +78,11 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Draws the game board, sets the grid, draws the gamepieces
+     *
+     * @param model
+     */
     private void drawBoard(GameModel model) {
         Board board = model.getBoard();
         if (board == null) {
@@ -94,6 +113,12 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Draws the possible moves for the player
+     *
+     * @param validMoves, list of possible moves saved in boardpieces
+     * @param gridSize, size of the grid
+     */
     private void drawValidMoves(List<BoardPiece> validMoves, int gridSize) {
         double cellSize = gameBoardPane.getPrefWidth() / gridSize;
 
@@ -111,6 +136,11 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Draws the lines of the grid
+     *
+     * @param gridSize, size of the grid
+     */
     public void drawLines(int gridSize) {
         // Clear board
         clearBoard();
@@ -138,10 +168,20 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Clears the board
+     */
     public void clearBoard() {
         gameBoardPane.getChildren().clear();
     }
 
+    /**
+     * Draws the gamepiece
+     * Gets the coordinates and adds a boardpiece to the coordinate when clicked
+     *
+     * @param piece, boardpiece
+     * @param gridSize, size of the grid
+     */
     public void drawPiece(BoardPiece piece, int gridSize) {
         if (!piece.hasOwner()) {
             return;
@@ -171,6 +211,11 @@ public class GameView extends View<GameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
+    /**
+     * shows the playerinformation in the top information box in a label
+     *
+     * @param playerInformationList, list of playerinformation like name etc.
+     */
     public void showPlayerInformation(ArrayList<String> playerInformationList) {
         HBox playerInformationHBox = (HBox) lookup("#playerInformationHBox");
 
@@ -183,6 +228,10 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * sets the background color for the game boards
+     * @param color, the color of the background
+     */
     public void setBackgroundColorBoard(Color color) {
         gameBoardPane.setBackground(new Background(new BackgroundFill(color, null, null)));
     }

@@ -21,13 +21,34 @@ public abstract class View<T extends Model> extends Scene {
     public static final int MESSAGE_CLEARING_DELAY_MS = 2000;
     private long expireTimeMessage = 0;
 
+    /**
+     * Sets the controller to be used
+     *
+     * @param parent, screen nodes (fxml)
+     * @param controller, controller of the nodes
+     * @param windowWidth, width of the window
+     * @param windowHeight, height of the window
+     */
     public View(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, windowWidth, windowHeight);
         this.controller = controller;
     }
 
+    /**
+     * Only method that can be called from model, used to update view (redraw scene)
+     *
+     * @param model, the model to query data from
+     */
     public abstract void update(T model);
 
+
+    /**
+     * Dialog is a pop-up message
+     * Makes new dialog, adds message and icons, shows the dialog
+     *
+     * @param message, the message that needs to be shown
+     * @param dialogTitle, title of the pop-up
+     */
     public void showDialog(String message, String dialogTitle) {
         if (message != null && !message.isBlank()) {
             //creating dialog
@@ -52,8 +73,9 @@ public abstract class View<T extends Model> extends Scene {
 
     /**
      * if not displaying a message show a message when this method gets called.
+     * Messages disappears after {@link View#MESSAGE_CLEARING_DELAY_MS} seconds
      *
-     * @param message, the message to display.
+     * @param message, the message to display
      */
     public void showInfoText(String message, Label node) {
         if (!message.isBlank()) {

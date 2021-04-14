@@ -1,6 +1,5 @@
 package project23.gui.view;
 
-import javafx.css.Match;
 import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -10,7 +9,6 @@ import javafx.stage.Stage;
 import project23.framework.ChallengeRequest;
 import project23.gui.controller.Controller;
 import project23.gui.model.GameLobbyModel;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,11 +16,24 @@ public class GameLobbyView extends View<GameLobbyModel> {
 
     private final ArrayList<Dialog> dialogs;
 
+    /**
+     * Makes a new arraylist with challenge dialogs
+     *
+     * @param parent, screen nodes (fxml)
+     * @param controller, controller of the nodes
+     * @param windowWidth, width of the window
+     * @param windowHeight, height of the window
+     */
     public GameLobbyView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         this.dialogs = new ArrayList<>();
     }
 
+    /**
+     * Shows all the challenges in the lobby and updates playerlist in the lobby
+     *
+     * @param model, the model to query data from
+     */
     @Override
     public void update(GameLobbyModel model) {
         showDialog(model.getDialogMessage(), model.getDialogTitle());
@@ -33,6 +44,13 @@ public class GameLobbyView extends View<GameLobbyModel> {
         updateGameChallengeList(model.getLobbyPlayers());
     }
 
+    /**
+     * shows dialog when a player challenges you
+     * Dialog is a pop-up message
+     * Makes new dialog, adds buttons, message and icons, shows the dialog
+     *
+     * @param model, the model to get/set the challenge request
+     */
     public void showChallengeDialog(GameLobbyModel model) {
         ChallengeRequest challengeRequest = model.getLastChallengeRequest();
         if(challengeRequest == null) {
@@ -70,16 +88,23 @@ public class GameLobbyView extends View<GameLobbyModel> {
         dialog.show();
     }
 
+    /**
+     * CLoses all dialogs
+     */
     private void closeAllDialogs() {
         for(Dialog dialog : dialogs) {
             dialog.close();
         }
+        dialogs.clear();
     }
 
+    /**
+     * Displays list of players which are available in the server
+     *
+     * @param playerNames, list of players
+     */
     private void updateGameChallengeList(List<String> playerNames) {
-        //als lookup null teruggeeft, gebruik parameter net zoals showInfoText
         ListView challengerList = (ListView) lookup("#challengerList");
-        // als dit null is: rip lol
         challengerList.getItems().clear();
 
         for (String playerName : playerNames) {
