@@ -184,28 +184,32 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
         System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
 
-        System.out.print("We are ");
-        if (anyEndedInNonGameOverValue) {
-            if (Math.abs(bestMoveValue) > 1.0f) {
-                System.out.print("most likely ");
+        if(Math.abs(bestMoveValue) < 0.8f) {
+            System.out.println("I can't tell who will win if the opponent plays perfectly.");
+        }else{
+            System.out.print("We are ");
+            if (anyEndedInNonGameOverValue) {
+                if (Math.abs(bestMoveValue) > 2.0f) {
+                    System.out.print("most likely");
+                } else {
+                    System.out.print("probably");
+                }
             } else {
-                System.out.print("probably ");
+                System.out.print("definitely");
             }
-        } else {
-            System.out.print("definitely ");
+
+            System.out.print(" going to ");
+
+            if (bestMoveValue > 0) {
+                System.out.print("win");
+            } else if (bestMoveValue == 0) {
+                System.out.print("tie");
+            } else {
+                System.out.print("lose");
+            }
+
+            System.out.println(" if the opponent plays perfectly.");
         }
-
-        System.out.print("going to ");
-
-        if (bestMoveValue > 0) {
-            System.out.print("win ");
-        } else if (bestMoveValue == 0) {
-            System.out.print("tie ");
-        } else {
-            System.out.print("lose ");
-        }
-
-        System.out.println("if the opponent plays perfectly.");
 
         board.makeMove(this, bestMove);
     }

@@ -21,6 +21,7 @@ public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
         super(board, id);
     }
 
+
     @Override
     public void requestMove() {
         System.out.println("Please enter the coordinates of the move you want to make.");
