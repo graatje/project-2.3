@@ -56,46 +56,50 @@ public class CommunicationHandler {
 
         String[] split = input.split(" ");
 
-        switch (split[1].toUpperCase(Locale.ROOT)) {
-            case "GAME":
-                switch (split[2].toUpperCase(Locale.ROOT)) {
-                    case "MATCH":
-                        //A match was assigned to our client.
-                        gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
-                        break;
-                    case "YOURTURN":
-                        //It is our turn in the match, so finalize the turn of the ServerPlayer
-                        serverPlayerCommunicationListener.finalizeTurn();
-                        break;
-                    case "MOVE":
-                        //The opponent has made a move
-                        serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
-                        break;
-                    case "CHALLENGE":
-                        int challengeNumber = Integer.parseInt(json.getString("CHALLENGENUMBER"));
+        switch(split[0].toUpperCase(Locale.ROOT)) {
+            case "SRV":
+                switch (split[1].toUpperCase(Locale.ROOT)) {
+                    case "GAME":
+                        switch (split[2].toUpperCase(Locale.ROOT)) {
+                            case "MATCH":
+                                //A match was assigned to our client.
+                                gameManagerCommunicationListener.startServerMatch(json.getString("OPPONENT"), json.getString("PLAYERTOMOVE"));
+                                break;
+                            case "YOURTURN":
+                                //It is our turn in the match, so finalize the turn of the ServerPlayer
+                                serverPlayerCommunicationListener.finalizeTurn();
+                                break;
+                            case "MOVE":
+                                //The opponent has made a move
+                                serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
+                                break;
+                            case "CHALLENGE":
+                                int challengeNumber = Integer.parseInt(json.getString("CHALLENGENUMBER"));
 
-                        if (input.contains("CANCELLED")) {
-                            gameManagerCommunicationListener.matchCancelled(challengeNumber);
+                                if (input.contains("CANCELLED")) {
+                                    gameManagerCommunicationListener.matchCancelled(challengeNumber);
+                                }
+                                //There is new information regarding a challenge!
+                                gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), challengeNumber);
+                                break;
+                            case "WIN":
+                            case "DRAW":
+                            case "LOSS":
+                                gameManagerCommunicationListener.endMatch(split[2]);
+                                break;
                         }
-                        //There is new information regarding a challenge!
-                        gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), challengeNumber);
                         break;
-                    case "WIN":
-                    case "DRAW":
-                    case "LOSS":
-                        gameManagerCommunicationListener.endMatch(split[2]);
+                    case "PLAYERLIST":
+                        JSONArray playerList = extractJsonPlayerlist(input);
+
+                        List<String> lobbyPlayers = new ArrayList<>();
+                        for (int i = 0; i < playerList.length(); i++) {
+                            lobbyPlayers.add(playerList.getString(i));
+                        }
+
+                        gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
                         break;
                 }
-                break;
-            case "PLAYERLIST":
-                JSONArray playerList = extractJsonPlayerlist(input);
-
-                List<String> lobbyPlayers = new ArrayList<>();
-                for (int i = 0; i < playerList.length(); i++) {
-                    lobbyPlayers.add(playerList.getString(i));
-                }
-
-                gameManagerCommunicationListener.updateLobbyPlayers(lobbyPlayers);
                 break;
             case "ERR":
                 String message = input.substring("ERR ".length());
