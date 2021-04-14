@@ -19,7 +19,7 @@ public class GameModel extends Model implements BoardObserver {
     private GameManager gameManager;
     private double boardSize;
     private boolean resetClock;
-    private boolean shouldStopClock;
+    private boolean stopClock;
     private Label clockLabel;
 
     /**
@@ -82,7 +82,7 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
-        shouldStopClock = true;
+        stopClock = true;
         Platform.runLater(() -> {
             String message;
             if (who == null) {
@@ -149,7 +149,18 @@ public class GameModel extends Model implements BoardObserver {
         this.clockLabel = clockLabel;
     }
 
+    /**
+     * Whether the clock must be stopped.
+     * When this method is called, {@link #stopClock} is automatically set to false. Otherwise the clock
+     * might never run again.
+     * @return whether clock must be stopped
+     */
     public boolean stopClock() {
-        return shouldStopClock;
+        if(stopClock) {
+            stopClock = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
