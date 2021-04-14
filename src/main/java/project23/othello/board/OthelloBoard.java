@@ -9,22 +9,40 @@ import project23.framework.player.Player;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class stores an othelloboard filled with boardpieces. superclass is Board.
+ * also has methods to make a move and check valid moves.
+ */
 public class OthelloBoard extends Board {
 
+    /**
+     * constructor. calls the constructor of the superclass.
+     *
+     * @param gameManager
+     */
     public OthelloBoard(GameManager gameManager) {
         super(gameManager, 8, 8);
     }
 
+    /**
+     * @return The minimum amount of players required to start a game on this board.
+     */
     @Override
     public int getMinPlayers() {
         return 2;
     }
 
+    /**
+     * @return The maximum amount of players required to start a game on this board.
+     */
     @Override
     public int getMaxPlayers() {
         return 2;
     }
 
+    /**
+     * @return boolean, if valid moves must be shown on the board or not.
+     */
     @Override
     public boolean isShowValidMoves() {
         return true;
@@ -106,6 +124,12 @@ public class OthelloBoard extends Board {
         return false;
     }
 
+    /**
+     * a method for executing a move on the board.
+     *
+     * @param asWho The player which executed the move.
+     * @param piece The piece the player wants to affect.
+     */
     @Override
     public void _executeMove(Player asWho, BoardPiece piece) {
         if (!checkValidMove(piece, asWho)) {
@@ -123,6 +147,13 @@ public class OthelloBoard extends Board {
         piece.setOwner(getCurrentPlayer());
     }
 
+    /**
+     * this method captures pieces of the opponent starting from the provided piece in the direction specified.
+     *
+     * @param piece the piece you want to place on the board.
+     * @param xchange the horizontal direction the line goes in.
+     * @param ychange the vertical direction the line goes in.
+     */
     private void changeMoveLine(BoardPiece piece, int xchange, int ychange) {
 
         // temporary arraylist of captured opponents.
@@ -204,6 +235,10 @@ public class OthelloBoard extends Board {
         return null; // no winner (draw)
     }
 
+    /**
+     * preparing the othelloboard with the original starting lineup.
+     * @param startPlayer The player who will start.
+     */
     @Override
     public void prepareBoard(Player startPlayer) {
         getBoardPiece(3, 3).setOwner(gameManager.getOtherPlayer(startPlayer));
@@ -212,6 +247,10 @@ public class OthelloBoard extends Board {
         getBoardPiece(4, 3).setOwner(startPlayer);
     }
 
+    /**
+     * getter for the game type, in this case the Othello gametype.
+     * @return GameType.OTHELLO
+     */
     @Override
     public GameType getGameType() {
         return GameType.OTHELLO;
