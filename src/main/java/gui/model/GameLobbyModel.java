@@ -12,6 +12,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     private String challengeMessage;
     private Match match;
+    private boolean isAI;
 
     private GenericGameModel gameModel;
 
@@ -21,7 +22,10 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     public GameLobbyModel(GenericGameModel gameModel, MainWindow mainWindow){
         this.gameModel = gameModel;
         this.mainWindow = mainWindow;
+    }
 
+    public void setAI(boolean AI) {
+        isAI = AI;
     }
 
     public void refreshPlayerList() {
@@ -42,10 +46,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
      * Starts an online match, nothing to do with challenging
      * @param isAI
      */
-    public void prepareOnlineGame(boolean isAI) {
-        cgm.updateSelfPlayerSupplier(isAI ? ConfigData.getInstance().getCurrentGame().createAIPlayerFactory() :
-                ConfigData.getInstance().getCurrentGame().createLocalPlayerFactory());
-
+    public void prepareOnlineGame() {
         gameModel.prepareNewGame();
         cgm.requestStart();
     }
@@ -91,8 +92,17 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     }
 
     @Override
-    public void onGameStarted() {
+    public void onPostGameStart() {
         Platform.runLater(() -> mainWindow.switchView(MainWindow.viewEnum.GAME));
+    }
+
+    /**
+     * Sets whether AI should be used
+     */
+    @Override
+    public void onPreGameStart() {
+        cgm.updateSelfPlayerSupplier(isAI ? ConfigData.getInstance().getCurrentGame().createAIPlayerFactory() :
+                ConfigData.getInstance().getCurrentGame().createLocalPlayerFactory());
     }
 
     public void prepareGameManager() {

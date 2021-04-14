@@ -4,10 +4,14 @@ import gui.MainWindow;
 import gui.model.GameLobbyModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ListView;
 
-public class GameLobbyController extends Controller {
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class GameLobbyController extends Controller implements Initializable {
 
     @FXML
     private ListView challengerList;
@@ -31,7 +35,14 @@ public class GameLobbyController extends Controller {
      * This is the functionality of the old "Play online" button
      */
     public void pressSubscribe() {
-        ((GameLobbyModel)model).prepareOnlineGame(isAIBox.isSelected());
+        ((GameLobbyModel)model).prepareOnlineGame();
         mainWindow.switchView(MainWindow.viewEnum.GAME);
+    }
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        isAIBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
+            ((GameLobbyModel)model).setAI(newValue);
+        });
     }
 }
