@@ -70,8 +70,10 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onChallengeReceive(Match match) {
-        setChallenge(match, match.getOpponentName()+" is challenging you to a game of "+match.getGameType()+"! Do you accept?");
-        Platform.runLater(this::updateView); // zodat melding wordt weergegeven
+        if(match.getGameType().equals(ConfigData.getInstance().getCurrentGameName())) {
+            setChallenge(match, match.getOpponentName() + " is challenging you to a game of " + match.getGameType() + "! Do you accept?");
+            Platform.runLater(this::updateView); // zodat melding wordt weergegeven
+        }
     }
 
     public String getChallengeMessage() {
