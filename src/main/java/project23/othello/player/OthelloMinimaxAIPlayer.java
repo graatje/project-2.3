@@ -44,28 +44,28 @@ public class OthelloMinimaxAIPlayer extends MinimaxAIPlayer {
 
     @Override
     protected float evaluateBoard(Board board, int treeDepth) {
-        int b = 0, w = 0;
+        int selfPieces = 0, otherPieces = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
                 Player owner = board.getBoardPiece(x, y).getOwner();
                 if (owner == this) {
-                    b += PIECE_WEIGHTS[x][y];
+                    selfPieces += PIECE_WEIGHTS[x][y];
                 } else if (owner != null) {
-                    w += PIECE_WEIGHTS[x][y];
+                    otherPieces += PIECE_WEIGHTS[x][y];
                 }
             }
         }
 
         float value = 0;
-        if (b + w != 0) {
-            value = (float) (b - w) / (b + w);
+        if (selfPieces + otherPieces != 0) {
+            value = (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
         }
 
-        b += board.getValidMoves(this).size();
-        w += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
+        selfPieces += board.getValidMoves(this).size();
+        otherPieces += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
 
-        if (b + w != 0) {
-            value += (float) (b - w) / (b + w);
+        if (selfPieces + otherPieces != 0) {
+            value += (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
         }
 
         return value;
