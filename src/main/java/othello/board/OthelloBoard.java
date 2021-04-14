@@ -148,7 +148,7 @@ public class OthelloBoard extends Board {
             BoardPiece boardPiece = getBoardPiece(x, y);
             if (!boardPiece.hasOwner()) {
                 return;
-            }else if(boardPiece.getOwner().getID() == getCurrentPlayer().getID()) // TODO: NPE?
+            }else if(boardPiece.getOwner().getID() == getCurrentPlayer().getID())
             {
             	brokeOut = true;
             	break;

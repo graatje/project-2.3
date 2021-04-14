@@ -124,8 +124,8 @@ public class Client extends Thread {
                 if (!input.equals("")) {
                     try {
                         com.handleServerInput(input);
-                    } catch (JSONException e) {
-                        //TODO: handle this shiz
+                    } catch (Exception e) {
+                        System.err.println("Could not handle server input '" + input + "': " + e.toString());
                     }
                 }
             }
