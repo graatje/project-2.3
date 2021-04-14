@@ -1,12 +1,9 @@
 package gui;
 
 import framework.ConfigData;
-import framework.ConnectedGameManager;
-import framework.GameManager;
 import gui.controller.*;
 import gui.model.*;
 import gui.view.*;
-import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -26,7 +23,7 @@ public class MainWindow {
     public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
-    public enum viewEnum {
+    public enum ViewEnum {
         GAME_LOBBY,
         MAINMENU,
         GAME_MENU,
@@ -43,7 +40,7 @@ public class MainWindow {
         //stage = primaryStage;
         stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
         stage.setTitle("C4Games");
-        switchView(viewEnum.MAINMENU);
+        switchView(ViewEnum.MAINMENU);
     }
 
     public void quit() {
@@ -118,7 +115,7 @@ public class MainWindow {
      * Sets the view to one of the specified views
      * @param view which view to show
      */
-    public void switchView(viewEnum view) {
+    public void switchView(ViewEnum view) {
         switch (view) {
             case MAINMENU:
                 stage.setScene(mmView);

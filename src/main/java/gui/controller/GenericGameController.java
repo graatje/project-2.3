@@ -1,7 +1,6 @@
 package gui.controller;
 
 import framework.ConfigData;
-import framework.ConnectedGameManager;
 import framework.GameManager;
 import gui.MainWindow;
 import gui.model.GenericGameModel;
@@ -27,13 +26,9 @@ public class GenericGameController extends Controller implements Initializable {
     }
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
-        mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
-
+        mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
         GameManager gm = ConfigData.getInstance().getGameManager();
-
         gm.destroy();
-
-        ((GenericGameModel)model).clearBoard();
     }
 
     @FXML public void onMouseReleased(MouseEvent event) {

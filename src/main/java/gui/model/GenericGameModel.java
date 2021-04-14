@@ -31,6 +31,7 @@ public class GenericGameModel extends Model implements BoardObserver {
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
+        updateView(); // Draws an empty board
     }
 
     public void clickTile(double x, double y) {

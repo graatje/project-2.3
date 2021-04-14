@@ -60,8 +60,6 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
         Platform.runLater(() -> {
             setDialogMessage(errorMessage);
             updateView();
-            logout();
-            mainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
         });
     }
 
@@ -93,7 +91,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onPostGameStart() {
-        Platform.runLater(() -> mainWindow.switchView(MainWindow.viewEnum.GAME));
+        Platform.runLater(() -> mainWindow.switchView(MainWindow.ViewEnum.GAME));
     }
 
     /**

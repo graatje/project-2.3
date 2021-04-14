@@ -11,12 +11,12 @@ public class MainMenuController extends Controller {
     @FXML private Text actiontarget;
 
     @FXML public void pressTTTMenuButton(ActionEvent event) {
-        mainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
+        mainWindow.switchView(MainWindow.ViewEnum.GAME_MENU);
         ConfigData.getInstance().setCurrentGameName("Tic-tac-toe");
     }
 
     @FXML public void pressOthelloMenuButton(ActionEvent event) {
-        mainWindow.switchView(gui.MainWindow.viewEnum.GAME_MENU);
+        mainWindow.switchView(MainWindow.ViewEnum.GAME_MENU);
         ConfigData.getInstance().setCurrentGameName("Reversi");
     }
 
@@ -26,6 +26,6 @@ public class MainMenuController extends Controller {
     }
 
     @FXML public void pressConfigurationButton(ActionEvent event){
-        mainWindow.switchView((MainWindow.viewEnum.GAME_CONFIGURATION));
+        mainWindow.switchView((MainWindow.ViewEnum.GAME_CONFIGURATION));
     }
 }
