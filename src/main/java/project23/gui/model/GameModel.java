@@ -27,7 +27,6 @@ public class GameModel extends Model implements BoardObserver {
      * Sets gameManager and board variables, and registers this model as observer. Does not start the game yet.
      */
     public void prepareNewGame() {
-        //TODO: dit via ConfigData aanvragen?
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
@@ -67,9 +66,14 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
+
+        //TODO klok in view aanzetten?
+        //setClockReset(true);
+
+        //TODO: show info message on skipping
         if (who.isShowValidMoves() && where == null) {
             setInfoMessage("Skipped a turn, no available moves");
-            System.out.println("DEBUG: skipped!!!");
+            System.err.println("DEBUG: skipping..! (hoera, dit werkt?)");
             updateView();
         }
     }
@@ -91,12 +95,6 @@ public class GameModel extends Model implements BoardObserver {
             setDialogMessageAndTitle(message, "Info");
             updateView();
         });
-    }
-
-    public void clearBoard() {
-        //TODO: deze methode is puur omdat anders het bord nog blijft staan tot de volgende wedstrijd begint (bv bij multiplayer)
-        // herimplementeren? betere manier?
-        //updateView();
     }
 
     @Override

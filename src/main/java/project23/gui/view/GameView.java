@@ -46,6 +46,11 @@ public class GameView extends View<GameModel> {
 
     @Override
     public void update(GameModel model) {
+        // Clock
+//        if(model.resetClock()) {
+//            //do stuff
+//        }
+
         showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 

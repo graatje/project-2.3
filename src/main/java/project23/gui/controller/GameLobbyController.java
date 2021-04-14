@@ -15,22 +15,29 @@ import java.util.ResourceBundle;
 
 public class GameLobbyController extends Controller<GameLobbyModel> implements Initializable {
 
-    @FXML
-    private ListView challengerList;
-    @FXML
-    private CheckBox isAIBox;
-    @FXML
-    private Label messageLabel;
+    @FXML private ListView challengerList;
+    @FXML private CheckBox isAIBox;
+    @FXML private Label messageLabel;
 
+    /**
+     * Switches back to the main menu view
+     */
     public void pressBackToMainMenu(ActionEvent event) {
         model.logout();
         mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
+    /**
+     * refreshes the playerList from the server
+     */
     public void pressRefresh(ActionEvent event) {
         model.refreshPlayerList();
     }
 
+    /**
+     * When the challenge button is pressed, choose a player to challenge.
+     * If playerlist is not empty
+     */
     public void pressChallengePlayer() {
         ObservableList<Integer> indices = challengerList.getSelectionModel().getSelectedIndices();
         if (!indices.isEmpty()) {
@@ -42,13 +49,18 @@ public class GameLobbyController extends Controller<GameLobbyModel> implements I
     }
 
     /**
-     * This is the functionality of the old "Play online" button
+     * This is the functionality of the old "Play online" button, switches to the Play online view
      */
     public void pressSubscribe() {
         model.prepareOnlineGame();
         mainWindow.switchView(MainWindow.ViewEnum.GAME);
     }
 
+    /**
+     * Set the AI to current value of the AI checkbox in model
+     * Also when the checkbox changes
+     * Sets the labelNode to be used for showInfoMessage()
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // Set default value

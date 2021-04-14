@@ -10,22 +10,28 @@ import project23.framework.ConfigData;
 import project23.framework.GameManager;
 import project23.gui.MainWindow;
 import project23.gui.model.GameModel;
-
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class GameController extends Controller<GameModel> implements Initializable {
-    @FXML
-    private Pane board;
-    @FXML
-    private Label messageField;
 
+    @FXML private Pane board;
+    @FXML private Label messageField;
+
+    /**
+     * Sets the labelNode to be used for showInfoMessage() in the model
+     * Sets the boardsize in the model
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         model.setLabelNode(messageField);
         model.setBoardSize(board.getPrefWidth());
     }
 
+    /**
+     * Switches back to the main menu view
+     * Destroys current view
+     */
     @FXML
     public void pressBackToMainMenu(ActionEvent event) {
         mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
@@ -33,11 +39,17 @@ public class GameController extends Controller<GameModel> implements Initializab
         gm.destroy();
     }
 
+    /**
+     * When mouse is released get X and Y coordinates
+     */
     @FXML
     public void onMouseReleased(MouseEvent event) {
         model.clickTile(event.getX(), event.getY());
     }
 
+    /**
+     * Restarts the game when pressed
+     */
     public void pressRetry(ActionEvent event) {
         model.restartGame();
     }

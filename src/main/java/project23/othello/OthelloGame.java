@@ -32,26 +32,45 @@ public class OthelloGame extends Game {
         return OthelloBoard::new;
     }
 
+    /**
+     * @return Color
+     */
     @Override
     public Color getBoardBackgroundColor() {
         return colors;
     }
 
+    /**
+     * returns a list of icons for the boardpiece
+     * @return List<URL>
+     */
     @Override
     public List<URL> getBoardPieceIcons() {
         return boardPieceIcons;
     }
 
+    /**
+     * names of the boardpieces.
+     * @return String[] boardpiecenames
+     */
     @Override
     public String[] getBoardPieceNames() {
         return boardPieceNames;
     }
 
+    /**
+     * framework.GameType
+     * @return GameType.OTHELLO
+     */
     @Override
     public GameType getGameType() {
         return GameType.OTHELLO;
     }
 
+    /**
+     * if it should show the pieces count on the GUI or not.
+     * @return boolean
+     */
     @Override
     public boolean showPiecesCount() {
         return showPiecesCount;
