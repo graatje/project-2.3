@@ -1,8 +1,8 @@
 package gui.controller;
 
 import framework.ConfigData;
-import framework.ConnectedGameManager;
 import gui.MainWindow;
+import gui.model.GameLobbyModel;
 import gui.model.GenericGameMenuModel;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -26,32 +26,29 @@ public class GenericGameMenuController extends Controller implements Initializab
     }
 
     @FXML
-    public void pressPlayAgainstComputer(ActionEvent event) {
-        ((GenericGameMenuModel) model).setGameManager();
-        ConfigData.getInstance().getCurrentGame().setOnline(false);
-        ConfigData.getInstance().getCurrentGame().isAI(false);
-        System.out.println("Starting..."+ (ConfigData.getInstance().getGameManager()));
-        ConfigData.getInstance().getGameManager().requestStart();
-        mainWindow.switchView(MainWindow.viewEnum.GAME);
-    }
-
-    @FXML
     public void pressOKUsername(ActionEvent event) {
         ((GenericGameMenuModel) model).setPlayerName(usernameField.getText());
         model.setInfoMessage("Username set to \"" + usernameField.getText() + "\".");
         model.updateView();
     }
 
+    /**
+     * Start a local game against AI
+     * @param event
+     */
     @FXML
-    public void pressPlayLocalOnline(ActionEvent event){
-        ((GenericGameMenuModel) model).setGameManager();
+    public void pressPlayAgainstComputer(ActionEvent event) {
+        ((GenericGameMenuModel) model).prepareOfflineGame();
         mainWindow.switchView(MainWindow.viewEnum.GAME);
     }
 
-    public void pressPlayOnline(ActionEvent event) {
-        ConfigData.getInstance().getCurrentGame().setOnline(true);
-        ((GenericGameMenuModel) model).setGameManager();
-        mainWindow.switchView(MainWindow.viewEnum.GAME_LOBBY); //TODO
+    /**
+     * Go to lobby
+     * @param event
+     */
+    public void pressGoToLobby(ActionEvent event) {
+        ((GenericGameMenuModel) model).prepareLobby();
+        mainWindow.switchView(MainWindow.viewEnum.GAME_LOBBY);
     }
 
     @FXML

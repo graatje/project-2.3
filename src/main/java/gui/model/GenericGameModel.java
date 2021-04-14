@@ -24,23 +24,13 @@ public class GenericGameModel extends Model implements BoardObserver {
     private List<URL> playerIconFileURLs;
 
     /**
-     * Sets gameManager and board variables, and registers this model as observer.
+     * Sets gameManager and board variables, and registers this model as observer. Does not start the game yet.
      */
-    public void setupGameManager() {
+    public void prepareNewGame() {
+        //TODO: dit via ConfigData aanvragen?
         gameManager = ConfigData.getInstance().getGameManager();
         board = gameManager.getBoard();
         board.registerObserver(this);
-
-        // Load boardpiece images
-        setPlayerIconFileURLs(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());
-    }
-
-    public List<URL> getPlayerIconFileURLs() {
-        return playerIconFileURLs;
-    }
-
-    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
-        this.playerIconFileURLs = playerIconFileURLs;
     }
 
     public void clickTile(double x, double y) {
@@ -121,14 +111,6 @@ public class GenericGameModel extends Model implements BoardObserver {
     @Override
     public void onGameStart(Player startingPlayer) {
         Platform.runLater(this::updateView);
-    }
-
-    public void setBackgroundColor(Color color){
-        this.color = color;
-    }
-
-    public Color getBackgroundColor(){
-        return color;
     }
 
     public String getPlayerNames(List<Player> players){

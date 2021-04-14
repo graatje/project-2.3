@@ -39,7 +39,7 @@ public class GameView extends View<GenericGameModel> {
         this.waitingText = new Text("Please wait for the game to start.");
     }
 
-    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
+    public void setBoardPieceIcons(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
@@ -59,8 +59,8 @@ public class GameView extends View<GenericGameModel> {
     }
 
     private void drawBoard(GenericGameModel model) {
-        setBackgroundColorBoard(model.getBackgroundColor());
-        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
+        setBackgroundColorBoard(ConfigData.getInstance().getCurrentGame().getBoardBackgroundColor());
+        setBoardPieceIcons(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());
 
         // Player stats
         showPlayerInformation(model.getPlayerInfo(model.getBoard().piecesCount()));

@@ -1,8 +1,12 @@
 package gui;
 
+import framework.ConfigData;
+import framework.ConnectedGameManager;
+import framework.GameManager;
 import gui.controller.*;
 import gui.model.*;
 import gui.view.*;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.image.Image;
@@ -11,7 +15,8 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.util.Objects;
 
-public class MainWindow extends Stage {
+public class MainWindow {
+    private Stage stage;
     private GenericGameConfigurationView ggcView;
     private GameView ggView;
     private GenericGameMenuView ggmView;
@@ -30,13 +35,21 @@ public class MainWindow extends Stage {
     }
 
     public MainWindow(Stage primaryStage) throws IOException {
-        // primaryStage word niet gebruikt?!
+        this.stage = primaryStage;
         setupMVC();
 
+        stage.setOnCloseRequest(windowEvent -> this.quit());
+
         //stage = primaryStage;
-        this.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
-        this.setTitle("C4Games");
+        stage.getIcons().add(new Image(Objects.requireNonNull(getClass().getResource("/icon.png")).toExternalForm()));
+        stage.setTitle("C4Games");
         switchView(viewEnum.MAINMENU);
+    }
+
+    public void quit() {
+        if(ConfigData.getInstance().getGameManager() != null) {
+            ConfigData.getInstance().getGameManager().destroy();
+        }
     }
 
     private void setupMVC() throws IOException {
@@ -62,8 +75,17 @@ public class MainWindow extends Stage {
         );
         ggModel.registerView(ggView);
 
+        // Game lobby
+        GameLobbyModel glModel = new GameLobbyModel(ggModel);
+        GameLobbyController glController = new GameLobbyController();
+        glController.setMainWindow(this);
+        glController.setModel(glModel);
+        glView = new GameLobbyView(
+                getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
+        glModel.registerView(glView);
+
         // Game Menu
-        GenericGameMenuModel ggmModel = new GenericGameMenuModel(ggModel);
+        GenericGameMenuModel ggmModel = new GenericGameMenuModel(ggModel, glModel);
         GenericGameMenuController ggmController = new GenericGameMenuController();
         ggmController.setMainWindow(this);
         ggmController.setModel(ggmModel);
@@ -77,17 +99,6 @@ public class MainWindow extends Stage {
         mmController.setMainWindow(this);
         mmView = new MainMenuView(
                 getFXMLParent("MainMenu.fxml", mmController), mmController, WINDOW_WIDTH, WINDOW_HEIGHT);
-
-        // Game lobby
-        GameLobbyModel glModel = new GameLobbyModel();
-        GameLobbyController glController = new GameLobbyController();
-        glController.setMainWindow(this);
-        glController.setModel(glModel);
-        glView = new GameLobbyView(
-                getFXMLParent("GameLobby.fxml", glController), glController, WINDOW_WIDTH, WINDOW_HEIGHT);
-        glModel.registerView(glView);
-        //TODO: moet dit hier? controller.initialize is te vroeg!! Moet na de register.
-        glModel.updateView();
     }
 
     /**
@@ -110,23 +121,23 @@ public class MainWindow extends Stage {
     public void switchView(viewEnum view) {
         switch (view) {
             case MAINMENU:
-                this.setScene(mmView);
+                stage.setScene(mmView);
                 break;
             case GAME_MENU:
-                this.setScene(ggmView);
+                stage.setScene(ggmView);
                 break;
             case GAME_CONFIGURATION:
-                this.setScene(ggcView);
+                stage.setScene(ggcView);
                 break;
             case GAME:
-                this.setScene(ggView);
+                stage.setScene(ggView);
                 break;
             case GAME_LOBBY:
-                this.setScene(glView);
+                stage.setScene(glView);
                 break;
             default:
                 throw new IllegalArgumentException();
         }
-        show();
+        stage.show();
     }
 }

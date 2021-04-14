@@ -21,6 +21,7 @@ public class MainMenuController extends Controller {
     }
 
     @FXML public void pressExitButton(ActionEvent event) {
+        mainWindow.quit();
         Platform.exit();
     }
 

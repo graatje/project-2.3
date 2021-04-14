@@ -52,7 +52,7 @@ public class ConfigData {
     public Game getCurrentGame() {
         if(!games.containsKey(currentGameName)) {
             //TODO: runtime exception? Eigen exception maken? idk
-            throw new IllegalArgumentException("Game has not been set in games ArrayList");
+            throw new IllegalArgumentException("Game has not been set in the games list");
         }
         return games.get(currentGameName);
     }
@@ -105,14 +105,6 @@ public class ConfigData {
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
-
-//    public GameType getGameType() {
-//        return gameType;
-//    }
-
-//    public void setGameType(GameType gameType) {
-//        this.gameType = gameType;
-//    }
 
     public int getMinimaxThinkingTime(){ return minimaxThinkingTime; }
 
