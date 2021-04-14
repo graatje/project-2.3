@@ -76,7 +76,7 @@ public class MainWindow {
         ggModel.registerView(ggView);
 
         // Game lobby
-        GameLobbyModel glModel = new GameLobbyModel(ggModel);
+        GameLobbyModel glModel = new GameLobbyModel(ggModel, this);
         GameLobbyController glController = new GameLobbyController();
         glController.setMainWindow(this);
         glController.setModel(glModel);

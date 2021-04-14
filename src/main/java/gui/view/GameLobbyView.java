@@ -16,7 +16,6 @@ public class GameLobbyView extends View<GameLobbyModel> {
     @Override
     public void update(GameLobbyModel model) {
         // een paar ms wachten hier fixt het probleem.. maar nee
-        System.out.println("Op dit punt moet de lobby lijst al bekend zijn.");
         updateGameChallengeList(model.getLobbyPlayers());
     }
 
