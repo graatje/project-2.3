@@ -22,6 +22,10 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     }
 
+    public void refreshPlayerList() {
+        cgm.getClient().sendGetPlayerlistMessage();
+    }
+
     public List<String> getLobbyPlayers() {
         this.currentlyShowingPlayers = cgm.getLobbyPlayers();
         return currentlyShowingPlayers;
