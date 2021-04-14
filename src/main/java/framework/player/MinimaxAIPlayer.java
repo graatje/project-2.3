@@ -165,7 +165,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
             anyEndedInNonGameOverValue = anyEndedInNonGameOver.get();
         }
 
-        System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepth + ".");
+        System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
 
         System.out.print("We are ");
         if(anyEndedInNonGameOverValue) {
