@@ -200,7 +200,7 @@ public class CommunicationHandler {
      * @param gameType          The game to play
      */
     public void sendChallengeMessage(String playerToChallenge, String gameType) {
-        client.sendCommandToServer("challenge \"" + playerToChallenge + "\"" + gameType + "\"\n");
+        client.sendCommandToServer("challenge \"" + playerToChallenge + "\" \"" + gameType + "\"\n");
     }
 
     public void sendGetPlayerlistMessage() {
