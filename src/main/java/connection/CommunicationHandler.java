@@ -74,13 +74,16 @@ public class CommunicationHandler {
                                 serverPlayerCommunicationListener.turnReceive(json.getString("PLAYER"), json.getString("MOVE"));
                                 break;
                             case "CHALLENGE":
+                                //There is new information regarding a challenge!
                                 int challengeNumber = Integer.parseInt(json.getString("CHALLENGENUMBER"));
 
                                 if (input.contains("CANCELLED")) {
                                     gameManagerCommunicationListener.matchCancelled(challengeNumber);
+                                }else{
+                                    String challenger = json.getString("CHALLENGER");
+                                    String gametype = json.getString("GAMETYPE");
+                                    gameManagerCommunicationListener.getMatchRequest(challenger, gametype, challengeNumber);
                                 }
-                                //There is new information regarding a challenge!
-                                gameManagerCommunicationListener.getMatchRequest(json.getString("CHALLENGER"), json.getString("GAMETYPE"), challengeNumber);
                                 break;
                             case "WIN":
                             case "DRAW":
