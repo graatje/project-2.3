@@ -24,7 +24,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     private boolean loggedIn = false;
 
     private ServerPlayer serverPlayerOpponent;
-    private String selfName = "unknown-" + (int) (Math.random() * 100);
+    private String selfName = "unknown" + (int) (Math.random() * 100);
 
     private final Set<ConnectedGameManagerObserver> observers = new HashSet<>();
 
