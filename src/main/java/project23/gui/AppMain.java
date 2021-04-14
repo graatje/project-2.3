@@ -4,6 +4,10 @@ import javafx.application.Platform;
 import javafx.stage.Stage;
 
 public class AppMain {
+
+    /**
+     * Used for creating  a jarfile
+     */
     public static void main(String[] args) {
         Platform.startup(() -> {
             try {
