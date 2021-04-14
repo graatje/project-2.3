@@ -37,17 +37,23 @@ public abstract class Game {
     public GameManager createGameManager() {
         if(online) {
             try {
-                return new ConnectedGameManager(
+                ConnectedGameManager cgm = new ConnectedGameManager(
                         createBoardFactory(),
                         ConfigData.getInstance().getServerIP(),
                         ConfigData.getInstance().getServerPort(),
                         createAIPlayerFactory()
                 );
+
+                cgm.setSelfName(ConfigData.getInstance().getPlayerName());
+                cgm.login();
+
+                return cgm;
             } catch (IOException e) {
                 System.err.println("Couldn't connect to server!");
                 e.printStackTrace();
-                return null;
             }
+
+            return null;
         } else {
             return new GameManager(
                     createBoardFactory(),
