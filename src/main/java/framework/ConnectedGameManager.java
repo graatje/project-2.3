@@ -142,6 +142,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
+        observers.forEach(ConnectedGameManagerObserver::onPreGameStart);
+
         initialize();
 
         serverPlayerOpponent = null;
@@ -164,7 +166,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
         _start(getPlayer(playerToBegin));
 
-        observers.forEach(ConnectedGameManagerObserver::onGameStarted);
+        observers.forEach(ConnectedGameManagerObserver::onPostGameStart);
     }
 
     @Override
