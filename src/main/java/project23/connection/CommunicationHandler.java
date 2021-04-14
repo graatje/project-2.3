@@ -3,15 +3,13 @@ package project23.connection;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import project23.util.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class CommunicationHandler {
-
-    protected static final boolean DEBUG = true;
-
     private Client client;
 
     private GameManagerCommunicationListener gameManagerCommunicationListener;
@@ -36,9 +34,7 @@ public class CommunicationHandler {
      * @param input The message given by the server
      */
     public void handleServerInput(String input) throws JSONException {
-        if (DEBUG) {
-            System.out.println(" DEBUG: from server = " + input);
-        }
+        Logger.debug(" from server = " + input);
 
         if (input.equals("OK")) return;
 

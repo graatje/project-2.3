@@ -5,6 +5,7 @@ import project23.framework.ConnectedGameManager;
 import project23.framework.board.Board;
 import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
+import project23.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -186,34 +187,37 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
             anyEndedInNonGameOverValue = anyEndedInNonGameOver.get();
         }
 
-        System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
+        Logger.info("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
 
+        StringBuilder certaintyMessage = new StringBuilder();
         if(Math.abs(bestMoveValue) < 0.8f) {
-            System.out.println("I can't tell who will win if the opponent plays perfectly.");
+            certaintyMessage.append("I can't tell who will win if the opponent plays perfectly.");
         }else{
-            System.out.print("We are ");
+            certaintyMessage.append("We are ");
             if (anyEndedInNonGameOverValue) {
                 if (Math.abs(bestMoveValue) > 2.0f) {
-                    System.out.print("most likely");
+                    certaintyMessage.append("most likely");
                 } else {
-                    System.out.print("probably");
+                    certaintyMessage.append("probably");
                 }
             } else {
-                System.out.print("definitely");
+                certaintyMessage.append("definitely");
             }
 
-            System.out.print(" going to ");
+            certaintyMessage.append(" going to ");
 
             if (bestMoveValue > 0) {
-                System.out.print("win");
+                certaintyMessage.append("win");
             } else if (bestMoveValue == 0) {
-                System.out.print("tie");
+                certaintyMessage.append("tie");
             } else {
-                System.out.print("lose");
+                certaintyMessage.append("lose");
             }
 
-            System.out.println(" if the opponent plays perfectly.");
+            certaintyMessage.append(" if the opponent plays perfectly.");
         }
+
+        Logger.info(certaintyMessage.toString());
 
         board.makeMove(this, bestMove);
     }
@@ -293,10 +297,10 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
                     if (anyEndedInNonGameOverValue) {
                         // We can still go higher!
-                        System.out.println("Done with minimax at a depth of " + depth + ", but we still have time. Going deeper!");
+                        Logger.info("Done with minimax at a depth of " + depth + ", but we still have time. Going deeper!");
                         performAsyncMinimax(session, depth + 1);
                     } else {
-                        System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
+                        Logger.info("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
                         onMinimaxDone(session);
                     }
                 }

@@ -1,5 +1,7 @@
 package project23.connection;
 
+import project23.util.Logger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,7 +36,7 @@ public class Client extends Thread {
             ioe.printStackTrace();
         }
 
-        if (CommunicationHandler.DEBUG) {
+        if (Logger.DEBUG) {
             startConsolePassthroughThread();
         }
 
@@ -54,10 +56,10 @@ public class Client extends Thread {
      * Debug method, reads input from console while application is running, and sends it to the server.
      */
     private void consolePassthrough() {
-        if (!CommunicationHandler.DEBUG) {
-            System.err.println("Warning! Starting console <> server command passthrough, but CommunicationHandler.DEBUG is set to false! You won't receive any feedback!");
+        if (!Logger.DEBUG) {
+            Logger.warning("Warning! Starting console <> server command passthrough, but CommunicationHandler.DEBUG is set to false! You won't receive any feedback!");
         } else {
-            System.out.println("Console <> server command passthrough started.");
+            Logger.info("Console <> server command passthrough started.");
         }
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -70,7 +72,7 @@ public class Client extends Thread {
             e.printStackTrace();
         }
 
-        System.out.println("Console <> server command passthrough stopped.");
+        Logger.info("Console <> server command passthrough stopped.");
     }
 
     /**
@@ -86,7 +88,7 @@ public class Client extends Thread {
      * Periodically sends a message to the server to prevent SocketTimeout
      */
     private void keepAlive() {
-        System.out.println("Keep alive thread started.");
+        Logger.info("Keep alive thread started.");
 
         while (running) {
             try {
@@ -97,14 +99,14 @@ public class Client extends Thread {
             sendKeepAlive();
         }
 
-        System.out.println("Keep alive thread stopped.");
+        Logger.info("Keep alive thread stopped.");
     }
 
     /**
      * See Client#keepAlive
      */
     private void sendKeepAlive() {
-        System.out.println("Sending keep-alive message..");
+        Logger.info("Sending keep-alive message..");
         sendGetPlayerlistMessage();
     }
 
@@ -114,9 +116,7 @@ public class Client extends Thread {
      * @param command The command to send to the server
      */
     public void sendCommandToServer(String command) {
-        if (CommunicationHandler.DEBUG) {
-            System.out.println(" DEBUG: to server   = " + command.trim());
-        }
+        Logger.debug(" to server   = " + command.trim());
 
         outputStream.print(command);
         outputStream.flush();
@@ -145,7 +145,7 @@ public class Client extends Thread {
         } catch (IOException ignored) {
         }
 
-        System.out.println("Closed project23.connection to the server.");
+        Logger.info("Closed connection to the server.");
     }
 
     /**

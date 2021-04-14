@@ -8,6 +8,7 @@ import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
 import project23.framework.player.Player;
 import project23.framework.player.ServerPlayer;
+import project23.util.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -28,7 +29,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     private final Set<ConnectedGameManagerObserver> observers = new HashSet<>();
 
-    private long selfPlayerTurnStart;
+    private long selfPlayerTurnStart = System.currentTimeMillis();
 
     /**
      * constructor, initializes project23.connection, board and players.
@@ -270,7 +271,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     public void onPlayerMoved(Player who, BoardPiece where) {
         if (who != serverPlayerOpponent) {
             long elapsed = System.currentTimeMillis() - selfPlayerTurnStart;
-            System.out.println("Self turn ended in " + elapsed + "ms!");
+            Logger.debug("Self turn ended in " + elapsed + "ms!");
 
             int move = where.getX() + board.getWidth() * where.getY();
             client.sendMoveMessage(move);
@@ -280,7 +281,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onPlayerMoveFinalized(Player previous, Player current) {
         if(current != serverPlayerOpponent) {
-            System.out.println("Self turn started");
+            Logger.debug("Self turn started");
             selfPlayerTurnStart = System.currentTimeMillis();
         }
     }
