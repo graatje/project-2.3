@@ -57,7 +57,7 @@ public class CommunicationHandler {
         String[] split = input.split(" ");
 
         switch(split[0].toUpperCase(Locale.ROOT)) {
-            case "SRV":
+            case "SVR":
                 switch (split[1].toUpperCase(Locale.ROOT)) {
                     case "GAME":
                         switch (split[2].toUpperCase(Locale.ROOT)) {
