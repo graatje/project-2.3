@@ -85,3 +85,18 @@
     -fx-text-fill: white ;
     -fx-background-color: #2E8B57;
 }
+
+#isAIBox{
+  -fx-text-fill: white;
+  -fx-font-size: 13px;
+}
+
+/* When the checkbox is checked, add a blue background */
+#isAIBox input:checked{
+  -fx-background-color: #2196F3;
+  -fx-display: block;
+}
+
+#backgroundCheckbox{
+    -fx-background-color: #2E8B57;
+}
