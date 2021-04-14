@@ -37,9 +37,10 @@ public class GameLobbyModel extends Model {
      * @param isAI
      */
     public void prepareOnlineGame(boolean isAI) {
-        System.out.println("Subscribing! isAI="+isAI);
-        ConfigData.getInstance().getCurrentGame().isAI(isAI);
-        ConfigData.getInstance().setGameManager(ConfigData.getInstance().getCurrentGame().createGameManager());
+        ConnectedGameManager cgm = (ConnectedGameManager) ConfigData.getInstance().getGameManager();
+        cgm.updateSelfPlayerSupplier(isAI ? ConfigData.getInstance().getCurrentGame().createAIPlayerFactory() :
+                ConfigData.getInstance().getCurrentGame().createLocalPlayerFactory());
+
         gameModel.prepareNewGame();
 
         ConfigData.getInstance().getGameManager().requestStart();
