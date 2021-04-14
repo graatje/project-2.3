@@ -1,6 +1,7 @@
 package ttt.board;
 
 import framework.GameManager;
+import framework.GameType;
 import framework.board.Board;
 import framework.board.BoardPiece;
 import framework.player.Player;
@@ -83,6 +84,11 @@ public class TTTBoard extends Board {
 
     @Override
     public void prepareBoard(Player startPlayer) { /* Start with an empty board */ }
+
+    @Override
+    public GameType getGameType() {
+        return GameType.TIC_TAC_TOE;
+    }
 
     private Player getPlayerOwningLine(int sx, int sy, int dx, int dy) {
         if (dx == 0 && dy == 0) {

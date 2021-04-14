@@ -5,7 +5,7 @@ import java.util.List;
 public interface GameManagerCommunicationListener {
     void startServerMatch(String opponent, String playerToBegin);
 
-    void getMatchRequest(String opponent, String gametype, int challengeNr);
+    void getMatchRequest(String opponent, String gameTypeServerName, int challengeNr);
 
     void matchCancelled(int challengeNr);
 

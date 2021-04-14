@@ -91,6 +91,8 @@ public abstract class Board implements Cloneable {
      */
     public abstract void prepareBoard(Player startPlayer);
 
+    public abstract GameType getGameType();
+
     public List<BoardPiece> getValidMoves() {
         return getValidMoves(getCurrentPlayer());
     }

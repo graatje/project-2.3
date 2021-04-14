@@ -75,8 +75,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         loggedIn = true;
     }
 
-    public void subscribe(String gameName) {
-        client.sendSubscribeMessage(gameName);
+    public void subscribe() {
+        client.sendSubscribeMessage(getGameType().serverName);
     }
 
     public Client getClient() {
@@ -103,19 +103,22 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
-    public void challengePlayer(String playerToChallenge, String gameType) {
-        client.sendChallengeMessage(playerToChallenge, gameType);
+    public void challengePlayer(String playerToChallenge) {
+        client.sendChallengeMessage(playerToChallenge, getGameType().serverName);
     }
 
     public void acceptChallenge(Match match) {
         client.acceptChallenge(match.getChallengeNr());
     }
 
+    /**
+     * Request start subscribes!
+     */
     @Override
     public void requestStart() {
         setSelfName(ConfigData.getInstance().getPlayerName());
         login();
-        subscribe(ConfigData.getInstance().getCurrentGameName());
+        subscribe();
     }
 
     @Override
@@ -133,8 +136,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
-    public void getMatchRequest(String opponent, String gametype, int challengeNr) {
-        Match match = new Match(opponent, gametype, challengeNr);
+    public void getMatchRequest(String opponent, String gameTypeServerName, int challengeNr) {
+        Match match = new Match(opponent, GameType.getByServerName(gameTypeServerName), challengeNr);
         activeMatches.add(match);
 
         observers.forEach(o -> o.onChallengeReceive(match));

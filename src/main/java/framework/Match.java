@@ -2,10 +2,10 @@ package framework;
 
 public class Match {
     private final String opponentName;
-    private final String gameType;
+    private final GameType gameType;
     private final int challengeNr;
 
-    public Match(String opponentName, String gameType, int challengeNr) {
+    public Match(String opponentName, GameType gameType, int challengeNr) {
         this.opponentName = opponentName;
         this.gameType = gameType;
         this.challengeNr = challengeNr;
@@ -15,7 +15,7 @@ public class Match {
         return opponentName;
     }
 
-    public String getGameType() {
+    public GameType getGameType() {
         return gameType;
     }
 

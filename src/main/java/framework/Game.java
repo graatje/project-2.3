@@ -66,7 +66,7 @@ public abstract class Game {
     public abstract Color getBoardBackgroundColor();
     public abstract List<URL> getBoardPieceIcons();
     public abstract String[] getBoardPieceNames();
-    public abstract String getGameName();
+    public abstract GameType getGameType();
     public abstract boolean showPiecesCount();
 
     // Aanroepen in GameMenu (lobby of lokale wedstrijd)
@@ -88,7 +88,7 @@ public abstract class Game {
     // Moet aangeroepen worden door child-klassen
     protected void loadHelpFile() {
         StringBuilder helpTextBuilder = new StringBuilder();
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/helpfiles/"+getGameName() + "-help.txt")))) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream("/helpfiles/" + getGameType().serverName + "-help.txt")))) {
             String line;
             while((line = reader.readLine()) != null) {
                 helpTextBuilder.append(line+"\n");

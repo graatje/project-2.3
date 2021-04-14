@@ -3,6 +3,7 @@ package othello;
 import framework.ConfigData;
 import framework.Game;
 import framework.GameManager;
+import framework.GameType;
 import framework.board.Board;
 import framework.player.Player;
 import javafx.scene.paint.Color;
@@ -20,7 +21,6 @@ public class OthelloGame extends Game {
     private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png"));
     private final boolean showPiecesCount = true;
     private final Color colors = Color.rgb(0, 153, 0);
-    private final String gameName = "Reversi";
 
     @Override
     public BiFunction<Board, Integer, Player> createAIPlayerFactory() {
@@ -48,8 +48,8 @@ public class OthelloGame extends Game {
     }
 
     @Override
-    public String getGameName() {
-        return gameName;
+    public GameType getGameType() {
+        return GameType.OTHELLO;
     }
 
     @Override

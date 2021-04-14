@@ -149,4 +149,8 @@ public class GameManager {
     public boolean isInitialized() {
         return isInitialized;
     }
+
+    public GameType getGameType() {
+        return board.getGameType();
+    }
 }

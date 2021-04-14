@@ -16,8 +16,8 @@ public class ConfigData {
 
     private String playerName;
 
-    private final HashMap<String, Game> games = new HashMap<>();
-    private String currentGameName;
+    private final HashMap<GameType, Game> games = new HashMap<>();
+    private GameType currentGameType;
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
@@ -45,22 +45,23 @@ public class ConfigData {
     }
 
     private void registerGame(Game game) {
-        games.put(game.getGameName(), game);
+        games.put(game.getGameType(), game);
     }
 
     public Game getCurrentGame() {
-        if(!games.containsKey(currentGameName)) {
+        if(!games.containsKey(currentGameType)) {
             throw new IllegalStateException("Game has not been set in the games list");
         }
-        return games.get(currentGameName);
+
+        return games.get(currentGameType);
     }
 
-    public void setCurrentGameName(String gameName) {
-        this.currentGameName = gameName;
+    public void setCurrentGameType(GameType gameType) {
+        this.currentGameType = gameType;
     }
 
-    public String getCurrentGameName() {
-        return currentGameName;
+    public GameType getCurrentGameType() {
+        return currentGameType;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {

@@ -3,8 +3,8 @@ package ttt;
 import framework.ConfigData;
 import framework.Game;
 import framework.GameManager;
+import framework.GameType;
 import framework.board.Board;
-import framework.player.MinimaxAIPlayer;
 import framework.player.Player;
 import javafx.scene.paint.Color;
 import ttt.board.TTTBoard;
@@ -21,7 +21,6 @@ public class TTTGame extends Game {
     private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png"));
     private final boolean showPiecesCount = false;
     private final Color colors = Color.rgb(245, 245, 245);
-    private final String gameName = "Tic-tac-toe";
 
     @Override
     public BiFunction<Board, Integer, Player> createAIPlayerFactory() {
@@ -49,8 +48,8 @@ public class TTTGame extends Game {
     }
 
     @Override
-    public String getGameName() {
-        return gameName;
+    public GameType getGameType() {
+        return GameType.TIC_TAC_TOE;
     }
 
     @Override

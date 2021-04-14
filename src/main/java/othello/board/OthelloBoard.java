@@ -1,14 +1,13 @@
 package othello.board;
 
 import framework.GameManager;
+import framework.GameType;
 import framework.board.Board;
 import framework.board.BoardPiece;
 import framework.player.Player;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class OthelloBoard extends Board {
 
@@ -215,4 +214,9 @@ public class OthelloBoard extends Board {
 		getBoardPiece(3,4).setOwner(startPlayer);
 		getBoardPiece(4,3).setOwner(startPlayer);
 	}
+
+    @Override
+    public GameType getGameType() {
+        return GameType.OTHELLO;
+    }
 }

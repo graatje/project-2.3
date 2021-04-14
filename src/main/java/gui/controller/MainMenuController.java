@@ -1,6 +1,7 @@
 package gui.controller;
 
 import framework.ConfigData;
+import framework.GameType;
 import gui.MainWindow;
 import gui.model.MainMenuModel;
 import javafx.application.Platform;
@@ -13,12 +14,12 @@ public class MainMenuController extends Controller<MainMenuModel> {
 
     @FXML public void pressTTTMenuButton(ActionEvent event) {
         mainWindow.switchView(MainWindow.ViewEnum.GAME_MENU);
-        ConfigData.getInstance().setCurrentGameName("Tic-tac-toe");
+        ConfigData.getInstance().setCurrentGameType(GameType.TIC_TAC_TOE);
     }
 
     @FXML public void pressOthelloMenuButton(ActionEvent event) {
         mainWindow.switchView(MainWindow.ViewEnum.GAME_MENU);
-        ConfigData.getInstance().setCurrentGameName("Reversi");
+        ConfigData.getInstance().setCurrentGameType(GameType.OTHELLO);
     }
 
     @FXML public void pressExitButton(ActionEvent event) {
