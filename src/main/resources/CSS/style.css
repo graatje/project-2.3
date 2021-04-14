@@ -1,13 +1,10 @@
+/* CSS for background GUI*/
 #background {
      -fx-background-image: url("/images/woodBackground.jpg");
      -fx-background-size: 1000px;
 }
 
-#playerInformationHBox{
-    -fx-background-color: #2E8B57;
-    -fx-font-size: 16px;
-}
-
+/*CSS for the buttons*/
 .button{
     -fx-background-color: #2E8B57;
     -fx-border: none;
@@ -18,35 +15,43 @@
     -fx-border-radius: 4px;
 }
 
+/*CSS for the buttons*/
 .button:hover{
      -fx-background-color: #555555;
 }
 
+/*Othello image button Main Menu*/
 #buttonOthello{
     -fx-background-image: url('/images/Othello.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
 }
 
-#buttonOthello:hover,#buttonTTT:hover {
-     -fx-border-color: #555555;
-     -fx-border-width: 2px;
-}
-
+/*TTT image button Main Menu*/
 #buttonTTT{
     -fx-background-image: url('/images/TTT.png');
     -fx-background-size: 140px;
     -fx-border-radius: 4px;
 }
 
-#playerInformationHBox{
-
+/*Othello/TTT Image buttons on hover */
+#buttonOthello:hover,#buttonTTT:hover {
+     -fx-border-color: #555555;
+     -fx-border-width: 2px;
 }
 
+/* CSS for player statistics Label*/
 #playerInformationLabel{
     -fx-background-color: #2E8B57;
 }
 
+/* CSS for player statistics HBox*/
+#playerInformationHBox{
+    -fx-background-color: #2E8B57;
+    -fx-font-size: 16px;
+}
+
+/* CSS for all the labels*/
 .label{
     -fx-background-color: #555555;
     -fx-text-fill: white;
@@ -54,6 +59,7 @@
     -fx-font-size: 14px;
 }
 
+/* CSS for combobox (AI difficulty)*/
 .comboBox{
     -fx-background-color: #F5F5F5;
     -fx-text-align: center;
@@ -62,16 +68,19 @@
     -fx-border-radius: 4px;
 }
 
+/* CSS for all the labels*/
 .text-field:focused{
    -fx-background-color : #2E8B57,#F5F5F5;
    -fx-background-insets: 0,2px;
 }
 
+/* CSS for combobox hover*/
 .combo-box .combo-box-popup .list-cell:hover {
     -fx-text-fill: white ;
     -fx-background-color: #555555;
 }
 
+/* CSS for combobox selected*/
 .combo-box .combo-box-popup .list-cell:selected {
     -fx-text-fill: white ;
     -fx-background-color: #2E8B57;
