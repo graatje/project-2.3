@@ -37,7 +37,7 @@ public class CommunicationHandler {
      */
     public void handleServerInput(String input) throws JSONException {
         if (DEBUG) {
-            System.out.println("DEBUG: from server = " + input);
+            System.out.println(" DEBUG: from server = " + input);
         }
 
         if (input.equals("OK")) return;

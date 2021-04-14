@@ -115,7 +115,7 @@ public class Client extends Thread {
      */
     public void sendCommandToServer(String command) {
         if (CommunicationHandler.DEBUG) {
-            System.out.println("DEBUG: to server   = " + command.trim());
+            System.out.println(" DEBUG: to server   = " + command.trim());
         }
 
         outputStream.print(command);
