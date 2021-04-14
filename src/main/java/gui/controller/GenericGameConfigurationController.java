@@ -13,7 +13,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class GenericGameConfigurationController extends Controller implements Initializable {
 
@@ -27,8 +29,11 @@ public class GenericGameConfigurationController extends Controller implements In
         mainWindow.switchView(MainWindow.ViewEnum.MAINMENU);
     }
 
-    ObservableList<String> options =
-            FXCollections.observableArrayList("Easy","Medium", "Hard");
+    ObservableList<String> options = FXCollections.observableArrayList(
+            Arrays.stream(MinimaxAIPlayer.AIDifficulty.values())
+                    .map(MinimaxAIPlayer.AIDifficulty::displayName)
+                    .collect(Collectors.toList())
+    );
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -36,23 +41,7 @@ public class GenericGameConfigurationController extends Controller implements In
         comboBoxDifficulty.setItems(options);
         ipAddressField.setText(ConfigData.getInstance().getServerIP());
         portField.setText(ConfigData.getInstance().getServerPort() + "");
-        String value;
-
-        // Could be done with toString(), but this is not as hacky
-        switch (ConfigData.getInstance().getAIDifficulty()) {
-            case EASY:
-                value = "Easy";
-                break;
-            case MEDIUM:
-                value = "Medium";
-                break;
-            case HARD:
-                value = "Hard";
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + ConfigData.getInstance().getAIDifficulty());
-        }
-        comboBoxDifficulty.setValue(value);
+        comboBoxDifficulty.setValue(ConfigData.getInstance().getAIDifficulty().displayName());
         thinkingTimeField.setText(String.valueOf(ConfigData.getInstance().getMinimaxThinkingTime()));
     }
 
@@ -62,15 +51,7 @@ public class GenericGameConfigurationController extends Controller implements In
         model.setInfoMessage("Updated"); // Regression: not showing "henlo" anymore
         model.updateView();
 
-        if(comboBoxDifficulty.getValue().equals("Easy")){
-            ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.EASY);
-            //System.out.println("EASY");
-        }else if (comboBoxDifficulty.getValue().equals("Medium")){
-            ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.MEDIUM);
-            //System.out.println("MEDIUM");
-        }else if (comboBoxDifficulty.getValue().equals("Hard")){
-            ConfigData.getInstance().setAIDifficulty(MinimaxAIPlayer.AIDifficulty.HARD);
-            //System.out.println("HARD");
-        }
+        MinimaxAIPlayer.AIDifficulty difficulty = MinimaxAIPlayer.AIDifficulty.fromDisplayName(comboBoxDifficulty.getValue());
+        ConfigData.getInstance().setAIDifficulty(difficulty);
     }
 }

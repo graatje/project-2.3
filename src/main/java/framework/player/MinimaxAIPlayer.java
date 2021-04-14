@@ -378,6 +378,18 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
     public enum AIDifficulty {
         EASY,
         MEDIUM,
-        HARD,
+        HARD;
+
+        public String displayName() {
+            return String.valueOf(name().charAt(0)).toUpperCase() + name().substring(1).toLowerCase();
+        }
+
+        public static AIDifficulty fromDisplayName(String name) {
+            try{
+                return valueOf(name.toUpperCase());
+            }catch(IllegalArgumentException ignored) {}
+
+            return null;
+        }
     }
 }
