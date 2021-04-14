@@ -41,6 +41,10 @@ public class GameLobbyController extends Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // Set default value
+        ((GameLobbyModel)model).setAI(isAIBox.isSelected());
+
+        // Listen for changes
         isAIBox.selectedProperty().addListener((observableValue, oldValue, newValue) -> {
             ((GameLobbyModel)model).setAI(newValue);
         });
