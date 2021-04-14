@@ -10,12 +10,9 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     private List<String> currentlyShowingPlayers;
 
-    private String challengeMessage;
     private ChallengeRequest lastChallengeRequest;
     private boolean isAI;
-
     private GameModel gameModel;
-
     private MainWindow mainWindow;
     private ConnectedGameManager cgm;
 
@@ -78,7 +75,9 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     }
 
     public ChallengeRequest getLastChallengeRequest() {
-        return lastChallengeRequest;
+        ChallengeRequest lastChallengeRequestTmp = lastChallengeRequest;
+        lastChallengeRequest = null;
+        return lastChallengeRequestTmp;
     }
 
     public void acceptMatch(ChallengeRequest request) {

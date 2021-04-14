@@ -30,6 +30,9 @@ public class GameLobbyView extends View<GameLobbyModel> {
 
     public void showChallengeDialog(GameLobbyModel model) {
         ChallengeRequest challengeRequest = model.getLastChallengeRequest();
+        if(challengeRequest == null) {
+            return;
+        }
 
         //creating dialog
         Dialog<String> dialog = new Dialog<>();
