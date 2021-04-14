@@ -59,7 +59,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     @Override
     public void onServerError(String errorMessage) {
         Platform.runLater(() -> {
-            setDialogMessage(errorMessage);
+            setDialogMessageAndTitle(errorMessage, "Error");
             updateView();
         });
     }

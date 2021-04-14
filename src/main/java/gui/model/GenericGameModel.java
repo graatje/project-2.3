@@ -68,7 +68,11 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
-        // nothing here
+        if(who.isShowValidMoves() && where == null) {
+            setInfoMessage("Skipped a turn, no available moves");
+            System.out.println("DEBUG: skipped!!!");
+            updateView();
+        }
     }
 
     @Override
@@ -85,7 +89,7 @@ public class GenericGameModel extends Model implements BoardObserver {
             } else {
                 message = who.getName() + " has won!";
             }
-            setDialogMessage(message);
+            setDialogMessageAndTitle(message, "Info");
             updateView();
         });
     }

@@ -1,7 +1,6 @@
 package gui.model;
 
 import framework.ConfigData;
-import gui.view.View;
 
 public class GenericGameConfigurationModel extends Model{
 
@@ -10,7 +9,7 @@ public class GenericGameConfigurationModel extends Model{
         try {
             ConfigData.getInstance().setServerPort(port);
         } catch(NumberFormatException e) { //TODO: Eigen exception maken, InvalidConfigDataException? Niet heel hard nodig
-            setDialogMessage("Invalid port");
+            setDialogMessageAndTitle("Invalid port", "Error");
             updateView();
         }
     }
@@ -20,7 +19,7 @@ public class GenericGameConfigurationModel extends Model{
             ConfigData.getInstance().setMinimaxThinkingTime(thinkingTime);
         }
         catch(NumberFormatException e) {
-            setDialogMessage("AI thinking time must be a number!");
+            setDialogMessageAndTitle("AI thinking time must be a number!", "Error");
             updateView();
         }
     }

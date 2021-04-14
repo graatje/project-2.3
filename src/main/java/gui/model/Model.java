@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public abstract class Model {
     private ArrayList<View> observers;
     private String dialogMessage = ""; // pop-up dialog
+    private String dialogTitle = "";
     private String infoMessage = ""; // small text, no pop-up
     private Label textNode;
 
@@ -28,8 +29,9 @@ public abstract class Model {
 
     
     
-    public void setDialogMessage(String message) {
+    public void setDialogMessageAndTitle(String message, String title) {
         this.dialogMessage = message;
+        this.dialogTitle = title;
     }
 
     /**
@@ -40,6 +42,12 @@ public abstract class Model {
         String dialogMessageTmp = dialogMessage;
         dialogMessage = "";
         return dialogMessageTmp;
+    }
+
+    public String getDialogTitle() {
+        String dialogTitleTmp = dialogTitle;
+        dialogTitle = "";
+        return dialogTitleTmp;
     }
 
     public void setInfoMessage(String message) {

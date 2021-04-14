@@ -19,7 +19,7 @@ public class GameLobbyView extends View<GameLobbyModel> {
 
     @Override
     public void update(GameLobbyModel model) {
-        showDialog(model.getDialogMessage(), "Error");
+        showDialog(model.getDialogMessage(), model.getDialogTitle());
         showChallengeDialog(model);
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 

@@ -55,7 +55,7 @@ public class GenericGameMenuController extends Controller<GenericGameMenuModel> 
 
     @FXML
     public void pressHelp(ActionEvent event){
-        model.setDialogMessage(ConfigData.getInstance().getCurrentGame().getHelpText());
+        model.setDialogMessageAndTitle(ConfigData.getInstance().getCurrentGame().getHelpText(), "Help");
         model.updateView();
     }
 }

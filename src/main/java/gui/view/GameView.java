@@ -46,7 +46,7 @@ public class GameView extends View<GenericGameModel> {
 
     @Override
     public void update(GenericGameModel model) {
-        showDialog(model.getDialogMessage(), "Info");
+        showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
         // If online match is waiting, show "waiting for game"

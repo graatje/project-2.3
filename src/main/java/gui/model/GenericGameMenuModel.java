@@ -38,7 +38,7 @@ public class GenericGameMenuModel extends Model {
         // Create new game, and set it in the config. (This should always be done together)
         GameManager gm = ConfigData.getInstance().getCurrentGame().createGameManager();
         if(gm==null) {
-            setDialogMessage("Could not connect to server.");
+            setDialogMessageAndTitle("Could not connect to server.", "Error");
             updateView();
             return;
         }
