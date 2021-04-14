@@ -39,4 +39,8 @@ public class GenericGameController extends Controller implements Initializable {
     @FXML public void onMouseReleased(MouseEvent event) {
         ((GenericGameModel)model).clickTile(event.getX(), event.getY());
     }
+
+    public void pressRetry(ActionEvent event) {
+        ((GenericGameModel)model).restartGame();
+    }
 }

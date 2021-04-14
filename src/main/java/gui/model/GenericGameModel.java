@@ -85,19 +85,6 @@ public class GenericGameModel extends Model implements BoardObserver {
                 message = who.getName() + " has won!";
             }
             setDialogMessage(message);
-
-            gameManager.reset();
-
-            // TODO: Re-subscribe or restart the game! This should be done with the "retry" button later!
-            new Thread(() -> {
-                try {
-                    Thread.sleep(2000);
-                } catch (InterruptedException ignored) {
-                }
-
-                gameManager.requestStart();
-            }).start();
-
             updateView();
         });
     }
@@ -136,5 +123,10 @@ public class GenericGameModel extends Model implements BoardObserver {
 
     public void setBoardSize(double boardSize) {
         this.boardSize = boardSize;
+    }
+
+    public void restartGame() {
+        gameManager.reset();
+        gameManager.requestStart();
     }
 }
