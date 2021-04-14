@@ -14,6 +14,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     private GenericGameModel gameModel;
 
     private MainWindow mainWindow;
+    private ConnectedGameManager cgm;
 
     public GameLobbyModel(GenericGameModel gameModel, MainWindow mainWindow){
         this.gameModel = gameModel;
@@ -22,18 +23,13 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     }
 
     public List<String> getLobbyPlayers() {
-        GameManager tmpGm = ConfigData.getInstance().getGameManager();
-        List<String> players = new ArrayList<>();
-        if(tmpGm instanceof ConnectedGameManager) {
-            ConnectedGameManager gameManager = (ConnectedGameManager) tmpGm;
-            players = gameManager.getLobbyPlayers();
-        }
-        this.currentlyShowingPlayers = players;
-        return players;
+        this.currentlyShowingPlayers = cgm.getLobbyPlayers();
+        return currentlyShowingPlayers;
     }
 
     public void challengePlayer(int playerListIndex) {
-        System.out.println("Player to be challenged: "+currentlyShowingPlayers.get(playerListIndex));
+        String playername = currentlyShowingPlayers.get(playerListIndex);
+        cgm.challengePlayer(playername, ConfigData.getInstance().getCurrentGameName());
     }
 
     /**
@@ -41,13 +37,11 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
      * @param isAI
      */
     public void prepareOnlineGame(boolean isAI) {
-        ConnectedGameManager cgm = (ConnectedGameManager) ConfigData.getInstance().getGameManager();
         cgm.updateSelfPlayerSupplier(isAI ? ConfigData.getInstance().getCurrentGame().createAIPlayerFactory() :
                 ConfigData.getInstance().getCurrentGame().createLocalPlayerFactory());
 
         gameModel.prepareNewGame();
-
-        ConfigData.getInstance().getGameManager().requestStart();
+        cgm.requestStart();
     }
 
 
@@ -63,6 +57,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
 
     @Override
     public void onChallengeReceive(Match match) {
+        System.out.println("Challenged by "+match.getOpponentName());
         //TODO accept/ignore challenge
         // platform
     }
@@ -73,6 +68,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     }
 
     public void prepareGameManager() {
-        ((ConnectedGameManager)ConfigData.getInstance().getGameManager()).registerObserver(this);
+        this.cgm = (ConnectedGameManager)ConfigData.getInstance().getGameManager();
+        cgm.registerObserver(this);
     }
 }
