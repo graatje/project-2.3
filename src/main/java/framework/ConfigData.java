@@ -4,6 +4,8 @@ import framework.player.MinimaxAIPlayer;
 import othello.OthelloGame;
 import ttt.TTTGame;
 
+import java.util.HashMap;
+
 public class ConfigData {
     private static ConfigData instance;
 
@@ -15,7 +17,8 @@ public class ConfigData {
     private String playerName;
     private GameType gameType;
 
-    private Game[] games;
+    private HashMap<String, Game> games = new HashMap<>();
+    private String currentGameName;
 
     private MinimaxAIPlayer.AIDifficulty difficulty;
 
@@ -30,25 +33,36 @@ public class ConfigData {
     }
 
     private ConfigData() {
+        // Config
         serverIP = "145.33.225.170";
         serverPort = 7789;
         playerName = "GroupC4";
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
         minimaxThinkingTime = 6000;
 
-        // TODO
-//        games[0] = new TTTGame();
-//        games[1] = new OthelloGame();
+        // Games
+        registerGame(new TTTGame());
+        registerGame(new OthelloGame());
+    }
+
+    private void registerGame(Game game) {
+        games.put(game.getGameName(), game);
     }
 
     public Game getCurrentGame() {
-        // TODO
-        return null;
+        if(!games.containsKey(currentGameName)) {
+            //TODO: runtime exception? Eigen exception maken? idk
+            throw new IllegalArgumentException("Game has not been set in the games list");
+        }
+        return games.get(currentGameName);
     }
 
-    public Game setCurrentGame() {
-        //TODO
-        return null;
+    public void setCurrentGameName(String gameName) {
+        this.currentGameName = gameName;
+    }
+
+    public String getCurrentGameName() {
+        return currentGameName;
     }
 
     public MinimaxAIPlayer.AIDifficulty getAIDifficulty() {
@@ -90,14 +104,6 @@ public class ConfigData {
     // TODO: moeten geldige usernames (leeg, gekke tekens, lengte) hier of in framework getest worden?
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
-    }
-
-    public GameType getGameType() {
-        return gameType;
-    }
-
-    public void setGameType(GameType gameType) {
-        this.gameType = gameType;
     }
 
     public int getMinimaxThinkingTime(){ return minimaxThinkingTime; }

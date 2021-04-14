@@ -9,7 +9,7 @@ public class GenericGameConfigurationModel extends Model{
         ConfigData.getInstance().setServerIP(ip);
         try {
             ConfigData.getInstance().setServerPort(port);
-        } catch(NumberFormatException e) { //TODO: Eigen exception maken, InvalidConfigDataException
+        } catch(NumberFormatException e) { //TODO: Eigen exception maken, InvalidConfigDataException? Niet heel hard nodig
             setDialogMessage("Invalid port");
             updateView();
         }

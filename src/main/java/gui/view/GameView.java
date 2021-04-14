@@ -39,7 +39,7 @@ public class GameView extends View<GenericGameModel> {
         this.waitingText = new Text("Please wait for the game to start.");
     }
 
-    public void setPlayerIconFileURLs(List<URL> playerIconFileURLs) {
+    public void setBoardPieceIcons(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
@@ -49,7 +49,7 @@ public class GameView extends View<GenericGameModel> {
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
         // If online match is waiting, show "waiting for game"
-        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getGameType().isLocal) {
+        if(model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getCurrentGame().isOnline()) {
             setBackgroundColorBoard(null);
             clearBoard();
             gameBoardPane.getChildren().add(waitingText);
@@ -59,10 +59,10 @@ public class GameView extends View<GenericGameModel> {
     }
 
     private void drawBoard(GenericGameModel model) {
+        setBackgroundColorBoard(ConfigData.getInstance().getCurrentGame().getBoardBackgroundColor());
+        setBoardPieceIcons(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());
         Board board = model.getBoard();
 
-        setBackgroundColorBoard(model.getBackgroundColor());
-        setPlayerIconFileURLs(model.getPlayerIconFileURLs());
 
         // Player stats
         showPlayerInformation(model.getPlayerInfo(board.piecesCount()));
@@ -171,11 +171,7 @@ public class GameView extends View<GenericGameModel> {
         }
     }
 
-    public void setBackgroundColorBoard(ArrayList<Integer> colors){
-        if (colors == null){
-            gameBoardPane.setBackground(new Background(new BackgroundFill(null, null, null)));
-        }else {
-            gameBoardPane.setBackground(new Background(new BackgroundFill(Color.rgb(colors.get(0), colors.get(1), colors.get(2)), null, null)));
-        }
+    public void setBackgroundColorBoard(Color color){
+        gameBoardPane.setBackground(new Background(new BackgroundFill(color, null, null)));
     }
 }

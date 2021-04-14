@@ -1,119 +1,44 @@
 package gui.model;
 
 import framework.ConfigData;
-import framework.ConnectedGameManager;
-import framework.GameManager;
-import framework.player.LocalPlayer;
-import framework.player.MinimaxAIPlayer;
-import framework.player.ServerPlayer;
-import gui.view.View;
-import othello.board.OthelloBoard;
-import othello.player.OthelloMinimaxAIPlayer;
-import ttt.board.TTTBoard;
-import ttt.player.TTTMinimaxAIPlayer;
-
-import java.io.IOException;
-import java.io.ObjectInputFilter;
-import java.util.ArrayList;
 
 public class GenericGameMenuModel extends Model {
 
-    private GenericGameModel gameModel;
+    private final GenericGameModel gameModel;
+    private final GameLobbyModel gameLobbyModel;
 
-    public GenericGameMenuModel(GenericGameModel gameModel){
+    public GenericGameMenuModel(GenericGameModel gameModel, GameLobbyModel gameLobbyModel){
         this.gameModel = gameModel;
+        this.gameLobbyModel = gameLobbyModel;
     }
 
     public void setPlayerName(String username) {
-        //System.out.println("Username will be set to: \"" + username + "\".");
         ConfigData.getInstance().setPlayerName(username);
     }
 
-    public void setGameManager() {
-        ArrayList<Integer> colorsOthello = new ArrayList<>();
-        colorsOthello.add(0);
-        colorsOthello.add(153);
-        colorsOthello.add(0);
-        ArrayList<Integer> colorsTTT = new ArrayList<>();
-        colorsTTT.add(245);
-        colorsTTT.add(245);
-        colorsTTT.add(245);
+    public void prepareOfflineGame() {
+        ConfigData.getInstance().getCurrentGame().setOnline(false);
+        ConfigData.getInstance().getCurrentGame().isAI(false);
 
-        GameManager gameManager = null;
+        // Bereid de gamemodel voor
+        prepareGameManager();
 
-        String ip = ConfigData.getInstance().getServerIP();
-        int port = ConfigData.getInstance().getServerPort();
-        MinimaxAIPlayer.AIDifficulty difficulty = ConfigData.getInstance().getAIDifficulty();
-        String selfName = ConfigData.getInstance().getPlayerName();
+        // Start het potje onmiddellijk
+        ConfigData.getInstance().getGameManager().requestStart();
+    }
 
-        try {
-            switch (ConfigData.getInstance().getGameType()) {
-                case TTT_LOCAL:
-                    gameManager = new GameManager(
-                            TTTBoard::new,
-                            b -> new LocalPlayer(b, selfName),
-                            b -> new TTTMinimaxAIPlayer(b, "Computer", difficulty)
-                    );
-                    gameModel.setBackgroundColor(colorsTTT);
-                    break;
-                case TTT_ONLINE:
-                    gameManager = new ConnectedGameManager(
-                            TTTBoard::new,
-                            ip,
-                            port,
-                            b -> new TTTMinimaxAIPlayer(b, difficulty)
-                    );
-                    gameModel.setBackgroundColor(colorsTTT);
-                    break;
-                case TTT_LOCAL_ONLINE:
-                    gameManager = new ConnectedGameManager(
-                            TTTBoard::new,
-                            ip,
-                            port,
-                            LocalPlayer::new
-                    );
-                    gameModel.setBackgroundColor(colorsTTT);
-                    break;
-                case OTHELLO_LOCAL:
-                    gameManager = new GameManager(
-                            OthelloBoard::new,
-                            b -> new LocalPlayer(b, selfName),
-                            b -> new OthelloMinimaxAIPlayer(b, "Computer", difficulty)
-                    );
-                    gameModel.setBackgroundColor(colorsOthello);
-                    break;
-                case OTHELLO_ONLINE:
-                    gameManager = new ConnectedGameManager(
-                            OthelloBoard::new,
-                            ip,
-                            port,
-                            b -> new OthelloMinimaxAIPlayer(b, difficulty)
-                    );
-                    gameModel.setBackgroundColor(colorsOthello);
-                    break;
-                case OTHELLO_LOCAL_ONLINE:
-                    gameManager = new ConnectedGameManager(
-                            OthelloBoard::new,
-                            ip,
-                            port,
-                            LocalPlayer::new
-                    );
-                    gameModel.setBackgroundColor(colorsOthello);
-                    break;
-                default:
-                    throw new IllegalStateException("Unimplemented game-type '" + ConfigData.getInstance().getGameType() + "'!");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            // TODO: Couldn't connect to the server, maybe display an error?
-            return;
-        }
+    public void prepareLobby() {
+        ConfigData.getInstance().getCurrentGame().setOnline(true);
+        prepareGameManager();
 
-        gameManager.requestStart();
+        //TODO: Zorg dat gameManager lobbyspelers kan vinden vóór op de volgende regel updateView aangeroepen wordt
+        System.out.println("Game Lobby model updated vanaf hier (MenuModel)");
+        gameLobbyModel.updateView();
+    }
 
-        ConfigData.getInstance().setGameManager(gameManager);
-        gameModel.setupGameManager();
-
-        gameModel.updateView();
+    private void prepareGameManager() {
+        // Create new game, and set it in the config. (This should always be done together)
+        ConfigData.getInstance().setGameManager(ConfigData.getInstance().getCurrentGame().createGameManager());
+        gameModel.prepareNewGame();
     }
 }
