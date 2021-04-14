@@ -78,11 +78,11 @@ public class CommunicationHandler {
                                 int challengeNumber = Integer.parseInt(json.getString("CHALLENGENUMBER"));
 
                                 if (input.contains("CANCELLED")) {
-                                    gameManagerCommunicationListener.matchCancelled(challengeNumber);
+                                    gameManagerCommunicationListener.challengeRequestCancelled(challengeNumber);
                                 }else{
                                     String challenger = json.getString("CHALLENGER");
                                     String gametype = json.getString("GAMETYPE");
-                                    gameManagerCommunicationListener.getMatchRequest(challenger, gametype, challengeNumber);
+                                    gameManagerCommunicationListener.onChallengeRequestReceive(challenger, gametype, challengeNumber);
                                 }
                                 break;
                             case "WIN":

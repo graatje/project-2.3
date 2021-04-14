@@ -3,7 +3,7 @@ package framework;
 public interface ConnectedGameManagerObserver {
     void onServerError(String errorMessage);
     void onPlayerListReceive();
-    void onChallengeReceive(Match match);
+    void onChallengeRequestReceive(ChallengeRequest challengeRequest);
     void onPreGameStart();
     void onPostGameStart();
 }

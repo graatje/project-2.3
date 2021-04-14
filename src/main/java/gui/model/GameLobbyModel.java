@@ -11,7 +11,7 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     private List<String> currentlyShowingPlayers;
 
     private String challengeMessage;
-    private Match match;
+    private ChallengeRequest challengeRequest;
     private boolean isAI;
 
     private GameModel gameModel;
@@ -70,9 +70,9 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
     }
 
     @Override
-    public void onChallengeReceive(Match match) {
-        if(cgm.getBoard().getBoardState() != BoardState.PLAYING && match.getGameType().equals(cgm.getGameType())) {
-            setChallenge(match, match.getOpponentName() + " is challenging you to a game of " + match.getGameType().serverName + "! Do you accept?");
+    public void onChallengeRequestReceive(ChallengeRequest challengeRequest) {
+        if(cgm.getBoard().getBoardState() != BoardState.PLAYING && challengeRequest.getGameType().equals(cgm.getGameType())) {
+            setChallenge(challengeRequest, challengeRequest.getOpponentName() + " is challenging you to a game of " + challengeRequest.getGameType().serverName + "! Do you accept?");
             Platform.runLater(this::updateView); // zodat melding wordt weergegeven
         }
     }
@@ -83,13 +83,13 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
         return challengeMessageTmp;
     }
 
-    public void setChallenge(Match match, String challengeMessage) {
-        this.match = match;
+    public void setChallenge(ChallengeRequest challengeRequest, String challengeMessage) {
+        this.challengeRequest = challengeRequest;
         this.challengeMessage = challengeMessage;
     }
 
     public void acceptMatch() {
-        cgm.acceptChallenge(match);
+        cgm.acceptChallengeRequest(challengeRequest);
     }
 
     @Override

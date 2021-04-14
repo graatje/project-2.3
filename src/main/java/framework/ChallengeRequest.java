@@ -1,11 +1,11 @@
 package framework;
 
-public class Match {
+public class ChallengeRequest {
     private final String opponentName;
     private final GameType gameType;
     private final int challengeNr;
 
-    public Match(String opponentName, GameType gameType, int challengeNr) {
+    public ChallengeRequest(String opponentName, GameType gameType, int challengeNr) {
         this.opponentName = opponentName;
         this.gameType = gameType;
         this.challengeNr = challengeNr;

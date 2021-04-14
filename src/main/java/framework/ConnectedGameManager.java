@@ -18,7 +18,7 @@ import java.util.function.Function;
 public class ConnectedGameManager extends GameManager implements GameManagerCommunicationListener, BoardObserver {
     private Client client;
 
-    private final List<Match> activeMatches = new ArrayList<>();
+    private final List<ChallengeRequest> activeChallengeRequests = new ArrayList<>();
     private final List<String> lobbyPlayers = new ArrayList<>();
 
     private boolean loggedIn = false;
@@ -87,8 +87,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.close();
     }
 
-    public List<Match> getActiveMatches() {
-        return Collections.unmodifiableList(activeMatches);
+    public List<ChallengeRequest> getActiveChallengeRequests() {
+        return activeChallengeRequests;
     }
 
     public List<String> getLobbyPlayers() {
@@ -107,8 +107,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.sendChallengeMessage(playerToChallenge, getGameType().serverName);
     }
 
-    public void acceptChallenge(Match match) {
-        client.acceptChallenge(match.getChallengeNr());
+    public void acceptChallengeRequest(ChallengeRequest challengeRequest) {
+        client.acceptChallenge(challengeRequest.getChallengeNr());
     }
 
     /**
@@ -136,11 +136,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
-    public void getMatchRequest(String opponent, String gameTypeServerName, int challengeNr) {
-        Match match = new Match(opponent, GameType.getByServerName(gameTypeServerName), challengeNr);
-        activeMatches.add(match);
+    public void onChallengeRequestReceive(String opponent, String gameTypeServerName, int challengeNr) {
+        ChallengeRequest challengeRequest = new ChallengeRequest(opponent, GameType.getByServerName(gameTypeServerName), challengeNr);
+        activeChallengeRequests.add(challengeRequest);
 
-        observers.forEach(o -> o.onChallengeReceive(match));
+        observers.forEach(o -> o.onChallengeRequestReceive(challengeRequest));
     }
 
     @Override
@@ -177,8 +177,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     }
 
     @Override
-    public void matchCancelled(int challengeNr) {
-        activeMatches.removeIf(match -> match.getChallengeNr() == challengeNr);
+    public void challengeRequestCancelled(int challengeNr) {
+        activeChallengeRequests.removeIf(challengeRequest -> challengeRequest.getChallengeNr() == challengeNr);
     }
 
     @Override
