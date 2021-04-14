@@ -6,16 +6,17 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane id="background" stylesheets="@/style.css" xmlns:fx="http://javafx.com/fxml">
+<BorderPane id="background" stylesheets="@/style.css" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
     <center>
-        <AnchorPane maxHeight="275.0" maxWidth="325.0" prefHeight="325.0" prefWidth="325.0" BorderPane.alignment="CENTER">
+        <AnchorPane maxHeight="375.0" maxWidth="325.0" prefHeight="375.0" prefWidth="325.0" BorderPane.alignment="CENTER">
             <children>
-                <CheckBox fx:id="isAIBox" layoutX="13.0" layoutY="10.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="81.0" text="Play as AI" />
-                <ListView fx:id="challengerList" layoutX="13.0" layoutY="45.0" prefHeight="165.0" prefWidth="300.0"/>
-                <Button layoutX="221.0" layoutY="221.0" mnemonicParsing="false" onAction="#pressSubscribe" prefHeight="40.0" prefWidth="90.0" text="RANDOM" />
-                <Button layoutX="257.0" layoutY="10.0" mnemonicParsing="false" prefHeight="15.0" prefWidth="56.0" text="REFRESH" onAction="#pressRefresh" />
-                <Button id="button" layoutX="118.0" layoutY="221.0" mnemonicParsing="false" onAction="#pressChallengePlayer" prefHeight="40.0" prefWidth="90.0" text="CHALLENGE" />
-                <Button id="button" layoutX="14.0" layoutY="221.0" mnemonicParsing="false" onAction="#pressBackToMainMenu" prefHeight="40.0" prefWidth="90.0" text="MAIN MENU" />
+                <CheckBox layoutX="14.0" layoutY="15.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="81.0" text="Play as AI" />
+                <ListView fx:id="challengerList" layoutX="13.0" layoutY="61.0" prefHeight="143.0" prefWidth="300.0" />
+                <Button id="button" layoutX="211.0" layoutY="8.0"  onAction="#pressRefresh" prefHeight="40.0" prefWidth="100.0" text="REFRESH" />
+                <!--TODO: replace onAction op volgende regel -->
+                <Button id="button" layoutX="13.0" layoutY="217.0" onAction="#pressBackToMainMenu" prefHeight="40.0" prefWidth="300.0" text="PLAY NOW" />
+                <Button id="button" layoutX="13.0" layoutY="269.0" onAction="#pressBackToMainMenu" prefHeight="40.0" prefWidth="300.0" text="CHALLENGE PLAYER" />
+                <Button id="button" layoutX="13.0" layoutY="321.0" onAction="#pressBackToMainMenu" prefHeight="40.0" prefWidth="300.0" text="MAIN MENU" />
             </children>
         </AnchorPane>
     </center>
