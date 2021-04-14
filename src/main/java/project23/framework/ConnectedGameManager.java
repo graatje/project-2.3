@@ -75,6 +75,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         loggedIn = true;
     }
 
+    /**
+     * asks the server to give us a online match.
+     */
     public void subscribe() {
         client.sendSubscribeMessage(getGameType().serverName);
     }
@@ -91,6 +94,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         return activeChallengeRequests;
     }
 
+    /**
+     * gets a list of names of the lobbyplayers.
+     * @return List<String>
+     */
     public List<String> getLobbyPlayers() {
         return Collections.unmodifiableList(lobbyPlayers);
     }
@@ -103,10 +110,18 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
+    /**
+     * method to challenge someone else
+     * @param playerToChallenge
+     */
     public void challengePlayer(String playerToChallenge) {
         client.sendChallengeMessage(playerToChallenge, getGameType().serverName);
     }
 
+    /**
+     * method to accept a challenge request.
+     * @param challengeRequest a challengerequest.
+     */
     public void acceptChallengeRequest(ChallengeRequest challengeRequest) {
         client.acceptChallenge(challengeRequest.getChallengeNr());
     }
@@ -128,6 +143,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         super.forfeit();
     }
 
+    /**
+     * closing the client, destroying internal objects.
+     */
     @Override
     public void destroy() {
         closeClient();
@@ -135,6 +153,12 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         super.destroy();
     }
 
+    /**
+     *
+     * @param opponent the name of the opponent
+     * @param gameTypeServerName the type of name.
+     * @param challengeNr the number of the challenge.
+     */
     @Override
     public void onChallengeRequestReceive(String opponent, String gameTypeServerName, int challengeNr) {
         ChallengeRequest challengeRequest = new ChallengeRequest(opponent, GameType.getByServerName(gameTypeServerName), challengeNr);
@@ -143,6 +167,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(o -> o.onChallengeRequestReceive(challengeRequest));
     }
 
+    /**
+     * starts a server match.
+     * @param opponentName the name of the opponent.
+     * @param playerToBegin the player who begins.
+     */
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
         if (isInitialized()) {
@@ -176,11 +205,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(ConnectedGameManagerObserver::onPostGameStart);
     }
 
+
     @Override
     public void challengeRequestCancelled(int challengeNr) {
         activeChallengeRequests.removeIf(challengeRequest -> challengeRequest.getChallengeNr() == challengeNr);
     }
 
+    /**
+     * updates the lobbyplayers.
+     * @param lobbyPlayers List of names of lobbyplayers.
+     */
     @Override
     public void updateLobbyPlayers(List<String> lobbyPlayers) {
         this.lobbyPlayers.clear();
@@ -190,6 +224,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(ConnectedGameManagerObserver::onPlayerListReceive);
     }
 
+    /**
+     * forces ending a match.
+     * @param result string WIN , LOSS or DRAW
+     */
     @Override
     public void endMatch(String result) {
         board.finalizeRawMove();
@@ -215,6 +253,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(o -> o.onServerError(errorMessage));
     }
 
+    /**
+     * if the player given isn't the serverplayeropponent send a move.
+     * @param who the player who moved.
+     * @param where the piece you want to do.
+     */
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if (who != serverPlayerOpponent) {
