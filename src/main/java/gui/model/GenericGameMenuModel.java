@@ -18,7 +18,6 @@ public class GenericGameMenuModel extends Model {
 
     public void prepareOfflineGame() {
         ConfigData.getInstance().getCurrentGame().setOnline(false);
-        ConfigData.getInstance().getCurrentGame().isAI(false);
 
         // Bereid de gamemodel voor
         prepareGameManager();

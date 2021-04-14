@@ -37,7 +37,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
      * @throws IOException
      */
     public ConnectedGameManager(Function<GameManager, Board> boardSupplier, String serverIP, int serverPort, Function<Board, Player> selfPlayerSupplier) throws IOException {
-        super(boardSupplier, selfPlayerSupplier, ServerPlayer::new);
+        super(boardSupplier);
+
+        updateSelfPlayerSupplier(selfPlayerSupplier);
 
         createClient(serverIP, serverPort);
         login();
@@ -45,6 +47,12 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
         client.getCommunicationHandler().setGameManagerCommunicationListener(this);
         board.registerObserver(this);
+    }
+
+    public void updateSelfPlayerSupplier(Function<Board, Player> selfPlayerSupplier) {
+        playerSuppliers.clear();
+        playerSuppliers.add(ServerPlayer::new);
+        playerSuppliers.add(selfPlayerSupplier);
     }
 
     /**
@@ -155,6 +163,8 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.getCommunicationHandler().setServerPlayerCommunicationListener(serverPlayerOpponent);
 
         _start(getPlayer(playerToBegin));
+
+        observers.forEach(ConnectedGameManagerObserver::onGameStarted);
     }
 
     @Override
@@ -167,7 +177,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.lobbyPlayers.clear();
         this.lobbyPlayers.addAll(lobbyPlayers);
 
-        observers.forEach(o -> o.onPlayerListReceive(Collections.unmodifiableList(lobbyPlayers)));
+        observers.forEach(ConnectedGameManagerObserver::onPlayerListReceive);
     }
 
     @Override

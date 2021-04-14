@@ -13,7 +13,7 @@ import java.util.function.Function;
  * This class manages a game. Including connection, board and players.
  */
 public class GameManager {
-    protected List<Function<Board, ? extends Player>> playerSuppliers;
+    protected final List<Function<Board, ? extends Player>> playerSuppliers = new ArrayList<>();
 
     protected Board board;
     protected final List<Player> players = new ArrayList<>();
@@ -27,7 +27,7 @@ public class GameManager {
      */
     public GameManager(Function<GameManager, ? extends Board> boardSupplier, Function<Board, ? extends Player>... playerSuppliers) {
         this.board = boardSupplier.apply(this);
-        this.playerSuppliers = Arrays.asList(playerSuppliers);
+        this.playerSuppliers.addAll(Arrays.asList(playerSuppliers));
     }
 
     public void initialize() {

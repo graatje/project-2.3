@@ -18,7 +18,6 @@ import java.util.function.Function;
 public abstract class Game {
 
     private List<URL> boardPieceIcons;
-    private boolean isAI = false;
     private boolean online = false;
 
     public static final String AI_NAME  = "Computer";
@@ -42,7 +41,7 @@ public abstract class Game {
                         createBoardFactory(),
                         ConfigData.getInstance().getServerIP(),
                         ConfigData.getInstance().getServerPort(),
-                        isAI ? createAIPlayerFactory() : createLocalPlayerFactory()
+                        createAIPlayerFactory()
                 );
             } catch (IOException e) {
                 System.err.println("Couldn't connect to server!");
@@ -52,7 +51,7 @@ public abstract class Game {
         } else {
             return new GameManager(
                     createBoardFactory(),
-                    isAI ? createAIPlayerFactory() : createLocalPlayerFactory(),
+                    createLocalPlayerFactory(),
                     createAIPlayerFactory()
             );
         }
@@ -70,11 +69,6 @@ public abstract class Game {
     }
     public boolean isOnline() {
         return online;
-    }
-
-    // Aanroepen in LobbyController
-    public void isAI(boolean isAI) {
-        this.isAI = isAI;
     }
 
 
