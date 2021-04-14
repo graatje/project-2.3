@@ -16,12 +16,11 @@ import java.util.List;
 import java.util.function.Function;
 
 public class TTTGame extends Game {
-    //TODO: Final of niet? Gaan we ooit showPiecesCount aanpassen bijvoorbeeld? boardpiecenames?!
-    private String[] boardPieceNames = { "Noughts (O)", "Crosses (X)" };
-    private List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png"));
-    private boolean showPiecesCount = false;
-    private Color colors = Color.rgb(245, 245, 245);
-    private String gameName = "Tic-tac-toe";
+    private final String[] boardPieceNames = { "Noughts (O)", "Crosses (X)" };
+    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/ttt_o.png"), getClass().getResource("/boardPieces/ttt_x.png"));
+    private final boolean showPiecesCount = false;
+    private final Color colors = Color.rgb(245, 245, 245);
+    private final String gameName = "Tic-tac-toe";
 
     @Override
     public Function<Board, Player> createAIPlayerFactory() {

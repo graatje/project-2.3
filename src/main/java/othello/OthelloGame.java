@@ -15,12 +15,11 @@ import java.util.List;
 import java.util.function.Function;
 
 public class OthelloGame extends Game {
-
-    private String[] boardPieceNames = { "Black", "White" };
-    private List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png"));
-    private boolean showPiecesCount = true;
-    private Color colors = Color.rgb(0, 153, 0);
-    private String gameName = "Reversi";
+    private final String[] boardPieceNames = { "Black", "White" };
+    private final List<URL> boardPieceIcons = Arrays.asList(getClass().getResource("/boardPieces/othello_black.png"), getClass().getResource("/boardPieces/othello_white.png"));
+    private final boolean showPiecesCount = true;
+    private final Color colors = Color.rgb(0, 153, 0);
+    private final String gameName = "Reversi";
 
     @Override
     public Function<Board, Player> createAIPlayerFactory() {
