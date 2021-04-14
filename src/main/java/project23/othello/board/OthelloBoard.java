@@ -117,22 +117,22 @@ public class OthelloBoard extends Board {
                 if (x == 0 && y == 0) {
                     continue;
                 }
-                changeMoveLine(piece, x, y);
+                changeMoveLine(piece, x, y, asWho);
             }
         }
-        piece.setOwner(getCurrentPlayer());
+        piece.setOwner(asWho);
     }
 
-    private void changeMoveLine(BoardPiece piece, int xchange, int ychange) {
+    private void changeMoveLine(BoardPiece piece, int xchange, int ychange, Player asWho) {
 
         // temporary arraylist of captured opponents.
-        ArrayList<BoardPiece> templist = new ArrayList<BoardPiece>();
+        ArrayList<BoardPiece> templist = new ArrayList<>();
         int x = piece.getX() + xchange;
         int y = piece.getY() + ychange;
         boolean initialized = false;
         if (x >= 0 && y >= 0 && x < width && y < height) {  // out of bounds check
             BoardPiece boardPiece = getBoardPiece(x, y);
-            if (boardPiece.hasOwner() && boardPiece.getOwner() != getCurrentPlayer()) {
+            if (boardPiece.hasOwner() && boardPiece.getOwner() != asWho) {
                 initialized = true;
             }
         }
@@ -147,7 +147,7 @@ public class OthelloBoard extends Board {
             BoardPiece boardPiece = getBoardPiece(x, y);
             if (!boardPiece.hasOwner()) {
                 return;
-            } else if (boardPiece.getOwner().getID() == getCurrentPlayer().getID()) {
+            } else if (boardPiece.getOwner() == asWho) {
                 brokeOut = true;
                 break;
             } else {  // opponent
@@ -156,7 +156,7 @@ public class OthelloBoard extends Board {
         }
         if (brokeOut) {
             for (BoardPiece boardPiece : templist) {
-                boardPiece.setOwner(getCurrentPlayer());
+                boardPiece.setOwner(asWho);
             }
         }
     }
@@ -168,8 +168,11 @@ public class OthelloBoard extends Board {
      */
     @Override
     public boolean calculateIsGameOver() {
-        return getValidMoves().isEmpty() &&
-                getValidMoves(gameManager.getOtherPlayer(getCurrentPlayer())).isEmpty();
+        Player a = getCurrentPlayer();
+        Player b = gameManager.getOtherPlayer(a);
+
+        return getValidMoves(a).isEmpty() &&
+                getValidMoves(b).isEmpty();
     }
 
     /**
