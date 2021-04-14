@@ -61,7 +61,10 @@ public class GameView extends View<GenericGameModel> {
 
     private void drawBoard(GenericGameModel model) {
         Board board = model.getBoard();
-        if(board == null) return;
+        if(board == null) {
+            clearBoard();
+            return;
+        }
 
         setBackgroundColorBoard(ConfigData.getInstance().getCurrentGame().getBoardBackgroundColor());
         setBoardPieceIcons(ConfigData.getInstance().getCurrentGame().getBoardPieceIcons());

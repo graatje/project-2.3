@@ -60,8 +60,6 @@ public class GameLobbyModel extends Model implements ConnectedGameManagerObserve
         Platform.runLater(() -> {
             setDialogMessage(errorMessage);
             updateView();
-            logout();
-            mainWindow.switchView(MainWindow.viewEnum.GAME_MENU);
         });
     }
 

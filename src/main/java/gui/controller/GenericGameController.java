@@ -28,12 +28,8 @@ public class GenericGameController extends Controller implements Initializable {
 
     @FXML public void pressBackToMainMenu(ActionEvent event){
         mainWindow.switchView(MainWindow.viewEnum.MAINMENU);
-
         GameManager gm = ConfigData.getInstance().getGameManager();
-
         gm.destroy();
-
-        ((GenericGameModel)model).clearBoard();
     }
 
     @FXML public void onMouseReleased(MouseEvent event) {
