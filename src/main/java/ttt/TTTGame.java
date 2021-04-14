@@ -22,7 +22,6 @@ public class TTTGame extends Game {
     private boolean showPiecesCount = false;
     private Color colors = Color.rgb(245, 245, 245);
     private String gameName = "Tic-tac-toe";
-    private boolean showValidMoves = false;
 
     @Override
     public Function<Board, Player> createAIPlayerFactory() {
@@ -57,10 +56,5 @@ public class TTTGame extends Game {
     @Override
     public boolean showPiecesCount() {
         return showPiecesCount;
-    }
-
-    @Override
-    public boolean showValidMoves() {
-        return showValidMoves;
     }
 }

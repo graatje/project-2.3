@@ -21,7 +21,6 @@ public class OthelloGame extends Game {
     private boolean showPiecesCount = true;
     private Color colors = Color.rgb(0, 153, 0);
     private String gameName = "Reversi";
-    private boolean showValidMoves = true;
 
     @Override
     public Function<Board, Player> createAIPlayerFactory() {
@@ -56,10 +55,5 @@ public class OthelloGame extends Game {
     @Override
     public boolean showPiecesCount() {
         return showPiecesCount;
-    }
-
-    @Override
-    public boolean showValidMoves() {
-        return showValidMoves;
     }
 }

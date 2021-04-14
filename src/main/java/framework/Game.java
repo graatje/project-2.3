@@ -63,7 +63,6 @@ public abstract class Game {
     public abstract String[] getBoardPieceNames();
     public abstract String getGameName();
     public abstract boolean showPiecesCount();
-    public abstract boolean showValidMoves();
 
     // Aanroepen in GameMenu (lobby of lokale wedstrijd)
     public void setOnline(boolean isOnline) {
