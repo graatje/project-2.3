@@ -11,7 +11,6 @@ public abstract class Controller<T extends Model> {
         this.model = model;
     }
 
-    //TODO: dit in constructor?
     public void setMainWindow(MainWindow mainWindow) {
         this.mainWindow = mainWindow;
     }
