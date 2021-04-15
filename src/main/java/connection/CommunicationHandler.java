@@ -159,7 +159,7 @@ public class CommunicationHandler {
      * @param gameType The type of game to subscribe for
      */
     public void sendSubscribeMessage(String gameType) {
-        client.sendCommandToServer("subscribe " + gameType + "\n");
+//        client.sendCommandToServer("subscribe " + gameType + "\n");
     }
 
     /**
