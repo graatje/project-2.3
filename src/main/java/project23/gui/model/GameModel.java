@@ -97,6 +97,7 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onGameStart(Player startingPlayer) {
+        restartClock = true;
         Platform.runLater(this::updateView);
     }
 
