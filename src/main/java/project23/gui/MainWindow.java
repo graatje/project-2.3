@@ -11,7 +11,6 @@ import project23.gui.model.GameLobbyModel;
 import project23.gui.model.GameMenuModel;
 import project23.gui.model.GameModel;
 import project23.gui.view.*;
-
 import java.io.IOException;
 import java.util.Objects;
 
@@ -26,6 +25,9 @@ public class MainWindow {
     public static final int WINDOW_WIDTH = 650;
     public static final int WINDOW_HEIGHT = 750;
 
+    /**
+     * Different kind of scenes/views
+     */
     public enum ViewEnum {
         GAME_LOBBY,
         MAINMENU,
@@ -34,6 +36,11 @@ public class MainWindow {
         GAME
     }
 
+    /**
+     * Configures title, icon, view etc. when the program is loaded
+     *
+     * @param primaryStage, displays scene/view
+     */
     public MainWindow(Stage primaryStage) throws IOException {
         this.stage = primaryStage;
         setupMVC();
@@ -46,12 +53,18 @@ public class MainWindow {
         switchView(ViewEnum.MAINMENU);
     }
 
+    /**
+     * closes any connections and closes the program
+     */
     public void quit() {
         if (ConfigData.getInstance().getGameManager() != null) {
             ConfigData.getInstance().getGameManager().destroy();
         }
     }
 
+    /**
+     * Creates all models, controllers, views and registers them
+     */
     private void setupMVC() throws IOException {
         // Game settings
         GameConfigurationModel gcModel = new GameConfigurationModel();

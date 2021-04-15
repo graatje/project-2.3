@@ -1,5 +1,10 @@
 package project23.gui.view;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
@@ -12,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.text.Text;
+import javafx.util.Duration;
 import project23.framework.BoardState;
 import project23.framework.ConfigData;
 import project23.framework.board.Board;
@@ -31,31 +37,57 @@ public class GameView extends View<GameModel> {
     private final Pane gameBoardPane;
     private List<URL> playerIconFileURLs;
     private final Text waitingText;
+    private Label clock;
+    private int seconds;
+
 
     // Cell margin value between 0 (no margin) and 1 (no space for the piece at all)
     public static final double MARGIN = 0.2;
+    //private Timeline animation = new Timeline(new KeyFrame(Duration.seconds(1), e -> countDown()));
+    private final Timeline animation = new Timeline(new KeyFrame(Duration.ZERO, actionEvent -> countDown()) , new KeyFrame(Duration.seconds(1)));
 
+    /**
+     * Sets the game from the view/scene
+     * Sets waitingtext
+     *
+     * @param parent, screen nodes (fxml)
+     * @param controller, controller of the nodes
+     * @param windowWidth, width of the window
+     * @param windowHeight, height of the window
+     */
     public GameView(Parent parent, Controller controller, int windowWidth, int windowHeight) {
         super(parent, controller, windowWidth, windowHeight);
         gameBoardPane = (Pane) lookup("#board");
         this.waitingText = new Text("Please wait for the game to start.");
+        animation.setCycleCount(10);
     }
 
     public void setBoardPieceIcons(List<URL> playerIconFileURLs) {
         this.playerIconFileURLs = playerIconFileURLs;
     }
 
+    /**
+     * Updates the clock
+     * If online match is waiting, show "waiting for game"
+     * Otherwise draws the board
+     *
+     * @param model
+     */
     @Override
     public void update(GameModel model) {
-        // Clock
-//        if(model.resetClock()) {
-//            //do stuff
-//        }
+        if(clock==null) {
+            clock = model.getClockLabel();
+        }
+        if(model.restartClock()) {
+            resetClock();
+        }
+        if(model.stopClock()) {
+            stopClock();
+        }
 
         showDialog(model.getDialogMessage(), model.getDialogTitle());
         showInfoText(model.getInfoMessage(), model.getLabelNode());
 
-        // If online match is waiting, show "waiting for game"
         if (model.getBoard().getBoardState() == BoardState.WAITING && !ConfigData.getInstance().getCurrentGame().isOnline()) {
             setBackgroundColorBoard(null);
             clearBoard();
@@ -65,6 +97,37 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Resets the clock to 10 seconds and starts the countdown
+     */
+    private void resetClock() {
+        seconds = 10;
+        animation.playFromStart();
+    }
+
+    /**
+     * Stops the clock and removes the time
+     */
+    public void stopClock() {
+        animation.stop();
+        Platform.runLater(() -> clock.setText(""));
+
+    }
+
+    private void countDown() {
+        if(seconds == 1) {
+            Platform.runLater(() -> clock.setText("Time's up!"));
+        } else {
+            Platform.runLater(() -> clock.setText(--seconds + " seconds remaining"));
+
+        }
+    }
+
+    /**
+     * Draws the game board, sets the grid, draws the gamepieces
+     *
+     * @param model
+     */
     private void drawBoard(GameModel model) {
         Board board = model.getBoard();
         if (board == null) {
@@ -95,6 +158,12 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Draws the possible moves for the player
+     *
+     * @param validMoves, list of possible moves saved in boardpieces
+     * @param gridSize, size of the grid
+     */
     private void drawValidMoves(List<BoardPiece> validMoves, int gridSize) {
         double cellSize = gameBoardPane.getPrefWidth() / gridSize;
 
@@ -112,6 +181,11 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Draws the lines of the grid
+     *
+     * @param gridSize, size of the grid
+     */
     public void drawLines(int gridSize) {
         // Clear board
         clearBoard();
@@ -139,10 +213,20 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * Clears the board
+     */
     public void clearBoard() {
         gameBoardPane.getChildren().clear();
     }
 
+    /**
+     * Draws the gamepiece
+     * Gets the coordinates and adds a boardpiece to the coordinate when clicked
+     *
+     * @param piece, boardpiece
+     * @param gridSize, size of the grid
+     */
     public void drawPiece(BoardPiece piece, int gridSize) {
         if (!piece.hasOwner()) {
             return;
@@ -172,6 +256,11 @@ public class GameView extends View<GameModel> {
         gameBoardPane.getChildren().add(imageView);
     }
 
+    /**
+     * shows the playerinformation in the top information box in a label
+     *
+     * @param playerInformationList, list of playerinformation like name etc.
+     */
     public void showPlayerInformation(ArrayList<String> playerInformationList) {
         HBox playerInformationHBox = (HBox) lookup("#playerInformationHBox");
 
@@ -184,6 +273,10 @@ public class GameView extends View<GameModel> {
         }
     }
 
+    /**
+     * sets the background color for the game boards
+     * @param color, the color of the background
+     */
     public void setBackgroundColorBoard(Color color) {
         gameBoardPane.setBackground(new Background(new BackgroundFill(color, null, null)));
     }

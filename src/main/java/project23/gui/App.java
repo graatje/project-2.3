@@ -10,6 +10,11 @@ import java.io.IOException;
 public class App extends Application {
     private static final File LOG_DIRECTORY = new File("logs/");
 
+    /**
+     * First method that gets called, runs the application
+     *
+     * @param primaryStage, the primarystage, scenes will be loaded in this
+     */
     @Override
     public void start(Stage primaryStage) throws IOException {
         if (!LOG_DIRECTORY.exists()) {

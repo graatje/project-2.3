@@ -17,23 +17,30 @@ public class GameMenuModel extends Model {
         ConfigData.getInstance().setPlayerName(username);
     }
 
+    /**
+     * Prepares an offline match.
+     * Since there is no waiting for a player like in multiplayer,
+     * it can immediately start the match.
+     */
     public void prepareOfflineGame() {
         ConfigData.getInstance().getCurrentGame().setOnline(false);
-
-        // Bereid de gamemodel voor
         prepareGameManager();
-
-        // Start het potje onmiddellijk
         ConfigData.getInstance().getGameManager().requestStart();
     }
 
+    /**
+     * Prepares an online match. Cannot immediately start, unlike {@link #prepareOfflineGame()}.
+     * Relevant: {@link GameLobbyModel#prepareGameManager()}
+     */
     public void prepareLobby() {
         ConfigData.getInstance().getCurrentGame().setOnline(true);
         prepareGameManager();
-
         gameLobbyModel.prepareGameManager();
     }
 
+    /**
+     * Creates a gamemanager. Notifies gameModel to set gamemanager as well. See: {@link GameModel#prepareNewGame()}
+     */
     private void prepareGameManager() {
         // Create new game, and set it in the config. (This should always be done together)
         GameManager gm = ConfigData.getInstance().getCurrentGame().createGameManager();

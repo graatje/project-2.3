@@ -1,8 +1,9 @@
 package project23.gui.model;
 
 import javafx.application.Platform;
-import javafx.scene.paint.Color;
+import javafx.scene.control.Label;
 import project23.framework.ConfigData;
+import project23.framework.ConnectedGameManager;
 import project23.framework.GameManager;
 import project23.framework.board.Board;
 import project23.framework.board.BoardObserver;
@@ -13,7 +14,6 @@ import project23.util.Logger;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 public class GameModel extends Model implements BoardObserver {
@@ -21,11 +21,12 @@ public class GameModel extends Model implements BoardObserver {
     private Board board;
     private GameManager gameManager;
     private double boardSize;
-    private Color color;
-    private List<URL> playerIconFileURLs;
+    private boolean restartClock;
+    private boolean stopClock;
+    private Label clockLabel;
 
     /**
-     * Sets gameManager and board variables, and registers this model as observer. Does not start the game yet.
+     * Sets gameManager and board variables, and registers this model as observer. This method does not start the match.
      */
     public void prepareNewGame() {
         gameManager = ConfigData.getInstance().getGameManager();
@@ -67,16 +68,14 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
+        restartClock = true;
 
-        //TODO klok in view aanzetten?
-        //setClockReset(true);
-
-        //TODO: show info message on skipping
-        if (who.isShowValidMoves() && where == null) {
-            setInfoMessage("Skipped a turn, no available moves");
-            Logger.debug("skipping..! (hoera, dit werkt?)");
-            updateView();
-        }
+        //TODO: show message when skipping a move
+//        if (who.isShowValidMoves() && where == null) {
+//            setInfoMessage("Skipped a turn, no available moves");
+//            Logger.debug("skipping..! (hoera, dit werkt?)");
+//            updateView();
+//        }
     }
 
     @Override
@@ -86,8 +85,9 @@ public class GameModel extends Model implements BoardObserver {
 
     @Override
     public void onPlayerWon(Player who) {
+        stopClock = true;
         Platform.runLater(() -> {
-            String message = null;
+            String message;
             if (who == null) {
                 message = "It's a draw";
             } else {
@@ -101,10 +101,6 @@ public class GameModel extends Model implements BoardObserver {
     @Override
     public void onGameStart(Player startingPlayer) {
         Platform.runLater(this::updateView);
-    }
-
-    public String getPlayerNames(List<Player> players) {
-        return players.get(0).getName() + " VS. " + players.get(1).getName();
     }
 
     public ArrayList<String> getPlayerInfo(Map<Player, Integer> playerInfo) {
@@ -131,5 +127,43 @@ public class GameModel extends Model implements BoardObserver {
     public void restartGame() {
         gameManager.reset();
         gameManager.requestStart();
+    }
+
+    /**
+     * Whether the clock should be set to 10 again.
+     * When this method is called, {@link #restartClock} is automatically set to false.
+     * @return whether the clock should be reset
+     */
+    public boolean restartClock() {
+        // clock should only work on multiplayer matches
+        if(restartClock && gameManager instanceof ConnectedGameManager) {
+            restartClock = false;
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Label getClockLabel() {
+        return clockLabel;
+    }
+
+    public void setClockLabel(Label clockLabel) {
+        this.clockLabel = clockLabel;
+    }
+
+    /**
+     * Whether the clock must be stopped.
+     * When this method is called, {@link #stopClock} is automatically set to false. Otherwise the clock
+     * might never run again.
+     * @return whether clock must be stopped
+     */
+    public boolean stopClock() {
+        if(stopClock) {
+            stopClock = false;
+            return true;
+        } else {
+            return false;
+        }
     }
 }
