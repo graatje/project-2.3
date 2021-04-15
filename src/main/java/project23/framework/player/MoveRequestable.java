@@ -5,7 +5,7 @@ package project23.framework.player;
  */
 public interface MoveRequestable {
     /**
-     * a method to request a move.
+     * A handler to request a move.
      */
     void requestMove();
 }

@@ -5,6 +5,7 @@ import project23.framework.ConnectedGameManager;
 import project23.framework.board.Board;
 import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
+import project23.util.Logger;
 
 import java.util.HashSet;
 import java.util.List;
@@ -41,15 +42,30 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         board.registerObserver(this);
     }
 
+    /**
+     * evaluates the board
+     * @param board the current board situation
+     * @param treeDepth the current depth of the minimax tree
+     * @return a positive(we are winning) or negative(we are losing) float value
+     */
     protected abstract float evaluateBoard(Board board, int treeDepth);
 
+    /**
+     * @return The starting depth of the minimax algorithm
+     */
     public abstract int getStartDepth();
 
+    /**
+     * Only show valid moves when this AI player is part of a ConnectedGameManager
+     */
     @Override
     public boolean isShowValidMoves() {
         return (board.getGameManager() instanceof ConnectedGameManager);
     }
 
+    /**
+     * Request a move from the AI player
+     */
     @Override
     public void requestMove() {
         List<BoardPiece> validMoves = board.getValidMoves(this);
@@ -80,6 +96,9 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         }
     }
 
+    /**
+     * Executes a random move to the board
+     */
     public void executeRandomMove() {
         List<BoardPiece> validMoves = board.getValidMoves(this);
 
@@ -92,9 +111,7 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
     }
 
     /**
-     * check all valid moves. return the best move of those.
-     *
-     * @return the boardpiece with the best move.
+     * Check all valid moves using minimax, and execute it using {@link Board#makeMove(Player, BoardPiece)}
      */
     public void executeMinimaxMove() {
         UUID session = UUID.randomUUID();
@@ -126,6 +143,11 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         watchdogThread.start();
     }
 
+    /**
+     * Picks the best move out of the minimax tree.
+     * Chooses a random valid move if minimax could not come up with a best move.
+     * @param session current threading session
+     */
     private void onMinimaxDone(UUID session) {
         synchronized (minimaxSessionLock) {
             if (minimaxSession != session) {
@@ -145,12 +167,12 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         List<BoardPiece> validMoves = board.getValidMoves(this);
         if (!validMoves.isEmpty()) {
             if (bestMove == null) {
-                System.err.println("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
+                Logger.error("Minimax couldn't come up with a best move, but there are more than 0 valid moves! Sending a random move..");
                 bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
 
             if (!validMoves.contains(bestMove)) {
-                System.err.println("Minimax came up with a best move, but it isn't a valid move! Sending a random move..");
+                Logger.error("Minimax came up with a best move, but it isn't a valid move! Sending a random move..");
                 bestMove = validMoves.get((int) (Math.random() * validMoves.size()));
             }
         }
@@ -165,38 +187,46 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
             anyEndedInNonGameOverValue = anyEndedInNonGameOver.get();
         }
 
-        System.out.println("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
+        Logger.info("Found best move " + bestMove + " with a value of " + bestMoveValue + " at a depth of " + highestDepthValue + ".");
 
+        StringBuilder certaintyMessage = new StringBuilder();
         if(Math.abs(bestMoveValue) < 0.8f) {
-            System.out.println("I can't tell who will win if the opponent plays perfectly.");
+            certaintyMessage.append("I can't tell who will win if the opponent plays perfectly.");
         }else{
-            System.out.print("We are ");
+            certaintyMessage.append("We are ");
             if (anyEndedInNonGameOverValue) {
                 if (Math.abs(bestMoveValue) > 2.0f) {
-                    System.out.print("most likely");
+                    certaintyMessage.append("most likely");
                 } else {
-                    System.out.print("probably");
+                    certaintyMessage.append("probably");
                 }
             } else {
-                System.out.print("definitely");
+                certaintyMessage.append("definitely");
             }
 
-            System.out.print(" going to ");
+            certaintyMessage.append(" going to ");
 
             if (bestMoveValue > 0) {
-                System.out.print("win");
+                certaintyMessage.append("win");
             } else if (bestMoveValue == 0) {
-                System.out.print("tie");
+                certaintyMessage.append("tie");
             } else {
-                System.out.print("lose");
+                certaintyMessage.append("lose");
             }
 
-            System.out.println(" if the opponent plays perfectly.");
+            certaintyMessage.append(" if the opponent plays perfectly.");
         }
+
+        Logger.info(certaintyMessage.toString());
 
         board.makeMove(this, bestMove);
     }
 
+    /**
+     * Executes minimax algorithm on async threads
+     * @param session current thread session
+     * @param depth minimax tree depth
+     */
     private void performAsyncMinimax(UUID session, int depth) {
         synchronized (minimaxSessionLock) {
             if (minimaxSession != session) {
@@ -267,10 +297,10 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
 
                     if (anyEndedInNonGameOverValue) {
                         // We can still go higher!
-                        System.out.println("Done with minimax at a depth of " + depth + ", but we still have time. Going deeper!");
+                        Logger.info("Done with minimax at a depth of " + depth + ", but we still have time. Going deeper!");
                         performAsyncMinimax(session, depth + 1);
                     } else {
-                        System.out.println("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
+                        Logger.info("All minimax ends ended in a game-over. Aborting early at a depth of " + depth + "!");
                         onMinimaxDone(session);
                     }
                 }
@@ -363,12 +393,13 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
     }
 
     @Override
-    public void onPlayerMoved(Player who, BoardPiece where) {
-    }
+    public void onPlayerMoved(Player who, BoardPiece where) {}
 
     @Override
-    public void onPlayerMoveFinalized(Player previous, Player current) {
-    }
+    public void onPlayerMoveFinalized(Player previous, Player current) {}
+
+    @Override
+    public void onGameStart(Player startingPlayer) {}
 
     @Override
     public void onPlayerWon(Player who) {
@@ -377,20 +408,22 @@ public abstract class MinimaxAIPlayer extends AIPlayer implements BoardObserver 
         }
     }
 
-    @Override
-    public void onGameStart(Player startingPlayer) {
-    }
-
-
     public enum AIDifficulty {
         EASY,
         MEDIUM,
         HARD;
 
+        /**
+         * @return The display-name of this difficulty.
+         */
         public String displayName() {
             return String.valueOf(name().charAt(0)).toUpperCase() + name().substring(1).toLowerCase();
         }
 
+        /**
+         * @param name The display-name to lookup
+         * @return The {@link AIDifficulty} which has the specified (display) name
+         */
         public static AIDifficulty fromDisplayName(String name) {
             try {
                 return valueOf(name.toUpperCase());

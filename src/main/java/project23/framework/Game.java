@@ -4,6 +4,7 @@ import javafx.scene.paint.Color;
 import project23.framework.board.Board;
 import project23.framework.player.LocalPlayer;
 import project23.framework.player.Player;
+import project23.util.Logger;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -50,7 +51,7 @@ public abstract class Game {
 
                 return cgm;
             } catch (IOException e) {
-                System.err.println("Couldn't connect to server!");
+                Logger.error("Couldn't connect to server!");
                 e.printStackTrace();
             }
 

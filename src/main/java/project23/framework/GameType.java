@@ -12,6 +12,11 @@ public enum GameType {
         this.displayName = displayName;
     }
 
+    /**
+     * Get the gametype by the name the server calls it
+     * @param serverName the server's name for the game (which is wrong)
+     * @return game type object
+     */
     public static GameType getByServerName(String serverName) {
         for (GameType gameType : values()) {
             if (gameType.serverName.equalsIgnoreCase(serverName)) {

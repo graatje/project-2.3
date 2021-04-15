@@ -409,7 +409,7 @@ public abstract class Board implements Cloneable {
     /**
      *
      * @param boardPiece the boardpiece to check
-     * @see #isValidMove(Player asWho, int x, int y)
+     * @see z#isValidMove(Player asWho, int x, int y)
      */
     public boolean isValidMove(BoardPiece boardPiece) {
         return isValidMove(getCurrentPlayer(), boardPiece);

@@ -11,6 +11,7 @@ import java.util.List;
 /**
  * A test class (intended to use in development) which implements a {@link LocalPlayer} through the command line.
  */
+@Deprecated
 public class ConsoleLocalPlayer extends LocalPlayer implements MoveRequestable {
     public ConsoleLocalPlayer(Board board, int id, String name) {
         super(board, id, name);

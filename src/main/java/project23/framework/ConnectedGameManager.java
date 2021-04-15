@@ -8,6 +8,7 @@ import project23.framework.board.BoardObserver;
 import project23.framework.board.BoardPiece;
 import project23.framework.player.Player;
 import project23.framework.player.ServerPlayer;
+import project23.util.Logger;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -28,7 +29,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
 
     private final Set<ConnectedGameManagerObserver> observers = new HashSet<>();
 
-    private long selfPlayerTurnStart;
+    private long selfPlayerTurnStart = System.currentTimeMillis();
 
     /**
      * constructor, initializes project23.connection, board and players.
@@ -51,6 +52,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         board.registerObserver(this);
     }
 
+    /**
+     * Sets a new selfPlayerSupplier
+     */
     public void updateSelfPlayerSupplier(BiFunction<Board, Integer, Player> selfPlayerSupplier) {
         playerSuppliers.clear();
         playerSuppliers.add(ServerPlayer::new);
@@ -67,6 +71,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         client.start();
     }
 
+    /**
+     * Log in to the server
+     */
     public void login() {
         // We only have to log-in once!
         if (loggedIn) {
@@ -77,6 +84,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         loggedIn = true;
     }
 
+    /**
+     * asks the server to give us a online match.
+     */
     public void subscribe() {
         client.sendSubscribeMessage(getGameType().serverName);
     }
@@ -93,6 +103,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         return activeChallengeRequests;
     }
 
+    /**
+     * gets a list of names of the lobbyplayers.
+     * @return List<String>
+     */
     public List<String> getLobbyPlayers() {
         return Collections.unmodifiableList(lobbyPlayers);
     }
@@ -105,10 +119,18 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         this.selfName = selfName;
     }
 
+    /**
+     * method to challenge someone else
+     * @param playerToChallenge
+     */
     public void challengePlayer(String playerToChallenge) {
         client.sendChallengeMessage(playerToChallenge, getGameType().serverName);
     }
 
+    /**
+     * method to accept a challenge request.
+     * @param challengeRequest a challengerequest.
+     */
     public void acceptChallengeRequest(ChallengeRequest challengeRequest) {
         client.acceptChallenge(challengeRequest.getChallengeNr());
     }
@@ -130,6 +152,9 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         super.forfeit();
     }
 
+    /**
+     * closing the client, destroying internal objects.
+     */
     @Override
     public void destroy() {
         closeClient();
@@ -137,6 +162,12 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         super.destroy();
     }
 
+    /**
+     *
+     * @param opponent the name of the opponent
+     * @param gameTypeServerName the type of name.
+     * @param challengeNr the number of the challenge.
+     */
     @Override
     public void onChallengeRequestReceive(String opponent, String gameTypeServerName, int challengeNr) {
         ChallengeRequest challengeRequest = new ChallengeRequest(opponent, GameType.getByServerName(gameTypeServerName), challengeNr);
@@ -145,6 +176,11 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(o -> o.onChallengeRequestReceive(challengeRequest));
     }
 
+    /**
+     * starts a server match.
+     * @param opponentName the name of the opponent.
+     * @param playerToBegin the player who begins.
+     */
     @Override
     public void startServerMatch(String opponentName, String playerToBegin) {
         if (isInitialized()) {
@@ -178,11 +214,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(ConnectedGameManagerObserver::onPostGameStart);
     }
 
+
     @Override
     public void challengeRequestCancelled(int challengeNr) {
         activeChallengeRequests.removeIf(challengeRequest -> challengeRequest.getChallengeNr() == challengeNr);
     }
 
+    /**
+     * updates the lobbyplayers.
+     * @param lobbyPlayers List of names of lobbyplayers.
+     */
     @Override
     public void updateLobbyPlayers(List<String> lobbyPlayers) {
         this.lobbyPlayers.clear();
@@ -192,6 +233,10 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(ConnectedGameManagerObserver::onPlayerListReceive);
     }
 
+    /**
+     * forces ending a match.
+     * @param result string WIN , LOSS or DRAW
+     */
     @Override
     public void endMatch(String result) {
         board.finalizeRawMove();
@@ -207,7 +252,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
                 board.forceWin(null);
                 break;
             default:
-                System.err.println("Received match end result '" + result + "' from the server, which is not a valid result!");
+                Logger.error("Received match end result '" + result + "' from the server, which is not a valid result!");
                 break;
         }
     }
@@ -217,11 +262,16 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
         observers.forEach(o -> o.onServerError(errorMessage));
     }
 
+    /**
+     * if the player given isn't the serverplayeropponent send a move.
+     * @param who the player who moved.
+     * @param where the piece you want to do.
+     */
     @Override
     public void onPlayerMoved(Player who, BoardPiece where) {
         if (who != serverPlayerOpponent) {
             long elapsed = System.currentTimeMillis() - selfPlayerTurnStart;
-            System.out.println("Self turn ended in " + elapsed + "ms!");
+            Logger.debug("Self turn ended in " + elapsed + "ms!");
 
             int move = where.getX() + board.getWidth() * where.getY();
             client.sendMoveMessage(move);
@@ -231,7 +281,7 @@ public class ConnectedGameManager extends GameManager implements GameManagerComm
     @Override
     public void onPlayerMoveFinalized(Player previous, Player current) {
         if(current != serverPlayerOpponent) {
-            System.out.println("Self turn started");
+            Logger.debug("Self turn started");
             selfPlayerTurnStart = System.currentTimeMillis();
         }
     }

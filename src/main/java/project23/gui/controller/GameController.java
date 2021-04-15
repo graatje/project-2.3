@@ -17,6 +17,7 @@ public class GameController extends Controller<GameModel> implements Initializab
 
     @FXML private Pane board;
     @FXML private Label messageField;
+    @FXML private Label clock;
 
     /**
      * Sets the labelNode to be used for showInfoMessage() in the model
@@ -26,6 +27,7 @@ public class GameController extends Controller<GameModel> implements Initializab
     public void initialize(URL url, ResourceBundle resourceBundle) {
         model.setLabelNode(messageField);
         model.setBoardSize(board.getPrefWidth());
+        model.setClockLabel(clock);
     }
 
     /**
