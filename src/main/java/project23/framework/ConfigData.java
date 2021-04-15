@@ -36,9 +36,9 @@ public class ConfigData {
         // Config
         serverIP = "145.33.225.170";
         serverPort = 7789;
-        playerName = "GroupC4";
+        playerName = "C4";
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
-        minimaxThinkingTime = 6000;
+        minimaxThinkingTime = 8000;
 
         // Games
         registerGame(new TTTGame());
