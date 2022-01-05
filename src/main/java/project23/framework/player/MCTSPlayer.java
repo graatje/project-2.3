@@ -13,7 +13,7 @@ import static java.lang.System.currentTimeMillis;
 
 public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
     /**
-     * This algorithm works as following:
+     * This algorithm (the Monte Carlo Tree Search algorithm) works as following:
      * (a) get all possible moves for current player
      * (b) chose one of those at random
      * (c) alternately play the game with totally random (valid) moves until the game is over.
@@ -25,6 +25,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
      * @param board
      * @param id
      */
+    private static final int CORES = 4;
     public MCTSPlayer(Board board, int id) {
         super(board, id);
         board.registerObserver(this);
@@ -92,22 +93,30 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         else if(validMoves.size() == 0){
             return null;
         }
-        Board board;
-        while(currentTimeMillis() < starttime + ConfigData.getInstance().getMinimaxThinkingTime() - 100){
-            try {
-                board = _board.clone();
-                board.setDisableRequestMove(true);
-                ResultSet game = simulateGame(board);
-                if(game != null) {
-                    vals.get(game.boardPiece).add(game.boardValue);
+
+        for(int i = 0; i <  CORES; i++) {
+            Thread thread = new Thread(() -> {
+                while (currentTimeMillis() < starttime + ConfigData.getInstance().getMinimaxThinkingTime() - 10) {
+                    try {
+                        ResultSet game = simulateGame(_board.clone());
+                        if (game != null) {
+                            synchronized (vals) {
+                                vals.get(game.boardPiece).add(game.boardValue);
+                            }
+                        } else {
+                            Logger.warning("resultset of the game was null");
+                        }
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                 }
-                else{
-                    Logger.warning("resultset of the game was null");
-                }
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-                return null;
-            }
+            });
+            thread.start();
+        }
+        try {
+            Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
         int simulatedGames = 0;
         BoardPiece move = null;
@@ -137,6 +146,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
      * @return a resultset containing the boardpiece that was moved and the value of the board at the end of the game.
      */
     private ResultSet simulateGame(Board board){
+        board.setDisableRequestMove(true);
         // picking the random move to simulate the rest of the game with.
         BoardPiece move = getRandomMove(board.getValidMoves(this));
         if(move == null){
