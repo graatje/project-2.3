@@ -8,6 +8,10 @@ import project23.framework.board.BoardPiece;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
+
+import project23.framework.player.network.MCTSNetworkHandler;
+import project23.framework.player.network.SimulationResponse;
 import project23.util.Logger;
 import static java.lang.System.currentTimeMillis;
 
@@ -25,15 +29,29 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
      * @param board
      * @param id
      */
+    MCTSNetworkHandler networkHandler;
+    public boolean NETWORKCLIENTS = true;
     private static final int CORES = 4;
     public MCTSPlayer(Board board, int id) {
         super(board, id);
         board.registerObserver(this);
+        if(NETWORKCLIENTS) {
+            startNetworkHandler();
+        }
     }
 
     public MCTSPlayer(Board board, int id, String name) {
         super(board, id, name);
         board.registerObserver(this);
+        if(NETWORKCLIENTS) {
+            startNetworkHandler();
+        }
+    }
+
+    private void startNetworkHandler(){
+        networkHandler = new MCTSNetworkHandler(5000);
+        Thread t = new Thread(() -> networkHandler.connectClients());
+        t.start();
     }
 
     protected abstract float evaluateBoard(Board board);
@@ -93,7 +111,9 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         else if(validMoves.size() == 0){
             return null;
         }
-
+        if(NETWORKCLIENTS) {
+            networkHandler.sendBoard(_board);
+        }
         for(int i = 0; i <  CORES; i++) {
             Thread thread = new Thread(() -> {
                 while (currentTimeMillis() < starttime + ConfigData.getInstance().getMinimaxThinkingTime() - 10) {
@@ -113,20 +133,39 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
             });
             thread.start();
         }
+        AtomicReference<HashMap<BoardPiece, SimulationResponse>> receivedNetworkSimulations = new AtomicReference<>(new HashMap<>());
+        Thread networkReceiveThread = new Thread(() -> {
+            if(NETWORKCLIENTS) {
+                receivedNetworkSimulations.set(networkHandler.readClients());
+            }
+            try {
+                Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime() - 150);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        networkReceiveThread.start();
+
         try {
             Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        int networksimulated = 0;
         int simulatedGames = 0;
         BoardPiece move = null;
         float bestavgval = Float.NEGATIVE_INFINITY;
         float tempcount;
         for(BoardPiece boardPiece: _board.getValidMoves(this)){
+            SimulationResponse networksim = receivedNetworkSimulations.get().get(boardPiece);
             simulatedGames += vals.get(boardPiece).size();
             tempcount = 0;
             for(float val: vals.get(boardPiece)){
                 tempcount += val;
+            }
+            if(networksim != null) {
+                tempcount += networksim.amount * networksim.average;
+                networksimulated += networksim.amount;
             }
             if(tempcount / vals.get(boardPiece).size() > bestavgval){
                 bestavgval = tempcount / vals.get(boardPiece).size();
@@ -135,7 +174,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         }
         if(move != null) {
             Logger.info("found move at x:" + move.getX() + ", y:" + move.getY() + "with a value of " + bestavgval +
-                    " after simulating " + simulatedGames + " games.");
+                    " after simulating " + simulatedGames + " games, of which " + networksimulated + " from network");
         }
         return move;
     }
@@ -146,6 +185,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
      * @return a resultset containing the boardpiece that was moved and the value of the board at the end of the game.
      */
     private ResultSet simulateGame(Board board){
+
         board.setDisableRequestMove(true);
         // picking the random move to simulate the rest of the game with.
         BoardPiece move = getRandomMove(board.getValidMoves(this));
