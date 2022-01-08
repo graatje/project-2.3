@@ -2,6 +2,7 @@ package project23.framework.player.network;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import project23.framework.ConfigData;
 import project23.framework.board.Board;
 import project23.framework.board.BoardPiece;
 import project23.util.Logger;
@@ -40,9 +41,11 @@ public class MCTSClient {
         BoardPiece boardPiece;
         int owner;
         JSONObject msg = new JSONObject();
+
         JSONObject jsonboard = new JSONObject();
         try {
             msg.put("type", "sendboard");
+            //msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 500);
             for(int y = 0; y < board.getHeight(); y++){
                 for(int x = 0; x < board.getWidth(); x++){
                     boardPiece = board.getBoardPiece(x, y);

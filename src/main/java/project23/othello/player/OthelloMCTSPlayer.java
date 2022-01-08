@@ -3,6 +3,7 @@ import project23.framework.board.Board;
 import project23.framework.player.MCTSPlayer;
 import project23.framework.player.MinimaxAIPlayer;
 import project23.framework.player.Player;
+import project23.util.Logger;
 
 
 public class OthelloMCTSPlayer extends MCTSPlayer{
@@ -38,19 +39,27 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
                 }
             }
         }
-
         float value = 0;
         if (selfPieces + otherPieces != 0) {
             value = (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
         }
 
-        selfPieces += board.getValidMoves(this).size();
-        otherPieces += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
-
         if (selfPieces + otherPieces != 0) {
             value += (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
         }
-
         return value;
+//        float value = 0;
+//        if (selfPieces + otherPieces != 0) {
+//            value = (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
+//        }
+//
+//        selfPieces += board.getValidMoves(this).size();
+//        otherPieces += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
+//
+//        if (selfPieces + otherPieces != 0) {
+//            value += (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
+//        }
+//
+//        return value;
     }
 }

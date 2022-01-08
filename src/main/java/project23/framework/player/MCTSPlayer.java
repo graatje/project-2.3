@@ -135,14 +135,15 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         }
         AtomicReference<HashMap<BoardPiece, SimulationResponse>> receivedNetworkSimulations = new AtomicReference<>(new HashMap<>());
         Thread networkReceiveThread = new Thread(() -> {
-            if(NETWORKCLIENTS) {
-                receivedNetworkSimulations.set(networkHandler.readClients());
-            }
             try {
                 Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime() - 150);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            if(NETWORKCLIENTS) {
+                receivedNetworkSimulations.set(networkHandler.readClients());
+            }
+
         });
         networkReceiveThread.start();
 
