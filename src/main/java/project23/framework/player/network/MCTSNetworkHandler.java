@@ -42,6 +42,10 @@ public class MCTSNetworkHandler {
                     continue;
                 }
                 if(response.get("type").equals("reportResult")){
+                    if(client.getBoardInt() != response.getInt("boardint")){
+                        Logger.warning("the received simulation was not for the right board!");
+                        continue;
+                    }
                     JSONArray arr = (JSONArray) response.get("results");
                     for(int i=0; i < arr.length(); ++i){
                         JSONObject resp = (JSONObject) arr.get(i);

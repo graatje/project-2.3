@@ -19,6 +19,8 @@ public class MCTSClient {
     private DataInputStream in;
     private final Socket clientSocket;
     private boolean closed;
+    private int boardInt = 0;
+
     public MCTSClient(Socket socket){
         this.closed = false;
         clientSocket = socket;
@@ -28,6 +30,14 @@ public class MCTSClient {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public void setBoardint(int boardInt){
+        this.boardInt = boardInt;
+    }
+
+    public int getBoardInt(){
+        return boardInt;
     }
 
     /**
@@ -44,7 +54,9 @@ public class MCTSClient {
         JSONObject jsonboard = new JSONObject();
         try {
             msg.put("type", "sendboard");
-            //msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 500);
+            setBoardint(getBoardInt() + 1);
+            msg.put("boardint", getBoardInt());
+            msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 500);
             for(int y = 0; y < board.getHeight(); y++){
                 for(int x = 0; x < board.getWidth(); x++){
                     boardPiece = board.getBoardPiece(x, y);
