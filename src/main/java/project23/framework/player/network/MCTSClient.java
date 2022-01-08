@@ -8,6 +8,7 @@ import project23.util.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Objects;
 
 /**
  * this class handles communication to a single client.
@@ -16,7 +17,9 @@ public class MCTSClient {
     private BufferedWriter out;
     private DataInputStream in;
     private final Socket clientSocket;
+    private boolean closed;
     public MCTSClient(Socket socket){
+        this.closed = false;
         clientSocket = socket;
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -31,6 +34,9 @@ public class MCTSClient {
      * @param board the board to send.
      */
     public void sendBoard(Board board){
+        if(closed){
+            return;
+        }
         BoardPiece boardPiece;
         int owner;
         JSONObject msg = new JSONObject();
@@ -64,11 +70,14 @@ public class MCTSClient {
      * @throws IOException
      */
     public JSONObject read() throws IOException {
-        StringBuilder msg = new StringBuilder();
-        while (in.available() > 0){
-            int character = in.read();
-            msg.append((char)character);
+        if(closed){
+            return null;
         }
+        String msg = in.readLine();
+        if(msg == null){
+            return null;
+        }
+        Logger.info("received:" + msg);
         if(msg.length() == 0){
             return null;
         }
@@ -85,6 +94,9 @@ public class MCTSClient {
      * @param message the json object to write to the client.
      */
     private void write(JSONObject message) {
+        if(closed){
+            return;
+        }
         try {
             out.write(message.toString());
             out.flush();
@@ -126,6 +138,20 @@ public class MCTSClient {
             out.close();
             in.close();
             clientSocket.close();
+            this.closed = true;
         } catch (IOException ignored) {}
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MCTSClient that = (MCTSClient) o;
+        return Objects.equals(out, that.out) && Objects.equals(in, that.in) && Objects.equals(clientSocket, that.clientSocket);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(out, in, clientSocket);
     }
 }

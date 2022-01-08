@@ -9,6 +9,7 @@ import project23.util.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -62,7 +63,11 @@ public class MCTSNetworkHandler {
                     }
                     Logger.info("received simulation from client.");
                 }
-            } catch (IOException | JSONException | NullPointerException e) {
+            } catch(SocketException e){
+                Logger.warning("closed dead socket.");
+                client.close();
+            }
+            catch (IOException | JSONException | NullPointerException e) {
                 e.printStackTrace();
                 System.out.println("failed to read.");
             }
