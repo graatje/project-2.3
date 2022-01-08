@@ -28,6 +28,10 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
 
     @Override
     protected float evaluateBoard(Board board) {
+        return evaluateBoardMethod3(board);
+    }
+
+    private float evaluateBoardMethod1(Board board){
         int selfPieces = 0, otherPieces = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {
@@ -48,18 +52,37 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
             value += (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
         }
         return value;
-//        float value = 0;
-//        if (selfPieces + otherPieces != 0) {
-//            value = (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
-//        }
-//
-//        selfPieces += board.getValidMoves(this).size();
-//        otherPieces += board.getValidMoves(board.getGameManager().getOtherPlayer(this)).size();
-//
-//        if (selfPieces + otherPieces != 0) {
-//            value += (float) (selfPieces - otherPieces) / (selfPieces + otherPieces);
-//        }
-//
-//        return value;
+    }
+
+    private float evaluateBoardMethod2(Board board){
+        float selfPieces = 0, otherPieces = 0;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Player owner = board.getBoardPiece(x, y).getOwner();
+                if (owner == this) {
+                    selfPieces += PIECE_WEIGHTS[x][y];
+                } else if (owner != null) {
+                    otherPieces += PIECE_WEIGHTS[x][y];
+                }
+            }
+        }
+
+        return selfPieces - otherPieces;
+    }
+
+    private float evaluateBoardMethod3(Board board){
+        float selfPieces = 0, otherPieces = 0;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Player owner = board.getBoardPiece(x, y).getOwner();
+                if (owner == this) {
+                    selfPieces += 1;
+                } else if (owner != null) {
+                    otherPieces += 1;
+                }
+            }
+        }
+
+        return selfPieces - otherPieces;
     }
 }

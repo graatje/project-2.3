@@ -29,6 +29,7 @@ public class MainMenuController extends Controller<MainMenuModel> {
     public void pressOthelloMenuButton(ActionEvent event) {
         mainWindow.switchView(MainWindow.ViewEnum.GAME_MENU);
         ConfigData.getInstance().setCurrentGameType(GameType.OTHELLO);
+        ConfigData.getInstance().getNetworkHandler();  // clients are able to connect from now.
     }
 
     /**

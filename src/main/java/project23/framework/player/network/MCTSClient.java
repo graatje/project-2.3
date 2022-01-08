@@ -41,7 +41,6 @@ public class MCTSClient {
         BoardPiece boardPiece;
         int owner;
         JSONObject msg = new JSONObject();
-
         JSONObject jsonboard = new JSONObject();
         try {
             msg.put("type", "sendboard");
@@ -61,6 +60,7 @@ public class MCTSClient {
             }
             msg.put("board", jsonboard);
             msg.put("turn", board.getCurrentPlayer().getID());
+            Logger.info("sent a board to a client.");
             write(msg);
         } catch (JSONException e) {
             e.printStackTrace();

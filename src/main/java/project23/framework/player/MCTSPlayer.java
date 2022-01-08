@@ -36,7 +36,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         super(board, id);
         board.registerObserver(this);
         if(NETWORKCLIENTS) {
-            startNetworkHandler();
+            networkHandler = ConfigData.getInstance().getNetworkHandler();
         }
     }
 
@@ -44,14 +44,8 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         super(board, id, name);
         board.registerObserver(this);
         if(NETWORKCLIENTS) {
-            startNetworkHandler();
+            networkHandler = ConfigData.getInstance().getNetworkHandler();
         }
-    }
-
-    private void startNetworkHandler(){
-        networkHandler = new MCTSNetworkHandler(5000);
-        Thread t = new Thread(() -> networkHandler.connectClients());
-        t.start();
     }
 
     protected abstract float evaluateBoard(Board board);
