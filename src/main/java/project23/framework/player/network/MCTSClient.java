@@ -32,6 +32,16 @@ public class MCTSClient {
         }
     }
 
+    public void sendSlowDown(){
+        JSONObject resp = new JSONObject();
+        try {
+            resp.put("type", "slowdown");
+            resp.put("amount", 100);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        write(resp);
+    }
     public void setBoardint(int boardInt){
         this.boardInt = boardInt;
     }
@@ -40,10 +50,22 @@ public class MCTSClient {
         return boardInt;
     }
 
+    public void clearBuffer(){
+        String str;
+        try {
+            while((str = in.readLine()) != null){
+                Logger.info("found the following string while clearing the buffer: " + str);
+            }
+        }catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
     /**
      * sends the board and whose turn it is.
      * @param board the board to send.
      */
+
+
     public void sendBoard(Board board){
         if(closed){
             return;

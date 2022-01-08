@@ -44,6 +44,9 @@ public class MCTSNetworkHandler {
                 if(response.get("type").equals("reportResult")){
                     if(client.getBoardInt() != response.getInt("boardint")){
                         Logger.warning("the received simulation was not for the right board!");
+                        Logger.warning("clearing buffer.");
+                        client.clearBuffer();
+                        client.sendSlowDown();
                         continue;
                     }
                     JSONArray arr = (JSONArray) response.get("results");
