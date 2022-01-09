@@ -127,32 +127,20 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
             });
             thread.start();
         }
-        AtomicReference<HashMap<BoardPiece, SimulationResponse>> receivedNetworkSimulations = new AtomicReference<>(new HashMap<>());
-        Thread networkReceiveThread = new Thread(() -> {
-            try {
-                Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime() - 150);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            if(NETWORKCLIENTS) {
-                receivedNetworkSimulations.set(networkHandler.readClients());
-            }
-
-        });
-        networkReceiveThread.start();
 
         try {
             Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        HashMap<BoardPiece, SimulationResponse> receivedNetworkSimulations = networkHandler.readClients();
         int networksimulated = 0;
         int simulatedGames = 0;
         BoardPiece move = null;
         float bestavgval = Float.NEGATIVE_INFINITY;
         float tempcount;
         for(BoardPiece boardPiece: _board.getValidMoves(this)){
-            SimulationResponse networksim = receivedNetworkSimulations.get().get(boardPiece);
+            SimulationResponse networksim = receivedNetworkSimulations.get(boardPiece);
             simulatedGames += vals.get(boardPiece).size();
             tempcount = 0;
             for(float val: vals.get(boardPiece)){
@@ -169,7 +157,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         }
         if(move != null) {
             Logger.info("found move at x:" + move.getX() + ", y:" + move.getY() + "with a value of " + bestavgval +
-                    " after simulating " + simulatedGames + " games, of which " + networksimulated + " from network");
+                    " after simulating " + (simulatedGames + networksimulated) + " games, of which " + networksimulated + " from network");
         }
         return move;
     }

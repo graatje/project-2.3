@@ -14,6 +14,8 @@ import java.net.SocketException;
 import java.util.HashMap;
 import java.util.Objects;
 
+import static java.lang.System.currentTimeMillis;
+
 /**
  * this class handles communication to a single client.
  */
@@ -23,6 +25,8 @@ public class MCTSClient {
     private final Socket clientSocket;
     private boolean closed;
     private int boardInt = 0;
+    private int thinkingtime = ConfigData.getInstance().getMinimaxThinkingTime() - 100;
+    public HashMap<Integer, Long> responsetimes = new HashMap<>();
     HashMap<Integer, HashMap<BoardPiece, SimulationResponse>> simulations = new HashMap<>();
 
     public MCTSClient(Socket socket){
@@ -53,15 +57,8 @@ public class MCTSClient {
         if(closed){
             return;
         }
-        Logger.info("asking the client to lower its thinking time.");
-        JSONObject resp = new JSONObject();
-        try {
-            resp.put("type", "slowdown");
-            resp.put("amount", 100);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        write(resp);
+        this.thinkingtime -= 100;
+        Logger.warning("thinking time of client reduced to " + thinkingtime + " milliseconds");
     }
     public void setBoardint(int boardInt){
         this.boardInt = boardInt;
@@ -77,7 +74,7 @@ public class MCTSClient {
      */
 
 
-    public void sendBoard(Board board){
+    public void sendBoard(Board board, int boardInt){
         if(closed){
             return;
         }
@@ -87,9 +84,9 @@ public class MCTSClient {
         JSONObject jsonboard = new JSONObject();
         try {
             msg.put("type", "sendboard");
-            setBoardint(getBoardInt() + 1);
-            msg.put("boardint", getBoardInt());
-            msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 200);
+            setBoardint(boardInt);
+            msg.put("boardint", boardInt);
+            msg.put("thinkingtime", thinkingtime);
             for(int y = 0; y < board.getHeight(); y++){
                 for(int x = 0; x < board.getWidth(); x++){
                     boardPiece = board.getBoardPiece(x, y);
@@ -107,6 +104,7 @@ public class MCTSClient {
             msg.put("turn", board.getCurrentPlayer().getID());
             Logger.info("sent a board to a client.");
             write(msg);
+            responsetimes.put(boardInt, currentTimeMillis());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -244,6 +242,8 @@ public class MCTSClient {
             receivedSimulations.put(boardPiece, new SimulationResponse(trials, value));
         }
         simulations.put(msg.getInt("boardint"), receivedSimulations);
+        Logger.info("response for board " + msg.get("boardint") + " received after " +
+                (currentTimeMillis() - responsetimes.get(msg.getInt("boardint"))) + "milliseconds.");
     }
 
     @Override

@@ -18,6 +18,7 @@ public class MCTSNetworkHandler {
     private ServerSocket serverSocket;
     private final ArrayList<MCTSClient> clients = new ArrayList<>();
     private final String PASSWORD = "HelloWorld";
+    private int currentboardint = 0;
     public MCTSNetworkHandler(int port){
         try {
             serverSocket = new ServerSocket(port);
@@ -67,8 +68,9 @@ public class MCTSNetworkHandler {
         }
     }
     public void sendBoard(Board board){
+        currentboardint += 1;
         for(MCTSClient client: clients){
-            client.sendBoard(board);
+            client.sendBoard(board, currentboardint);
         }
     }
 
