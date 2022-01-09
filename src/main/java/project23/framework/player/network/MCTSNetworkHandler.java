@@ -55,6 +55,17 @@ public class MCTSNetworkHandler {
         return simulations;
     }
 
+    public void killClosedClients(){
+        for(int i = clients.size(); i > 0; i--){
+            try {
+                MCTSClient client = clients.get(i);
+                if(client != null && client.isClosed()){
+                    clients.remove(i);
+                }
+            }catch (IndexOutOfBoundsException ignored){
+            }
+        }
+    }
     public void sendBoard(Board board){
         for(MCTSClient client: clients){
             client.sendBoard(board);

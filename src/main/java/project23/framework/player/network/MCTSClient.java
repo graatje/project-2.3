@@ -50,6 +50,9 @@ public class MCTSClient {
     }
 
     public void sendSlowDown(){
+        if(closed){
+            return;
+        }
         Logger.info("asking the client to lower its thinking time.");
         JSONObject resp = new JSONObject();
         try {
@@ -97,7 +100,7 @@ public class MCTSClient {
                         owner = -1;  // no owner.
                     }
                     jsonboard.put(Integer.toString(x + board.getWidth() * y),
-                            Integer.toString(owner));
+                            owner);
                 }
             }
             msg.put("board", jsonboard);
@@ -186,22 +189,29 @@ public class MCTSClient {
         }
     }
 
+    public boolean isClosed(){
+        return this.closed;
+    }
+
     public void close(){
         try {
             out.close();
             in.close();
             clientSocket.close();
             this.closed = true;
+            ConfigData.getInstance().getNetworkHandler().killClosedClients();
         } catch (IOException ignored) {}
     }
 
     /**
      * method to handle server input. use this in a thread.
      */
-    @SuppressWarnings("InfiniteLoopStatement")
     public void handleClientInput(){
         JSONObject msg;
         while(true){
+            if(isClosed()){
+                break;
+            }
             try {
                 msg = read();
                 if(msg == null  || msg.get("type") == null) continue;
