@@ -1,6 +1,5 @@
 package project23.framework.player.network;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import project23.framework.board.Board;
@@ -9,7 +8,6 @@ import project23.util.Logger;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,7 +16,7 @@ import java.util.HashMap;
  */
 public class MCTSNetworkHandler {
     private ServerSocket serverSocket;
-    private ArrayList<MCTSClient> clients = new ArrayList<MCTSClient>();
+    private final ArrayList<MCTSClient> clients = new ArrayList<>();
     private final String PASSWORD = "HelloWorld";
     public MCTSNetworkHandler(int port){
         try {
@@ -31,56 +29,32 @@ public class MCTSNetworkHandler {
 
     /**
      * checks if a clients have simulated matches, and returns the simulation if they have.
-     * @return
+     * @return hashmap of the average value of a board and the amount of times there was a simulation to get the average value.
      */
     public HashMap<BoardPiece, SimulationResponse> readClients(){
         HashMap<BoardPiece, SimulationResponse> simulations = new HashMap<>();
         for(MCTSClient client: clients){
-            try {
-                JSONObject response = client.read();
-                if(response == null){
-                    continue;
-                }
-                if(response.get("type").equals("reportResult")){
-                    if(client.getBoardInt() != response.getInt("boardint")){
-                        Logger.warning("the received simulation was not for the right board!");
-                        Logger.warning("clearing buffer.");
-                        client.clearBuffer();
-                        client.sendSlowDown();
-                        continue;
-                    }
-                    JSONArray arr = (JSONArray) response.get("results");
-                    for(int i=0; i < arr.length(); ++i){
-                        JSONObject resp = (JSONObject) arr.get(i);
-                        JSONObject move = (JSONObject) resp.get("move");
-                        BoardPiece piece = new BoardPiece(Integer.parseInt((String)move.get("x")),
-                                Integer.parseInt((String)move.get("y")));
-                        int trials = Integer.parseInt((String)resp.get("trials"));
-                        float value = Float.parseFloat((String) resp.get("value"));
-                        if(simulations.get(piece) != null){
-                            simulations.get(piece).average =
-                                    (simulations.get(piece).average * simulations.get(piece).amount +
-                                    trials * value) /
-                                    (simulations.get(piece).amount + trials);
-                            simulations.get(piece).amount += simulations.get(piece).amount + trials;
-                        }
-                        else{
-                            simulations.put(piece, new SimulationResponse(trials, value));
-                        }
-                    }
-                    Logger.info("received simulation from client.");
-                }
-            } catch(SocketException e){
-                Logger.warning("closed dead socket.");
-                client.close();
+            int boardint = client.getBoardInt();
+            HashMap<BoardPiece, SimulationResponse> simresponses = client.getSimulationResponse(boardint);
+            if(simresponses == null){
+                continue;
             }
-            catch (IOException | JSONException | NullPointerException e) {
-                e.printStackTrace();
-                System.out.println("failed to read.");
+            for(BoardPiece piece: simresponses.keySet()){
+                if(simulations.get(piece) != null){
+                    simulations.get(piece).average = (simulations.get(piece).average * simulations.get(piece).amount +
+                            simresponses.get(piece).amount * simresponses.get(piece).average) /
+                            (simulations.get(piece).amount + simresponses.get(piece).amount);
+                    simulations.get(piece).amount += simulations.get(piece).amount + simresponses.get(piece).amount;
+                }
+                else{
+                    simulations.put(piece, new SimulationResponse(simresponses.get(piece).amount, simresponses.get(piece).average));
+                }
             }
+            client.removeSimulation(boardint);
         }
         return simulations;
     }
+
     public void sendBoard(Board board){
         for(MCTSClient client: clients){
             client.sendBoard(board);
@@ -98,6 +72,8 @@ public class MCTSNetworkHandler {
                 if(verifyClient(client)) {
                     client.verificationSuccess();
                     clients.add(client);
+                    Thread t = new Thread(client::handleClientInput);
+                    t.start();
                 }else{
                     System.out.println("client failed to verify");
                     client.verificationFail();

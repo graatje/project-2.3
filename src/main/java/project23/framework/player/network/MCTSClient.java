@@ -1,5 +1,6 @@
 package project23.framework.player.network;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import project23.framework.ConfigData;
@@ -9,6 +10,8 @@ import project23.util.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
+import java.util.HashMap;
 import java.util.Objects;
 
 /**
@@ -16,23 +19,38 @@ import java.util.Objects;
  */
 public class MCTSClient {
     private BufferedWriter out;
-    private DataInputStream in;
+    private BufferedReader in;
     private final Socket clientSocket;
     private boolean closed;
     private int boardInt = 0;
+    HashMap<Integer, HashMap<BoardPiece, SimulationResponse>> simulations = new HashMap<>();
 
     public MCTSClient(Socket socket){
         this.closed = false;
         clientSocket = socket;
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            in = new DataInputStream(socket.getInputStream());
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public HashMap<BoardPiece, SimulationResponse> getSimulationResponse(int boardInt){
+        HashMap<BoardPiece, SimulationResponse> sim = simulations.get(boardInt);
+        if(sim == null && getBoardInt() <= boardInt){
+            // send slowdown? @todo
+            sendSlowDown();
+        }
+        return sim;
+    }
+
+    public void removeSimulation(int boardInt){
+        simulations.remove(boardInt);
+    }
+
     public void sendSlowDown(){
+        Logger.info("asking the client to lower its thinking time.");
         JSONObject resp = new JSONObject();
         try {
             resp.put("type", "slowdown");
@@ -50,16 +68,6 @@ public class MCTSClient {
         return boardInt;
     }
 
-    public void clearBuffer(){
-        String str;
-        try {
-            while((str = in.readLine()) != null){
-                Logger.info("found the following string while clearing the buffer: " + str);
-            }
-        }catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
     /**
      * sends the board and whose turn it is.
      * @param board the board to send.
@@ -78,7 +86,7 @@ public class MCTSClient {
             msg.put("type", "sendboard");
             setBoardint(getBoardInt() + 1);
             msg.put("boardint", getBoardInt());
-            msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 500);
+            msg.put("thinkingtime", ConfigData.getInstance().getMinimaxThinkingTime() - 200);
             for(int y = 0; y < board.getHeight(); y++){
                 for(int x = 0; x < board.getWidth(); x++){
                     boardPiece = board.getBoardPiece(x, y);
@@ -104,13 +112,21 @@ public class MCTSClient {
     /**
      * reads while data is available. non-blocking socket.
      * @return null or JSONObject with the received data.
-     * @throws IOException
+     * @throws IOException when failing to read it can throw an IOException.
      */
     public JSONObject read() throws IOException {
         if(closed){
             return null;
         }
-        String msg = in.readLine();
+        String msg = null;
+        try {
+            msg = in.readLine();
+        }
+        catch (SocketException e){
+            e.printStackTrace();
+            Logger.warning("closed a client cause of an exception when reading.");
+            close();
+        }
         if(msg == null){
             return null;
         }
@@ -119,7 +135,7 @@ public class MCTSClient {
             return null;
         }
         try {
-            return new JSONObject(msg.toString());
+            return new JSONObject(msg);
         } catch (JSONException e) {
             Logger.warning("received non-json data. " + msg);
             return null;
@@ -177,6 +193,47 @@ public class MCTSClient {
             clientSocket.close();
             this.closed = true;
         } catch (IOException ignored) {}
+    }
+
+    /**
+     * method to handle server input. use this in a thread.
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public void handleClientInput(){
+        JSONObject msg;
+        while(true){
+            try {
+                msg = read();
+                if(msg == null  || msg.get("type") == null) continue;
+
+                switch ((String)(msg.get("type"))){
+                    case "reportResult":
+                        reportResult(msg);
+                        break;
+                    default:
+                        break;
+                }
+            } catch (IOException | JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void reportResult(JSONObject msg) throws JSONException {
+
+        if(msg.get("boardint") == null) return;
+        JSONArray arr = (JSONArray) msg.get("results");
+        if(arr == null) return;
+        HashMap<BoardPiece, SimulationResponse> receivedSimulations = new HashMap<>();
+        for(int i=0; i < arr.length(); ++i) {
+            JSONObject resp = (JSONObject) arr.get(i);
+            JSONObject move = (JSONObject) resp.get("move");
+            BoardPiece boardPiece = new BoardPiece(move.getInt("x"), move.getInt("y"));
+            int trials = resp.getInt("trials");
+            float value = Float.parseFloat((String) resp.get("value"));
+            receivedSimulations.put(boardPiece, new SimulationResponse(trials, value));
+        }
+        simulations.put(msg.getInt("boardint"), receivedSimulations);
     }
 
     @Override
