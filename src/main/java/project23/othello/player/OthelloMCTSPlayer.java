@@ -85,4 +85,25 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
 
         return selfPieces - otherPieces;
     }
+
+    private float evaluateBoardMethod4(){
+        float selfPieces = 0, otherPieces = 0;
+        for (int x = 0; x < 8; x++) {
+            for (int y = 0; y < 8; y++) {
+                Player owner = board.getBoardPiece(x, y).getOwner();
+                if (owner == this) {
+                    selfPieces += 1;
+                } else if (owner != null) {
+                    otherPieces += 1;
+                }
+            }
+        }
+        if(selfPieces - otherPieces > 0){
+            return 1;
+        }
+        else if(selfPieces -otherPieces < 0){
+            return -1;
+        }
+        return 0;
+    }
 }
