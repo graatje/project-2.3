@@ -25,11 +25,12 @@ public class MCTSClient {
     private final Socket clientSocket;
     private boolean closed;
     private int boardInt = 0;
-    private int thinkingtime = ConfigData.getInstance().getMinimaxThinkingTime() - 100;
     public HashMap<Integer, Long> responsetimes = new HashMap<>();
+    private int maxDelay = 0;
     HashMap<Integer, HashMap<BoardPiece, SimulationResponse>> simulations = new HashMap<>();
-
+    private String name;
     public MCTSClient(Socket socket){
+        this.name = "";
         this.closed = false;
         clientSocket = socket;
         try {
@@ -40,11 +41,19 @@ public class MCTSClient {
         }
     }
 
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getName(){
+        return name;
+    }
+
     public HashMap<BoardPiece, SimulationResponse> getSimulationResponse(int boardInt){
         HashMap<BoardPiece, SimulationResponse> sim = simulations.get(boardInt);
         if(sim == null && getBoardInt() <= boardInt){
-            // send slowdown? @todo
-            sendSlowDown();
+            Logger.warning("requested board " + boardInt + " from client but board has not been received yet by " +
+                    "client " + getName());
         }
         return sim;
     }
@@ -53,13 +62,13 @@ public class MCTSClient {
         simulations.remove(boardInt);
     }
 
-    public void sendSlowDown(){
-        if(closed){
-            return;
+    private int getMaxThinkTime(){
+        if(maxDelay > ConfigData.getInstance().getMinimaxThinkingTime() / 2) {
+            return ConfigData.getInstance().getMinimaxThinkingTime() / 2;
         }
-        this.thinkingtime -= 100;
-        Logger.warning("thinking time of client reduced to " + thinkingtime + " milliseconds");
+        return ConfigData.getInstance().getMinimaxThinkingTime() - maxDelay;
     }
+
     public void setBoardint(int boardInt){
         this.boardInt = boardInt;
     }
@@ -86,7 +95,7 @@ public class MCTSClient {
             msg.put("type", "sendboard");
             setBoardint(boardInt);
             msg.put("boardint", boardInt);
-            msg.put("thinkingtime", thinkingtime);
+            msg.put("thinkingtime", getMaxThinkTime());
             for(int y = 0; y < board.getHeight(); y++){
                 for(int x = 0; x < board.getWidth(); x++){
                     boardPiece = board.getBoardPiece(x, y);
@@ -102,7 +111,7 @@ public class MCTSClient {
             }
             msg.put("board", jsonboard);
             msg.put("turn", board.getCurrentPlayer().getID());
-            Logger.info("sent a board to a client.");
+            Logger.info("sent a board to client " + getName());
             write(msg);
             responsetimes.put(boardInt, currentTimeMillis());
         } catch (JSONException e) {
@@ -125,7 +134,7 @@ public class MCTSClient {
         }
         catch (SocketException e){
             e.printStackTrace();
-            Logger.warning("closed a client cause of an exception when reading.");
+            Logger.warning("closed client " + getName() + " cause of an exception when reading.");
             close();
         }
         if(msg == null){
@@ -242,8 +251,14 @@ public class MCTSClient {
             receivedSimulations.put(boardPiece, new SimulationResponse(trials, value));
         }
         simulations.put(msg.getInt("boardint"), receivedSimulations);
-        Logger.info("response for board " + msg.get("boardint") + " received after " +
+        Logger.info("response for board " + msg.get("boardint") + " from client " + getName() + " received after " +
                 (currentTimeMillis() - responsetimes.get(msg.getInt("boardint"))) + "milliseconds.");
+        int delay = (int) (currentTimeMillis() - responsetimes.get(msg.getInt("boardint"))) -
+                (ConfigData.getInstance().getMinimaxThinkingTime());
+        if(delay > 0){
+            maxDelay += delay;
+            Logger.warning("max delay for client " + this.name + " increased to " + maxDelay);
+        }
     }
 
     @Override

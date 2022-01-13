@@ -62,6 +62,7 @@ public class MCTSNetworkHandler {
                 MCTSClient client = clients.get(i);
                 if(client != null && client.isClosed()){
                     clients.remove(i);
+                    Logger.warning("removed client " + client.getName());
                 }
             }catch (IndexOutOfBoundsException ignored){
             }
@@ -85,6 +86,7 @@ public class MCTSNetworkHandler {
                 if(verifyClient(client)) {
                     client.verificationSuccess();
                     clients.add(client);
+                    Logger.info("Client " + client.getName() + " added.");
                     Thread t = new Thread(client::handleClientInput);
                     t.start();
                 }else{
@@ -107,6 +109,10 @@ public class MCTSNetworkHandler {
             Logger.info("trying to connect a client.");
             JSONObject verificationmsg = client.read();
             if(verificationmsg == null){ return false; }
+
+            if(verificationmsg.has("name")){
+                client.setName((String) verificationmsg.get("name"));
+            }
             if(verificationmsg.get("type").equals("initialize")){
                 return verificationmsg.get("password").equals(PASSWORD);
             }

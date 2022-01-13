@@ -8,8 +8,6 @@ import project23.framework.board.BoardPiece;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
-
 import project23.framework.player.network.MCTSNetworkHandler;
 import project23.framework.player.network.SimulationResponse;
 import project23.util.Logger;
@@ -150,9 +148,18 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
                 tempcount += networksim.amount * networksim.average;
                 networksimulated += networksim.amount;
             }
-            if(tempcount / vals.get(boardPiece).size() > bestavgval){
-                bestavgval = tempcount / vals.get(boardPiece).size();
-                move = boardPiece;
+
+            if(networksim != null) {
+                if (tempcount / (vals.get(boardPiece).size() + networksim.amount) > bestavgval) {
+                    bestavgval = tempcount / (vals.get(boardPiece).size() + networksim.amount);
+                    move = boardPiece;
+                }
+            }
+            else{
+                if (tempcount / (vals.get(boardPiece).size()) > bestavgval) {
+                    bestavgval = tempcount / (vals.get(boardPiece).size());
+                    move = boardPiece;
+                }
             }
         }
         if(move != null) {
