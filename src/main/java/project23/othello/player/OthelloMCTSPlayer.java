@@ -28,7 +28,7 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
 
     @Override
     protected float evaluateBoard(Board board) {
-        return evaluateBoardMethod3(board);
+        return evaluateBoardMethod4(board);
     }
 
     private float evaluateBoardMethod1(Board board){
@@ -86,7 +86,7 @@ public class OthelloMCTSPlayer extends MCTSPlayer{
         return selfPieces - otherPieces;
     }
 
-    private float evaluateBoardMethod4(){
+    private float evaluateBoardMethod4(Board board){
         float selfPieces = 0, otherPieces = 0;
         for (int x = 0; x < 8; x++) {
             for (int y = 0; y < 8; y++) {

@@ -35,7 +35,7 @@ public class MCTSNetworkHandler {
     public HashMap<BoardPiece, SimulationResponse> readClients(){
         HashMap<BoardPiece, SimulationResponse> simulations = new HashMap<>();
         for(MCTSClient client: clients){
-            int boardint = client.getBoardInt();
+            int boardint = currentboardint;
             HashMap<BoardPiece, SimulationResponse> simresponses = client.getSimulationResponse(boardint);
             if(simresponses == null){
                 continue;
@@ -57,7 +57,7 @@ public class MCTSNetworkHandler {
     }
 
     public void killClosedClients(){
-        for(int i = clients.size(); i > 0; i--){
+        for(int i = clients.size(); i >= 0; i--){
             try {
                 MCTSClient client = clients.get(i);
                 if(client != null && client.isClosed()){

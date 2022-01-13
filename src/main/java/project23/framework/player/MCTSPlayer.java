@@ -55,7 +55,10 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
 
     @Override
     public void onPlayerMoveFinalized(Player previous, Player current) {
-
+        // gets executed after move has been sent to server.
+        if(NETWORKCLIENTS){
+            networkHandler.killClosedClients();
+        }
     }
 
     @Override

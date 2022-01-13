@@ -111,7 +111,7 @@ public class MCTSClient {
             }
             msg.put("board", jsonboard);
             msg.put("turn", board.getCurrentPlayer().getID());
-            Logger.info("sent a board to client " + getName());
+            Logger.info("sent board " + boardInt + " to client " + getName());
             write(msg);
             responsetimes.put(boardInt, currentTimeMillis());
         } catch (JSONException e) {
