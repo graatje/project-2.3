@@ -32,6 +32,12 @@ public class MCTSNetworkHandler {
      * checks if a clients have simulated matches, and returns the simulation if they have.
      * @return hashmap of the average value of a board and the amount of times there was a simulation to get the average value.
      */
+    public void checkClientPings(){
+        for(MCTSClient client: clients){
+            client.checkPing();
+        }
+    }
+
     public HashMap<BoardPiece, SimulationResponse> readClients(){
         HashMap<BoardPiece, SimulationResponse> simulations = new HashMap<>();
         for(MCTSClient client: clients){
@@ -87,6 +93,11 @@ public class MCTSNetworkHandler {
                     client.verificationSuccess();
                     clients.add(client);
                     Logger.info("Client " + client.getName() + " added.");
+                    try {
+                        Thread.sleep(200);
+                    } catch (InterruptedException ignored) { }
+                    client.checkPing();
+
                     Thread t = new Thread(client::handleClientInput);
                     t.start();
                 }else{

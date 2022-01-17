@@ -227,6 +227,14 @@ public class MCTSClient {
                     case "reportResult":
                         reportResult(msg);
                         break;
+                    case "ping":
+                        int timedifference = (int) (currentTimeMillis() - msg.getLong("starttime"));
+                        Logger.info("got ping of client " + getName() + " of " + timedifference + " milliseconds.");
+                        if(timedifference > maxDelay){
+                            Logger.info("set max ping of client " + getName() +
+                                    " to " + timedifference + "milliseconds");
+                            maxDelay = timedifference;
+                        }
                     default:
                         break;
                 }
@@ -234,6 +242,19 @@ public class MCTSClient {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void checkPing(){
+        Long starttime = currentTimeMillis();
+        JSONObject resp = new JSONObject();
+        try {
+            resp.put("type", "ping");
+            resp.put("starttime", starttime);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return;
+        }
+        write(resp);
     }
 
     private void reportResult(JSONObject msg) throws JSONException {

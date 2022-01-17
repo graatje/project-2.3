@@ -165,6 +165,13 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
                 }
             }
         }
+        if(bestavgval == 1.0){
+            Logger.info("all simulated matches ended in a win, continuing as usual just in case we missed a " +
+                    "simulation where we would've lost.");
+        }
+        else if(bestavgval == -1.0){
+            Logger.info("according to the simulations, we are definitely going to lose.");
+        }
         if(move != null) {
             Logger.info("found move at x:" + move.getX() + ", y:" + move.getY() + "with a value of " + bestavgval +
                     " after simulating " + (simulatedGames + networksimulated) + " games, of which " + networksimulated + " from network");
