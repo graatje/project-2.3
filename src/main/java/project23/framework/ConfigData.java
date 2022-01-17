@@ -1,6 +1,7 @@
 package project23.framework;
 
 import project23.framework.player.MinimaxAIPlayer;
+import project23.framework.player.network.MCTSNetworkHandler;
 import project23.othello.OthelloGame;
 import project23.ttt.TTTGame;
 import java.util.HashMap;
@@ -16,6 +17,7 @@ public class ConfigData {
     private GameType currentGameType;
     private MinimaxAIPlayer.AIDifficulty difficulty;
     private int minimaxThinkingTime;
+    private MCTSNetworkHandler networkHandler;
 
     /**
      * Singleton pattern, creates instance only when it's necessary
@@ -39,10 +41,20 @@ public class ConfigData {
         playerName = "C4";
         difficulty = MinimaxAIPlayer.AIDifficulty.HARD;
         minimaxThinkingTime = 8000;
-
+        networkHandler = null;
         // Games
         registerGame(new TTTGame());
         registerGame(new OthelloGame());
+    }
+
+    public MCTSNetworkHandler getNetworkHandler(){
+        if(networkHandler != null){
+            return networkHandler;
+        }
+        networkHandler = new MCTSNetworkHandler(5000);
+        Thread t = new Thread(() -> networkHandler.connectClients());
+        t.start();
+        return networkHandler;
     }
 
     /**

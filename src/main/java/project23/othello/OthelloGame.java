@@ -1,5 +1,5 @@
 package project23.othello;
-
+import project23.othello.player.OthelloMCTSPlayer;
 import javafx.scene.paint.Color;
 import project23.framework.ConfigData;
 import project23.framework.Game;
@@ -24,7 +24,8 @@ public class OthelloGame extends Game {
 
     @Override
     public BiFunction<Board, Integer, Player> createAIPlayerFactory() {
-        return (board, id) -> new OthelloMinimaxAIPlayer(board, id, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
+	return (board, id) -> new OthelloMCTSPlayer(board, id, Game.AI_NAME);
+        //return (board, id) -> new OthelloMinimaxAIPlayer(board, id, Game.AI_NAME, ConfigData.getInstance().getAIDifficulty());
     }
 
     @Override
