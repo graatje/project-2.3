@@ -30,6 +30,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
     MCTSNetworkHandler networkHandler;
     public boolean NETWORKCLIENTS = true;
     private static final int CORES = 4;
+    private boolean dorandommoves = false;  // when all simulated matches end in a win immediately send a random move.
     public MCTSPlayer(Board board, int id) {
         super(board, id);
         board.registerObserver(this);
@@ -73,13 +74,24 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
 
     @Override
     public void requestMove() {
-        BoardPiece move = monteCarlo(board, this);
-        board.makeMove(this, move);
-        if(move != null) {
-            Logger.info("found best move " + move);
+        BoardPiece move;
+        BoardPiece tempmove = monteCarlo(board, this);
+
+        if(tempmove != null) {
+            move = tempmove;
         }
         else{
-            Logger.info("move was null.");
+            if(!board.getValidMoves(this).isEmpty()){
+                Logger.error("Monte Carlo couldn't find a valid move!!");
+                move = getRandomMove(board.getValidMoves(this));
+            }
+            else{
+                move = null;
+            }
+        }
+        board.makeMove(this, move);
+        if(move != null) {
+            Logger.info("Sent move " + move);
         }
     }
 
@@ -106,6 +118,10 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         else if(validMoves.size() == 0){
             return null;
         }
+        if(dorandommoves){
+            Logger.info("we are certainly going to win. sending random move immediately.");
+            return getRandomMove(_board.getValidMoves());
+        }
         if(NETWORKCLIENTS) {
             networkHandler.sendBoard(_board);
         }
@@ -130,7 +146,7 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
         }
 
         try {
-            Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());
+            Thread.sleep(ConfigData.getInstance().getMinimaxThinkingTime());  // freezes the whole UI
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -166,8 +182,8 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
             }
         }
         if(bestavgval == 1.0){
-            Logger.info("all simulated matches ended in a win, continuing as usual just in case we missed a " +
-                    "simulation where we would've lost.");
+            Logger.info("all simulated matches ended in a win, sending random moves from now.");
+            this.dorandommoves = true;
         }
         else if(bestavgval == -1.0){
             Logger.info("according to the simulations, we are definitely going to lose.");
@@ -208,6 +224,6 @@ public abstract class MCTSPlayer extends AIPlayer implements BoardObserver {
 
     @Override
     public boolean isShowValidMoves() {
-        return (board.getGameManager() instanceof ConnectedGameManager);
+        return false;
     }
 }
